@@ -33,7 +33,7 @@ private:
 
 public:
     CPU(GPU &graphics);
-    uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &ram);
+    uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);
     void decodeOpcode(const uint16_t &opcode);
     void executeOpcode();
 };
