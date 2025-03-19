@@ -1,3 +1,0 @@
-/home/jho/Documents/CodeProjects/CHIP-8/build/CMakeFiles/CHIP-8.dir
-/home/jho/Documents/CodeProjects/CHIP-8/build/CMakeFiles/edit_cache.dir
-/home/jho/Documents/CodeProjects/CHIP-8/build/CMakeFiles/rebuild_cache.dir
