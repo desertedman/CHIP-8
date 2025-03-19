@@ -25,6 +25,8 @@ void CPU::decodeOpcode(const uint16_t &opcode)
     nibbles.sec = opcode & 0x0F00;
     nibbles.third = opcode & 0x00F0;
     nibbles.fourth = opcode & 0x000F;
+
+    // printf("%0X %0X %0X %0X\n", nibbles.first, nibbles.sec, nibbles.third, nibbles.fourth);
 }
 
 void CPU::executeOpcode()
@@ -39,6 +41,13 @@ void CPU::executeOpcode()
 
             (*mGraphics).clearScreen();
         }
+
+        break;
+
+    case (0x1000): // Jump instruction; PC jumps to NNN, derived from 0x1NNN
+        mPC = nibbles.sec | nibbles.third | nibbles.fourth;
+
+        // printf("%0X\n", mPC);
         break;
     }
 }
