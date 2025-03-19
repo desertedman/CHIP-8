@@ -32,9 +32,13 @@ void CPU::executeOpcode()
     switch (nibbles.first) // Grab first hex char
     {
     case (0x0000): // Handles all 0x0XXX opcodes
-        std::cout << "Received clear screen op\n";
 
-        (*mGraphics).clearScreen();
+        if (nibbles.third == 0xE0)
+        {
+            std::cout << "Received clear screen op\n";
+
+            (*mGraphics).clearScreen();
+        }
         break;
     }
 }
