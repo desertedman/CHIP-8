@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/jho/Documents/CodeProjects/CHIP-8/build",
+  "command": "/usr/bin/c++   -g -o CMakeFiles/CHIP-8.dir/src/main.cpp.o -c /home/jho/Documents/CodeProjects/CHIP-8/src/main.cpp",
+  "file": "/home/jho/Documents/CodeProjects/CHIP-8/src/main.cpp",
+  "output": "CMakeFiles/CHIP-8.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/jho/Documents/CodeProjects/CHIP-8/build",
+  "command": "/usr/bin/c++   -g -o CMakeFiles/CHIP-8.dir/src/CHIP8.cpp.o -c /home/jho/Documents/CodeProjects/CHIP-8/src/CHIP8.cpp",
+  "file": "/home/jho/Documents/CodeProjects/CHIP-8/src/CHIP8.cpp",
+  "output": "CMakeFiles/CHIP-8.dir/src/CHIP8.cpp.o"
+}
+]

@@ -1,0 +1,1 @@
+/usr/bin/c++ -g "CMakeFiles/CHIP-8.dir/src/main.cpp.o" "CMakeFiles/CHIP-8.dir/src/CHIP8.cpp.o" -o CHIP-8
