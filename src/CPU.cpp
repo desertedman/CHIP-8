@@ -1,5 +1,5 @@
 
-#include "Cpu.h"
+#include "CPU.h"
 #include <iostream>
 
 CPU::CPU(GPU &graphics)
@@ -21,7 +21,15 @@ uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &ram)
 
 void CPU::decodeOpcode(const uint16_t &opcode)
 {
-    switch (opcode & 0xF000) // Grab first hex char
+    nibbles.first = opcode & 0xF000;
+    nibbles.sec = opcode & 0x0F00;
+    nibbles.third = opcode & 0x00F0;
+    nibbles.fourth = opcode & 0x000F;
+}
+
+void CPU::executeOpcode()
+{
+    switch (nibbles.first) // Grab first hex char
     {
     case (0x0000): // Handles all 0x0XXX opcodes
         std::cout << "Received clear screen op\n";

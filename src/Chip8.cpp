@@ -76,9 +76,11 @@ void Chip8::cycleCpu()
     // Fetch opcode
     uint16_t opcode = mCPU.fetchOpcode(mMemory);
 
-    uint16_t testOpcode = 0x00E0;
+    uint16_t testOpcode = 0x00E0; // Clear screen opcode for debug purposes
     // Decode opcode
     mCPU.decodeOpcode(testOpcode);
+
+    mCPU.executeOpcode();
 }
 
 void Chip8::drawScreen()

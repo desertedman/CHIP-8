@@ -1,4 +1,4 @@
-#include "Graphics.h"
+#include "GPU.h"
 
 #include <iostream>
 

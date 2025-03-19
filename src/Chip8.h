@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Graphics.h"
-#include "Cpu.h"
+#include "GPU.h"
+#include "CPU.h"
 
 #include <iostream>
 #include <array>
