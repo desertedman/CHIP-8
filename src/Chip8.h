@@ -6,7 +6,7 @@
 #include <array>
 #include <cstdint> // Include for uint8_t
 
-class CHIP8
+class Chip8
 {
 private:
     std::array<uint8_t, 4096> mMemory; // 4Kb of memory
@@ -15,7 +15,7 @@ private:
 
 
 public:
-    CHIP8();
+    Chip8();
     bool loadRom(const std::string &path);
     void printMemory(int bytes = 0);
     void cycle();

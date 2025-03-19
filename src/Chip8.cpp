@@ -2,19 +2,19 @@
 #define FILESIZE 3584 // 4096 - 512 = 3584
 #endif
 
-#include "CHIP8.h"
+#include "Chip8.h"
 
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <vector>
 
-CHIP8::CHIP8()
+Chip8::Chip8()
 {
     mPC = &mMemory.at(0x200); // Start program counter at beginning of ROM
 }
 
-bool CHIP8::loadRom(const std::string &path)
+bool Chip8::loadRom(const std::string &path)
 {
     std::ifstream inFS;
 
@@ -56,7 +56,7 @@ bool CHIP8::loadRom(const std::string &path)
     return true;
 }
 
-void CHIP8::printMemory(int bytes)
+void Chip8::printMemory(int bytes)
 {
     if (bytes == 0)
     {
@@ -71,7 +71,7 @@ void CHIP8::printMemory(int bytes)
     std::cout << "\n";
 }
 
-void CHIP8::cycle()
+void Chip8::cycle()
 {
     // Fetch opcode
     // uint16_t opcode = (*mPC << 8) | *(mPC + 1); // Grab 2 bytes and combine them

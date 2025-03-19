@@ -1,10 +1,10 @@
-#include "CHIP8.h"
+#include "Chip8.h"
 
 #include <iostream>
 
 int main()
 {
-    CHIP8 chip8;
+    Chip8 chip8;
 
     std::cout << "Attempting to load file..." << std::endl;
     std::string path = "../roms/Pong (1 player).ch8";
