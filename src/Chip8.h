@@ -11,7 +11,7 @@ class Chip8
 {
 private:
     std::array<uint8_t, MEMORY> mMemory; // 4Kb of memory
-    std::streamsize mFileSize;
+    std::streamsize mFileSize;  // Remove later
     GPU mGPU;
     CPU mCPU;
 
@@ -19,7 +19,7 @@ public:
     Chip8();
     bool loadRom(const std::string &path);
     void printMemory(int bytes = 0);
-    void cycleCpu();
+    void cycleCPU();
 
     void drawScreen();
 };

@@ -6,10 +6,15 @@
 #define MEMORY 4096
 #endif
 
+#ifndef STACKSIZE
+#define STACKSIZE 16
+#endif
+
 #include <array>
 #include <cstdint> // Include for uint8_t
 
-struct Nibbles {
+struct Nibbles
+{
     // Order of hex bytes from most to least significant
     uint16_t first;
     uint16_t sec;
@@ -20,13 +25,14 @@ struct Nibbles {
 class CPU
 {
 private:
-    uint16_t mPC;   // Program counter pointer
-    GPU *mGraphics; // Pointer to GPU for communication with CPU
+    uint16_t mPC;                           // Program counter pointer
+    std::array<uint16_t, STACKSIZE> mStack; // Call stack
+    uint8_t mStackptr;                      // Location of top of stack; Range 0-15. 16 is very top (after) of stack!
+    GPU *mGraphics;                         // Pointer to GPU for communication with CPU
     Nibbles nibbles;
 
 public:
     CPU(GPU &graphics);
-    // void loadAddress(uint8_t &address); // Load program counter to a pointer to address
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &ram);
     void decodeOpcode(const uint16_t &opcode);
     void executeOpcode();

@@ -21,10 +21,10 @@ int main()
 
     // chip8.drawScreen(); // Screen starts immediately filled
     // std::cout << "\n";
-    // chip8.cycleCpu(); // Clear screen
+    // chip8.cycleCPU(); // Clear screen
     // chip8.drawScreen();
 
-    chip8.cycleCpu();
+    chip8.cycleCPU();
 
     return 0;
 }

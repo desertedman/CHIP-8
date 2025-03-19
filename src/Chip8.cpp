@@ -11,7 +11,7 @@
 
 Chip8::Chip8() : mCPU(mGPU) // Immediately initialize CPU to point to our GPU
 {
-    mGPU.fillScreen();                   // Fill screen for debug purposes
+    mGPU.fillScreen();        // Fill screen for debug purposes
 }
 
 bool Chip8::loadRom(const std::string &path)
@@ -71,16 +71,15 @@ void Chip8::printMemory(int bytes)
     std::cout << "\n";
 }
 
-void Chip8::cycleCpu()
+void Chip8::cycleCPU()
 {
     // Fetch opcode
     uint16_t opcode = mCPU.fetchOpcode(mMemory);
 
-    uint16_t testOpcode = 0x1A3B; // Clear screen opcode for debug purposes
-    // Decode opcode
+    uint16_t testOpcode = 0x00E0; // Clear screen opcode for debug purposes
     mCPU.decodeOpcode(testOpcode);
-
     mCPU.executeOpcode();
+
 }
 
 void Chip8::drawScreen()
