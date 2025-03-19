@@ -28,12 +28,11 @@ private:
     uint16_t mPC;                           // Program counter pointer
     std::array<uint16_t, STACKSIZE> mStack; // Call stack
     uint8_t mStackptr;                      // Location of top of stack; Range 0-15. 16 is very top (after) of stack!
-    GPU *mGraphics;                         // Pointer to GPU for communication with CPU
     Nibbles nibbles;
 
 public:
-    CPU(GPU &graphics);
+    void initialize();
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);
     void decodeOpcode(const uint16_t &opcode);
-    void executeOpcode();
+    void executeOpcode(GPU &gpu);
 };

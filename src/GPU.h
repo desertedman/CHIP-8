@@ -16,7 +16,7 @@ private:
     std::array<std::array<bool, COLUMNS>, ROWS> mScreen; // 32 rows of 64 columns
 
 public:
-    GPU();
+    void initialize();
     void clearScreen();
     void fillScreen();
     void drawScreen();

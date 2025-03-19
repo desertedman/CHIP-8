@@ -2,11 +2,18 @@
 #include "CPU.h"
 #include <iostream>
 
-CPU::CPU(GPU &graphics)
+void CPU::initialize()
 {
-    mGraphics = &graphics;
     mPC = 0x200;
     mStackptr = 0;
+
+    mStack.fill(false); // Clear stack; probably unnecessary
+
+    // Reset nibbles
+    nibbles.first = 0;
+    nibbles.sec = 0;
+    nibbles.third = 0;
+    nibbles.fourth = 0;
 }
 
 uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &memory)
@@ -30,7 +37,7 @@ void CPU::decodeOpcode(const uint16_t &opcode)
     // printf("%0X %0X %0X %0X\n", nibbles.first, nibbles.sec, nibbles.third, nibbles.fourth);
 }
 
-void CPU::executeOpcode()
+void CPU::executeOpcode(GPU &gpu)
 {
     switch (nibbles.first) // Grab first hex char
     {
@@ -44,7 +51,7 @@ void CPU::executeOpcode()
         {
             std::cout << "Received clear screen op\n";
 
-            (*mGraphics).clearScreen();
+            gpu.clearScreen();
         }
 
         else if (thirdFourth == 0xEE) // Return from subroutine
