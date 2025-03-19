@@ -13,8 +13,12 @@ int main()
         std::cout << "Successfully opened file!" << std::endl;
     }
 
-    // Check memory
-    chip8.printMemory();
+    chip8.mGraphics.fillScreen();
+    chip8.mGraphics.printScreen();
+
+    std::cout << "\n";
+    chip8.cycle();
+    chip8.mGraphics.printScreen();
 
     return 0;
 }

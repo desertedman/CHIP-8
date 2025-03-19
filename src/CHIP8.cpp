@@ -9,6 +9,11 @@
 #include <cstring>
 #include <vector>
 
+CHIP8::CHIP8()
+{
+    mPC = &mMemory.at(0x200); // Start program counter at beginning of ROM
+}
+
 bool CHIP8::loadRom(const std::string &path)
 {
     std::ifstream inFS;
@@ -48,7 +53,6 @@ bool CHIP8::loadRom(const std::string &path)
     std::memcpy(mMemory.data() + 0x200, buffer.data(), mFileSize);
 
     inFS.close();
-
     return true;
 }
 
@@ -65,6 +69,24 @@ void CHIP8::printMemory(int bytes)
     }
 
     std::cout << "\n";
+}
+
+void CHIP8::cycle()
+{
+    // Fetch opcode
+    // uint16_t opcode = (*mPC << 8) | *(mPC + 1); // Grab 2 bytes and combine them
+    uint16_t opcode = 0x00E0;
+
+    // Increment PC
+    // mPC += 2;
+
+    // Decode opcode
+    switch (opcode & 0xF000) // Grab first hex char
+    {
+    case (0x0000): // Handles all 0x0XXX opcodes
+        mGraphics.clearScreen();
+        break;
+    }
 }
 
 std::streamsize getFileSize(std::ifstream &inFS)
