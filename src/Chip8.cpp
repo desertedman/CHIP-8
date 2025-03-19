@@ -9,9 +9,9 @@
 #include <cstring>
 #include <vector>
 
-Chip8::Chip8()
+Chip8::Chip8() : mCPU(mGPU) // Immediately initialize CPU to point to our GPU
 {
-    mPC = &mMemory.at(0x200); // Start program counter at beginning of ROM
+    mGPU.fillScreen();                   // Fill screen for debug purposes
 }
 
 bool Chip8::loadRom(const std::string &path)
@@ -71,28 +71,31 @@ void Chip8::printMemory(int bytes)
     std::cout << "\n";
 }
 
-void Chip8::cycle()
+void Chip8::cycleCpu()
 {
     // Fetch opcode
-    // uint16_t opcode = (*mPC << 8) | *(mPC + 1); // Grab 2 bytes and combine them
-    uint16_t opcode = 0x00E0;
+    uint16_t opcode = mCPU.fetchOpcode(mMemory);
 
-    // Increment PC
-    // mPC += 2;
-
+    uint16_t testOpcode = 0x00E0;
     // Decode opcode
-    switch (opcode & 0xF000) // Grab first hex char
-    {
-    case (0x0000): // Handles all 0x0XXX opcodes
-        mGraphics.clearScreen();
-        break;
-    }
+    mCPU.decodeOpcode(testOpcode);
+}
+
+void Chip8::drawScreen()
+{
+    mGPU.drawScreen();
 }
 
 std::streamsize getFileSize(std::ifstream &inFS)
 {
     std::streamsize fileSize = inFS.tellg(); // Get current position (at end)
-    inFS.seekg(0, std::ios::beg);            // Move read position back to start of file
+    if (fileSize == -1)
+    {
+        std::cerr << "Error: Failed to get file size." << std::endl;
+        return 0;
+    }
+
+    inFS.seekg(0, std::ios::beg); // Move read position back to start of file
 
     return fileSize;
 }

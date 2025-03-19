@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics.h"
+#include "Cpu.h"
 
 #include <iostream>
 #include <array>
@@ -9,18 +10,18 @@
 class Chip8
 {
 private:
-    std::array<uint8_t, 4096> mMemory; // 4Kb of memory
-    uint8_t *mPC;
+    std::array<uint8_t, MEMORY> mMemory; // 4Kb of memory
     std::streamsize mFileSize;
-
+    GPU mGPU;
+    CPU mCPU;
 
 public:
     Chip8();
     bool loadRom(const std::string &path);
     void printMemory(int bytes = 0);
-    void cycle();
+    void cycleCpu();
 
-    Graphics mGraphics;
+    void drawScreen();
 };
 
 std::streamsize getFileSize(std::ifstream &inFS);

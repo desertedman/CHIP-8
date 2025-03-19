@@ -2,12 +2,12 @@
 
 #include <iostream>
 
-Graphics::Graphics()
+GPU::GPU()
 {
-    clearScreen(); // Ensure that screen is cleared on creation
+    clearScreen(); // Ensure that screen is cleared on creation. Probably unnecessary
 }
 
-void Graphics::clearScreen()
+void GPU::clearScreen()
 {
     for (int x = 0; x < ROWS; x++)
     {
@@ -18,7 +18,7 @@ void Graphics::clearScreen()
     }
 }
 
-void Graphics::fillScreen()
+void GPU::fillScreen()
 {
     for (int x = 0; x < ROWS; x++)
     {
@@ -29,7 +29,7 @@ void Graphics::fillScreen()
     }
 }
 
-void Graphics::printScreen()
+void GPU::drawScreen()
 {
     for (int x = 0; x < ROWS; x++)
     {

@@ -10,14 +10,14 @@
 
 #include <array>
 
-class Graphics
+class GPU
 {
 private:
     std::array<std::array<bool, COLUMNS>, ROWS> mScreen; // 32 rows of 64 columns
 
 public:
-    Graphics();
+    GPU();
     void clearScreen();
     void fillScreen();
-    void printScreen();
+    void drawScreen();
 };

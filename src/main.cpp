@@ -13,12 +13,16 @@ int main()
         std::cout << "Successfully opened file!" << std::endl;
     }
 
-    chip8.mGraphics.fillScreen();
-    chip8.mGraphics.printScreen();
+    else
+    {
+        std::cout << "Failed to open file! Closing." << std::endl;
+        return -1;
+    }
 
+    chip8.drawScreen(); // Screen starts immediately filled
     std::cout << "\n";
-    chip8.cycle();
-    chip8.mGraphics.printScreen();
+    chip8.cycleCpu(); // Clear screen
+    chip8.drawScreen();
 
     return 0;
 }
