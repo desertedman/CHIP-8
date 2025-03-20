@@ -29,8 +29,8 @@ public:
     void testEngine();
     void runEngine();
 
-    void fillScreen();
-    void drawScreen();
+    void fillScreen(); // Debug function. Remove or put into private later
+    void drawScreen(); // Debug function. Remove or put into private later
 };
 
 std::streamsize getFileSize(std::ifstream &inFS);

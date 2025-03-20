@@ -162,7 +162,6 @@ void Chip8::runEngine()
     // 3. Repeat according to a timer?
 
     while (true)
-    // for(int i = 0; i < 3; i++)
     {
         cycleCPU();
         if (mCPU.updateScreen())
