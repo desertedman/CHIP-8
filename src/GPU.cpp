@@ -82,3 +82,12 @@ void GPU::setPixel(int x, int y, bool status)
     // Traverse y Vector first, then x Vector to get X,Y coord
     mScreen.at(y).at(x) = status;
 }
+
+void GPU::xorPixel(int x, int y, bool status)
+{
+    bool *currPixel = &mScreen.at(y).at(x);
+
+    // XOR operation
+    *currPixel ^= 1;
+}
+

@@ -15,6 +15,9 @@ private:
     GPU mGPU;
     CPU mCPU;
 
+    uint8_t delayTimer;
+    uint8_t soundTimer;
+
     void testCycleCPU(uint16_t opcode);
     void cycleCPU();
 

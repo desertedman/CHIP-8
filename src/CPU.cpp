@@ -203,33 +203,39 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             drawFlag = true;
 
             uint8_t x = V[nibbles.sec >> 8] % 64; // X, Y coordinates
-            uint8_t y = V[nibbles.third >> 4] % 64;
-            uint8_t height = nibbles.fourth; // This is our N pixels
+            uint8_t y = V[nibbles.third >> 4] % 32;
+            uint8_t N = nibbles.fourth; // This is our N pixels
 
             // Screen X coordinates range from 0 - 63
             // To make coordinates wrap, set X = X % 64. This gives remainder which is our new coordinate
 
-            for (int yLine = 0; yLine < ROWS; yLine++)
+            V[0xF] = 0;
+            for (int yLine = 0; yLine < N; yLine++)
             {
+                if (y + yLine > ROWS - 1)
+                {
+                    break;
+                }
+
                 uint8_t sprite = memory.at(I + yLine);
 
                 for (int xLine = 0; xLine < 8; xLine++)
                 {
-                    if (x > COLUMNS - 1)
+                    if (x + xLine > COLUMNS - 1)
                     {
                         break;
                     }
 
-                    uint8_t pixel = sprite & (0x80 >> xLine); // Grab each bit from left to right. Note that 0x80 is 0b1000 0000
-                    if (pixel && gpu.getPixel(x, y))          // Compare bit against current screen pixel
+                    uint8_t pixel = sprite & (0x80 >> xLine);        // Grab each bit from left to right. Note that 0x80 is 0b1000 0000
+                    if (pixel && gpu.getPixel(x + xLine, y + yLine)) // Compare bit against current screen pixel
                     {
-                        pixel = 0;
+                        gpu.setPixel(x + xLine, y + yLine, false);
                         V[0xF] = 1;
                     }
 
-                    else if (pixel && !gpu.getPixel(x, y))
+                    else if (pixel && !gpu.getPixel(x + xLine, y + yLine))
                     {
-                        gpu.setPixel(x, y, true);
+                        gpu.setPixel(x + xLine, y + yLine, true);
                     }
 
                     x++;
@@ -237,6 +243,24 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
                 y++;
             }
+
+            // for (int yline = 0; yline < N; yline++)
+            // {
+            //     uint8_t pixel = memory[I + yline];
+
+            //     for (int xline = 0; xline < 8; xline++)
+            //     {
+            //         if ((pixel & (0x80 >> xline)) != 0)
+            //         {
+            //             if (gpu.getPixel(x + xline, (y + yline) * 64) == 1)
+            //             {
+            //                 V[0xF] = 1;
+            //             }
+
+            //             // gpu.xorPixel(x + xline, (y + yline) * 64, 1);
+            //         }
+            //     }
+            // }
 
             break;
         }
