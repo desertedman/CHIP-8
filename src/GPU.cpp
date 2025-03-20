@@ -69,10 +69,7 @@ void GPU::drawScreen()
 bool GPU::getPixel(int x, int y) // Ex. 64 x 32
 {
     // Traverse y Vector first, then x Vector to get X,Y coord
-    auto yVector = mScreen.at(y);
-    auto xyCoord = yVector.at(x);
-
-    if (xyCoord)
+    if (mScreen.at(y).at(x))
     {
         return true;
     }
@@ -83,8 +80,5 @@ bool GPU::getPixel(int x, int y) // Ex. 64 x 32
 void GPU::setPixel(int x, int y, bool status)
 {
     // Traverse y Vector first, then x Vector to get X,Y coord
-    auto yVector = mScreen.at(y);
-    auto xyCoord = yVector.at(x);
-
-    xyCoord = status;
+    mScreen.at(y).at(x) = status;
 }

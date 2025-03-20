@@ -30,6 +30,8 @@ int main()
         return -1;
     }
 
+    // chip8.printMemory();
+    // chip8.testEngine();
     chip8.runEngine();
 
     // // Window initialization

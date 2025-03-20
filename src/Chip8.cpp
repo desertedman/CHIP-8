@@ -98,6 +98,63 @@ void Chip8::printMemory(int bytes)
     std::cout << "\n";
 }
 
+void Chip8::testEngine()
+{
+    {
+        // Test 00E0
+        mGPU.fillScreen();
+        mGPU.drawScreen();
+
+        testCycleCPU(0x00E0);
+        mGPU.drawScreen();
+    }
+
+    {
+        // 0x1NNN
+        std::cout << "\tTesting 0x1NNN\n";
+        testCycleCPU(0x1AAA);
+    }
+
+    {
+        // 0x2NNN and 0x00EE
+        std::cout << "\tTesting 0x2NNN\n";
+        testCycleCPU(0x235E);
+
+        std::cout << "\tTesting 0x00EE\n";
+        testCycleCPU(0x00EE);
+    }
+
+    {
+        // 0x6XNN
+        std::cout << "\tTesting 0x6XNN\n";
+        testCycleCPU(0x634A);
+    }
+
+    {
+        // 0x7XNN
+        std::cout << "\tTesting 0x7XNN\n";
+        testCycleCPU(0x7501);
+        testCycleCPU(0x75FF);
+    }
+
+    {
+        // 0xANNN
+        std::cout << "\tTesting 0xANNN\n";
+        testCycleCPU(0xA501);
+    }
+
+    {
+        // Fill pixel test
+        mGPU.setPixel(63, 31, true);
+        std::cout << mGPU.getPixel(63, 31) << std::endl;
+
+        drawScreen();
+
+        fillScreen();
+        drawScreen();
+    }
+}
+
 void Chip8::runEngine()
 {
     // 1. Cycle CPU
@@ -117,9 +174,13 @@ void Chip8::runEngine()
 
 void Chip8::cycleCPU()
 {
-    // Fetch opcode
     uint16_t opcode = mCPU.fetchOpcode(mMemory);
+    mCPU.decodeOpcode(opcode);
+    mCPU.executeOpcode(mGPU, mMemory);
+}
 
+void Chip8::testCycleCPU(uint16_t opcode)
+{
     mCPU.decodeOpcode(opcode);
     mCPU.executeOpcode(mGPU, mMemory);
 }

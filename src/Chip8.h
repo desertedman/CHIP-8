@@ -15,6 +15,7 @@ private:
     GPU mGPU;
     CPU mCPU;
 
+    void testCycleCPU(uint16_t opcode);
     void cycleCPU();
 
 public:
@@ -22,6 +23,7 @@ public:
     bool loadRom(const std::string &path);
     void printMemory(int bytes = 0);
 
+    void testEngine();
     void runEngine();
 
     void fillScreen();

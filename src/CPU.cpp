@@ -61,18 +61,20 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         {
             drawFlag = true;
 
-            std::cout << "Received clear screen op\n";
+            // std::cout << "Received clear screen op\n";
 
             gpu.clearScreen();
         }
 
         else if (thirdFourth == 0xEE) // Return from subroutine
         {
-            std::cout << "Received return call\n";
+            // std::cout << "Received return call\n";
 
             // Pop stack and jump to address
             mStackptr--;
             mPC = mStack.at(mStackptr);
+
+            // std::cout << "Current PC after return: " << std::hex << mPC << std::endl;
         }
 
         break;
@@ -82,12 +84,14 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         mPC = nibbles.sec | nibbles.third | nibbles.fourth;
 
-        // printf("%0X\n", mPC);
+        // std::cout << "Jumping to address: " << std::hex << mPC << std::endl;
         break;
     }
 
     case (0x2000): // Store current PC on stack, then jump to subroutine 0x2NNN
     {
+        // std::cout << "Current PC before jump: " << std::hex << mPC << std::endl;
+
         mStack.at(mStackptr) = mPC;
         mStackptr++; // Should never be greater than 16!
         if (mStackptr > 16)
@@ -96,8 +100,9 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         }
 
         mPC = nibbles.sec | nibbles.third | nibbles.fourth;
-        // printf("%0X\n", mPC);
-        // std::cout << std::hex << mStack.at(mStackptr - 1);
+
+        // std::cout << "Current PC after jump: " << std::hex << mPC << std::endl;
+        // std::cout << "Address stored on stack: " << std::hex << mStack.at(mStackptr - 1) << std::endl;
 
         break;
     }
@@ -136,6 +141,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth);
 
+        // std::cout << "Register V" << std::hex << (nibbles.sec >> 8) << ": " << (nibbles.third | nibbles.fourth) << std::endl;
         break;
     }
 
@@ -143,6 +149,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth);
 
+        // std::cout << "Register V" << std::hex << (nibbles.sec >> 8) << " after: " << static_cast<int>(V[nibbles.sec >> 8]) << std::endl;
         break;
     }
 
@@ -184,6 +191,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         I = nibbles.sec | nibbles.third | nibbles.fourth;
 
+        std::cout << std::hex << I << std::endl;
         break;
     }
 
@@ -249,7 +257,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     }
 
     default:
-    std::cout << "Unknown instruction!" << std::endl;
+        std::cout << "Unknown instruction!" << std::endl;
     }
 }
 
