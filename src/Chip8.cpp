@@ -38,7 +38,7 @@ void Chip8::initialize()
 
     // Initialize GPU and CPU; reset to their original states
     mGPU.initialize();
-    mCPU.initialize(fontLocation);
+    mCPU.initialize();
 }
 
 bool Chip8::loadRom(const std::string &path)

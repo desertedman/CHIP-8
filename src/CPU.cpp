@@ -7,7 +7,7 @@
 //     // I = &memory.at(0);
 // }
 
-void CPU::initialize(uint8_t fontLocation)
+void CPU::initialize()
 {
     mPC = 0x200;
     mStackptr = 0;
@@ -21,7 +21,7 @@ void CPU::initialize(uint8_t fontLocation)
     nibbles.fourth = 0;
 
     // Set memory pointer
-    I = fontLocation;
+    I = 0;
 
     drawFlag = false;
 }
@@ -217,7 +217,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                     break;
                 }
 
-                uint8_t sprite = memory.at(I + yLine);
+                uint8_t sprite = memory.at(I + yLine); // Grab sprite data
 
                 for (int xLine = 0; xLine < 8; xLine++)
                 {
@@ -226,41 +226,25 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                         break;
                     }
 
-                    uint8_t pixel = sprite & (0x80 >> xLine);        // Grab each bit from left to right. Note that 0x80 is 0b1000 0000
-                    if (pixel && gpu.getPixel(x + xLine, y + yLine)) // Compare bit against current screen pixel
+                    uint8_t pixel = sprite & (0x80 >> xLine); // Grab each pixel bit from left to right. Note that 0x80 is 0b1000 0000
+                    if (pixel)                                // Compare bit against current screen pixel
                     {
-                        gpu.setPixel(x + xLine, y + yLine, false);
-                        V[0xF] = 1;
+                        if  (gpu.getPixel(x + xLine, y + yLine))
+                        {
+                            V[0xF] = 1;
+                        }
+
+                        gpu.xorPixel(x + xLine, y + yLine, 1);
                     }
 
-                    else if (pixel && !gpu.getPixel(x + xLine, y + yLine))
-                    {
-                        gpu.setPixel(x + xLine, y + yLine, true);
-                    }
-
-                    x++;
+                    // DO NOT INCREMENT X!!
+                    // x++;
                 }
 
-                y++;
+                // DO NOT INCREMENT Y!!
+                // y++; 
             }
 
-            // for (int yline = 0; yline < N; yline++)
-            // {
-            //     uint8_t pixel = memory[I + yline];
-
-            //     for (int xline = 0; xline < 8; xline++)
-            //     {
-            //         if ((pixel & (0x80 >> xline)) != 0)
-            //         {
-            //             if (gpu.getPixel(x + xline, (y + yline) * 64) == 1)
-            //             {
-            //                 V[0xF] = 1;
-            //             }
-
-            //             // gpu.xorPixel(x + xline, (y + yline) * 64, 1);
-            //         }
-            //     }
-            // }
 
             break;
         }

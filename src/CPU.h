@@ -41,7 +41,7 @@ private:
 
 public:
     // CPU(std::array<uint8_t, MEMORY> &memory);
-    void initialize(uint8_t fontLocation);
+    void initialize();
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);
     void decodeOpcode(const uint16_t &opcode);
     void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
