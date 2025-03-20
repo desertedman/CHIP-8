@@ -15,11 +15,14 @@ private:
     GPU mGPU;
     CPU mCPU;
 
+    void cycleCPU();
+
 public:
     void initialize();
     bool loadRom(const std::string &path);
     void printMemory(int bytes = 0);
-    void cycleCPU();
+
+    void runEngine();
 
     void fillScreen();
     void drawScreen();

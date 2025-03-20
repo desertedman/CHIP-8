@@ -17,8 +17,9 @@ int main()
     chip8.initialize();
 
     std::cout << "Attempting to load file..." << std::endl;
-    std::string path = "../roms/Pong (1 player).ch8";
-    if (chip8.loadRom(path))
+    std::string Pong = "../roms/Pong (1 player).ch8";
+    std::string IBM = "../roms/IBM Logo.ch8";
+    if (chip8.loadRom(IBM))
     {
         std::cout << "Successfully opened file!" << std::endl;
     }
@@ -29,13 +30,7 @@ int main()
         return -1;
     }
 
-    chip8.fillScreen();
-    chip8.drawScreen(); // Screen starts immediately filled
-    std::cout << "\n";
-    chip8.cycleCPU(); // Clear screen
-    chip8.drawScreen();
-
-    chip8.cycleCPU();
+    chip8.runEngine();
 
     // // Window initialization
     // SDL_Window *window = NULL;

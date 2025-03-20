@@ -7,7 +7,7 @@
 //     // I = &memory.at(0);
 // }
 
-void CPU::initialize()
+void CPU::initialize(uint8_t fontLocation)
 {
     mPC = 0x200;
     mStackptr = 0;
@@ -21,7 +21,9 @@ void CPU::initialize()
     nibbles.fourth = 0;
 
     // Set memory pointer
-    I = 0;
+    I = fontLocation;
+
+    drawFlag = false;
 }
 
 uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &memory)
@@ -57,6 +59,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         if (thirdFourth == 0xE0) // Clear screen op (0x00E0)
         {
+            drawFlag = true;
+
             std::cout << "Received clear screen op\n";
 
             gpu.clearScreen();
@@ -188,6 +192,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
         // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
         {
+            drawFlag = true;
+
             uint8_t x = V[nibbles.sec >> 8] % 64; // X, Y coordinates
             uint8_t y = V[nibbles.third >> 4] % 64;
             uint8_t height = nibbles.fourth; // This is our N pixels
@@ -223,7 +229,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
                 y++;
             }
-            
+
             break;
         }
 
@@ -241,5 +247,17 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         break;
     }
+
+    default:
+    std::cout << "Unknown instruction!" << std::endl;
     }
+}
+
+bool CPU::updateScreen()
+{
+    if (drawFlag)
+        drawFlag = false;
+    return true;
+
+    return false;
 }

@@ -31,28 +31,48 @@ void GPU::fillScreen()
 
 void GPU::drawScreen()
 {
+    // Draw top border
+    for (int i = 0; i < COLUMNS; i++)
+    {
+        std::cout << "_";
+    }
+    std::cout << std::endl;
+
     for (int x = 0; x < ROWS; x++)
     {
+        std::cout << "| "; // Beginning of screen row
+
         for (int y = 0; y < COLUMNS; y++)
         {
             if (mScreen.at(x).at(y))
             {
-                std::cout << "1";
+                std::cout << "*";
             }
 
             else
             {
-                std::cout << "0";
+                std::cout << " ";
             }
         }
 
-        std::cout << std::endl; // End of row; start new line;
+        std::cout << " |" << std::endl; // End of row; start new line;
     }
+
+    // Draw bottom border
+    for (int i = 0; i < COLUMNS; i++)
+    {
+        std::cout << "_";
+    }
+    std::cout << std::endl;
 }
 
-bool GPU::getPixel(int x, int y)
+bool GPU::getPixel(int x, int y) // Ex. 64 x 32
 {
-    if (mScreen.at(x).at(y))
+    // Traverse y Vector first, then x Vector to get X,Y coord
+    auto yVector = mScreen.at(y);
+    auto xyCoord = yVector.at(x);
+
+    if (xyCoord)
     {
         return true;
     }
@@ -62,5 +82,9 @@ bool GPU::getPixel(int x, int y)
 
 void GPU::setPixel(int x, int y, bool status)
 {
-    mScreen.at(x).at(y) = status;
+    // Traverse y Vector first, then x Vector to get X,Y coord
+    auto yVector = mScreen.at(y);
+    auto xyCoord = yVector.at(x);
+
+    xyCoord = status;
 }
