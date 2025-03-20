@@ -20,4 +20,7 @@ public:
     void clearScreen();
     void fillScreen();
     void drawScreen();
+
+    bool getPixel(int x, int y);
+    void setPixel(int x, int y, bool status);
 };

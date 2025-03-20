@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef REGISTERS
-#define REGISTERS 16
-#endif
-
 #include "GPU.h"
 #include "CPU.h"
 
@@ -15,8 +11,6 @@ class Chip8
 {
 private:
     std::array<uint8_t, MEMORY> mMemory; // 4Kb of memory
-    uint8_t V[REGISTERS];                // Registers
-    uint16_t *I;                         // Points at locations in memory
     std::streamsize mFileSize;           // Remove later
     GPU mGPU;
     CPU mCPU;

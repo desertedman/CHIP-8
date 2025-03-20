@@ -104,7 +104,7 @@ void Chip8::cycleCPU()
 
     uint16_t testOpcode = 0x00E0; // Clear screen opcode for debug purposes
     mCPU.decodeOpcode(testOpcode);
-    mCPU.executeOpcode(mGPU);
+    mCPU.executeOpcode(mGPU, mMemory);
 
 }
 

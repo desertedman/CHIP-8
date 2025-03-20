@@ -49,3 +49,18 @@ void GPU::drawScreen()
         std::cout << std::endl; // End of row; start new line;
     }
 }
+
+bool GPU::getPixel(int x, int y)
+{
+    if (mScreen.at(x).at(y))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void GPU::setPixel(int x, int y, bool status)
+{
+    mScreen.at(x).at(y) = status;
+}

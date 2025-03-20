@@ -10,6 +10,10 @@
 #define STACKSIZE 16
 #endif
 
+#ifndef REGISTERS
+#define REGISTERS 16
+#endif
+
 #include <array>
 #include <cstdint> // Include for uint8_t
 
@@ -30,9 +34,13 @@ private:
     uint8_t mStackptr;                      // Location of top of stack; Range 0-15. 16 is very top (after) of stack!
     Nibbles nibbles;
 
+    uint16_t I;        // Stores memory addresses
+
+    uint8_t V[REGISTERS]; // Registers V0 - VF
 public:
+    // CPU(std::array<uint8_t, MEMORY> &memory);
     void initialize();
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);
     void decodeOpcode(const uint16_t &opcode);
-    void executeOpcode(GPU &gpu);
+    void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
 };
