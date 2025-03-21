@@ -156,7 +156,27 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     // Broken
     case (0x8000):
     {
-        if (nibbles.fourth == 0x04) // 0x8XY4; Adds value of VY to VX
+        if (nibbles.fourth == 0x00) // 0x8XY0; Set VX = VY
+        {
+            V[nibbles.sec >> 8] = V[nibbles.third >> 4];
+        }
+
+        else if (nibbles.fourth == 0x01) // 0x8XY1; VX = VX | VY
+        {
+            V[nibbles.sec >> 8] |= V[nibbles.third >> 4];
+        }
+
+        else if (nibbles.fourth == 0x02) // 0x8XY2; VX = VX & VY
+        {
+            V[nibbles.sec >> 8] &= V[nibbles.third >> 4];
+        }
+
+        else if (nibbles.fourth == 0x03) // 0x8XY3; VX = VX ^ VY
+        {
+            V[nibbles.sec >> 8] ^= V[nibbles.third >> 4];
+        }
+
+        else if (nibbles.fourth == 0x04) // 0x8XY4; Adds value of VY to VX
         {
             // If VX + VY > 0xFF (max value for unsigned 8bit), then set carry flag
             // Adjust equation to: VX > 0xFF - VY
@@ -230,7 +250,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                     uint8_t pixel = sprite & (0x80 >> xLine); // Grab each pixel bit from left to right. Note that 0x80 is 0b1000 0000
                     if (pixel)                                // Compare bit against current screen pixel
                     {
-                        if  (gpu.getPixel(x + xLine, y + yLine))
+                        if (gpu.getPixel(x + xLine, y + yLine))
                         {
                             V[0xF] = 1;
                         }
@@ -243,9 +263,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                 }
 
                 // DO NOT INCREMENT Y!!
-                // y++; 
+                // y++;
             }
-
 
             break;
         }
