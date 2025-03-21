@@ -28,25 +28,25 @@ bool Display::initDisplay()
 
     // Create renderer
     mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
-    SDL_RenderSetLogicalSize(mRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_RenderSetLogicalSize(mRenderer, SCREEN_WIDTH, SCREEN_HEIGHT); // Render canvas with SCREEN resolution
 
     // Create texture for frame buffer
     mTexture = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_ARGB8888,
-                                 SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+                                 SDL_TEXTUREACCESS_STREAMING, BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
 
     return true;
 }
 
 void Display::drawScreen(GPU &gpu)
 {
-    int mPixelsItt = 0; // Iterator to travel mPixels array
-    for (int y = 0; y < SCREEN_HEIGHT; y++) // Traverse each row
+    int mPixelsItt = 0;                   // Iterator to travel mPixels array
+    for (int y = 0; y < BASE_HEIGHT; y++) // Traverse each row
     {
-        for (int x = 0; x < SCREEN_WIDTH; x++) // Traverse each column
+        for (int x = 0; x < BASE_WIDTH; x++) // Traverse each column
         {
             uint8_t pixel = gpu.getPixel(x, y);
 
-            mPixels[mPixelsItt] = (0x00FFFFFF * pixel) | 0xFF000000; // Fill out rest of bits, since converting from uint8 to uint32
+            mPixels[mPixelsItt] = (0x00FFFFFF * pixel) | 0xFF000000; // TODO: Document this
             mPixelsItt++;
         }
     }

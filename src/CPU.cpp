@@ -191,7 +191,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         I = nibbles.sec | nibbles.third | nibbles.fourth;
 
-        std::cout << std::hex << I << std::endl;
+        // std::cout << std::hex << I << std::endl;
         break;
     }
 

@@ -32,7 +32,7 @@ void GPU::fillScreen()
 // Get an X, Y coordinate
 // Ex. Input (64, 32). Note that the internal array is by ROW, COLUMN (or Y, X) order.
 // This function converts (Y, X) coordinates to (X, Y) coordinates.
-bool GPU::getPixel(int x, int y)
+const bool GPU::getPixel(int x, int y)
 {
     // Traverse y Vector first, then x Vector to get X,Y coord
     if (mScreen.at(y).at(x))
@@ -54,6 +54,6 @@ void GPU::xorPixel(int x, int y, bool status)
     bool *currPixel = &mScreen.at(y).at(x);
 
     // XOR operation
-    *currPixel ^= 1;
+    *currPixel ^= status;
 }
 
