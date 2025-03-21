@@ -155,10 +155,10 @@ void Chip8::testEngine()
         mGPU.setPixel(63, 31, true);
         std::cout << mGPU.getPixel(63, 31) << std::endl;
 
-        drawScreen();
+        mGPU.drawScreen();
 
         fillScreen();
-        drawScreen();
+        mGPU.drawScreen();
     }
 }
 
@@ -196,9 +196,41 @@ void Chip8::fillScreen()
     mGPU.fillScreen();
 }
 
-void Chip8::drawScreen()
+void Chip8::drawToTerminal()
 {
-    mGPU.drawScreen();
+    // Draw top border
+    for (int i = 0; i < COLUMNS; i++)
+    {
+        std::cout << "_";
+    }
+    std::cout << std::endl;
+
+    for (int x = 0; x < ROWS; x++)
+    {
+        std::cout << "| "; // Beginning of screen row
+
+        for (int y = 0; y < COLUMNS; y++)
+        {
+            if (mGPU.getPixel(x, y))
+            {
+                std::cout << "*";
+            }
+
+            else
+            {
+                std::cout << " ";
+            }
+        }
+
+        std::cout << " |" << std::endl; // End of row; start new line;
+    }
+
+    // Draw bottom border
+    for (int i = 0; i < COLUMNS; i++)
+    {
+        std::cout << "_";
+    }
+    std::cout << std::endl;
 }
 
 std::streamsize getFileSize(std::ifstream &inFS)
