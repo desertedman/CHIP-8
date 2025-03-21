@@ -110,10 +110,10 @@ void Chip8::testEngine()
     {
         // Test 00E0
         mGPU.fillScreen();
-        mGPU.drawScreen();
+        drawToTerminal();
 
         testCycleCPU(0x00E0);
-        mGPU.drawScreen();
+        drawToTerminal();
     }
 
     {
@@ -155,10 +155,10 @@ void Chip8::testEngine()
         mGPU.setPixel(63, 31, true);
         std::cout << mGPU.getPixel(63, 31) << std::endl;
 
-        mGPU.drawScreen();
+        drawToTerminal();
 
         fillScreen();
-        mGPU.drawScreen();
+        drawToTerminal();
     }
 }
 
@@ -173,7 +173,7 @@ void Chip8::runEngine()
         cycleCPU();
         if (mCPU.updateScreen())
         {
-            mGPU.drawScreen();
+            drawToTerminal();
         }
     }
 }
@@ -205,11 +205,11 @@ void Chip8::drawToTerminal()
     }
     std::cout << std::endl;
 
-    for (int x = 0; x < ROWS; x++)
+    for (int y = 0; y < ROWS; y++)
     {
         std::cout << "| "; // Beginning of screen row
 
-        for (int y = 0; y < COLUMNS; y++)
+        for (int x = 0; x < COLUMNS; x++)
         {
             if (mGPU.getPixel(x, y))
             {
