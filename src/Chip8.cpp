@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cstring>
 #include <vector>
+#include <SDL2/SDL.h>
 
 uint8_t Font[80] =
     {

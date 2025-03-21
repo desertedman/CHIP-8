@@ -23,7 +23,7 @@ private:
     void testCycleCPU(uint16_t opcode);
     void cycleCPU();
     void handleInput(); // Handle input and send to CPU
-    
+
     bool running;
 
 public:
