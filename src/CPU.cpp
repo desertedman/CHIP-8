@@ -153,6 +153,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         break;
     }
 
+    // Broken
     case (0x8000):
     {
         if (nibbles.fourth == 0x04) // 0x8XY4; Adds value of VY to VX
@@ -177,6 +178,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         break;
     }
 
+    // Broken
     case (0x9000): // 0x9XY0; if VX != VY, skip
     {
         if (V[nibbles.sec >> 8] != V[nibbles.third] >> 4)
@@ -249,6 +251,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             break;
         }
 
+    // Broken
     case (0xF000):
     {
         // 0xFX33; see https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
