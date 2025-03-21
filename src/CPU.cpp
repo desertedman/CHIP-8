@@ -1,6 +1,7 @@
 
 #include "CPU.h"
 #include <iostream>
+#include <random>
 
 // CPU::CPU(std::array<uint8_t, MEMORY> &memory)
 // {
@@ -220,6 +221,17 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             break;
         }
 
+        case (0x06): // 0x8XY6; Bit shift right
+        {
+            // Modern behavior; VX = VY
+            V[nibbles.sec >> 8] = V[nibbles.third >> 4];
+
+            V[0xF] = V[nibbles.sec >> 8] & 0b0001; // Store last bit into register
+            V[nibbles.sec >> 8] >>= 1;             // Bitshift right in place
+
+            break;
+        }
+
         case (0x07): // 0x8XY6; VX = VY - VX
         {
             // Check carry flag
@@ -238,7 +250,19 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             break;
         }
 
+        case (0x0E): // 0x8XYE; Bit shift left
+        {
+            // Modern behavior; VX = VY
+            V[nibbles.sec >> 8] = V[nibbles.third >> 4];
+
+            V[0xF] = V[nibbles.sec >> 8] & 0b0001; // Store last bit into register
+            V[nibbles.sec >> 8] <<= 1;             // Bitshift left in place
+
+            break;
+        }
+
         default:
+            std::cout << "Error! Opcode " << std::hex << (((nibbles.first | nibbles.sec) | nibbles.third) | nibbles.fourth) << "not implemented.\n";
             break;
         }
 
@@ -260,6 +284,20 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         I = nibbles.sec | nibbles.third | nibbles.fourth;
 
         // std::cout << std::hex << I << std::endl;
+        break;
+    }
+
+    case (0xB000): // 0xBNNN; PC = NNN + V0
+    {
+        mPC = (nibbles.sec | nibbles.third | nibbles.fourth) + V[0];
+
+        break;
+    }
+
+    case (0xC000): // 0xCXNN; set VX to a random number, AND'd with NN
+    {
+        V[nibbles.sec >> 8] = (rand() % (0xFF + 1)) & (nibbles.third | nibbles.fourth);
+
         break;
     }
 
@@ -333,7 +371,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     }
 
     default:
-        std::cout << "Unknown instruction!" << std::endl;
+        std::cout << "Error! Opcode " << std::hex << (((nibbles.first | nibbles.sec) | nibbles.third) | nibbles.fourth) << "not implemented.\n";
+        break;
     }
 }
 
