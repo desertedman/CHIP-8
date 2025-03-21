@@ -45,9 +45,10 @@ void Display::drawScreen(GPU &gpu)
     {
         for (int x = 0; x < BASE_WIDTH; x++) // Traverse each column
         {
-            uint8_t pixel = gpu.getPixel(x, y);
+            bool pixel = gpu.getPixel(x, y);
 
-            mPixels[mPixelsItt] = (0x00FFFFFF * pixel) | 0xFF000000; // TODO: Document this
+            // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to determine if pixel is colored or not
+            mPixels[mPixelsItt] = 0xFFFFFFFF * pixel;
             mPixelsItt++;
         }
     }
