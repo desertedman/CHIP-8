@@ -2,6 +2,7 @@
 
 #include "GPU.h"
 #include "CPU.h"
+#include "Display.h"
 
 #include <iostream>
 #include <array>
@@ -14,6 +15,7 @@ private:
     std::streamsize mFileSize;           // Remove later
     GPU mGPU;
     CPU mCPU;
+    Display mDisplay;
 
     uint8_t delayTimer;
     uint8_t soundTimer;
@@ -22,7 +24,7 @@ private:
     void cycleCPU();
 
 public:
-    void initialize();
+    bool initialize();
     bool loadRom(const std::string &path);
     void printMemory(int bytes = 0);
 

@@ -29,7 +29,7 @@ uint8_t Font[80] =
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-void Chip8::initialize()
+bool Chip8::initialize()
 {
     // Load font into memory
     int fontLength = sizeof(Font) / sizeof(uint8_t);
@@ -39,6 +39,13 @@ void Chip8::initialize()
     // Initialize GPU and CPU; reset to their original states
     mGPU.initialize();
     mCPU.initialize();
+    if (!mDisplay.initDisplay())
+    {
+        std::cout << "Failed to initialize display!\n";
+        return false;
+    }
+
+    return true;
 }
 
 bool Chip8::loadRom(const std::string &path)

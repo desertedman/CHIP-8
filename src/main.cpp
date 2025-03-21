@@ -9,7 +9,11 @@
 int main()
 {
     Chip8 chip8;
-    chip8.initialize();
+    if (!chip8.initialize())
+    {
+        std::cout << "Failed to initialize, exiting...\n";
+        return -1;
+    }
 
     std::cout << "Attempting to load file..." << std::endl;
     std::string Pong = "../roms/Pong (1 player).ch8";

@@ -44,8 +44,18 @@ void Display::drawScreen(GPU &gpu)
         for (int x = 0; x < SCREEN_WIDTH; x++) // Traverse each column
         {
             uint8_t pixel = gpu.getPixel(x, y);
+
+            mPixels[x * y] = pixel | 0xFFFFFFFF; // Fill out rest of bits, since converting from uint8 to uint32
         }
     }
+
+    // Update screen
+    SDL_UpdateTexture(mTexture, NULL, mPixels, 64 * sizeof(uint32_t));
+
+    // Clear screen and render
+    SDL_RenderClear(mRenderer);
+    SDL_RenderCopy(mRenderer, mTexture, NULL, NULL);
+    SDL_RenderPresent(mRenderer);
 }
 
 void Display::handleEvents()
