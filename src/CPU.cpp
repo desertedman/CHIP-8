@@ -153,30 +153,36 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         break;
     }
 
-    // Broken
+    // Some Opcodes not implemented yet
     case (0x8000):
     {
-        if (nibbles.fourth == 0x00) // 0x8XY0; Set VX = VY
+        switch (nibbles.fourth)
+        {
+        case (0x00): // 0x8XY0; Set VX = VY
         {
             V[nibbles.sec >> 8] = V[nibbles.third >> 4];
+            break;
         }
 
-        else if (nibbles.fourth == 0x01) // 0x8XY1; VX = VX | VY
+        case (0x01): // 0x8XY1; VX = VX | VY
         {
             V[nibbles.sec >> 8] |= V[nibbles.third >> 4];
+            break;
         }
 
-        else if (nibbles.fourth == 0x02) // 0x8XY2; VX = VX & VY
+        case (0x02): // 0x8XY2; VX = VX & VY
         {
             V[nibbles.sec >> 8] &= V[nibbles.third >> 4];
+            break;
         }
 
-        else if (nibbles.fourth == 0x03) // 0x8XY3; VX = VX ^ VY
+        case (0x03): // 0x8XY3; VX = VX ^ VY
         {
             V[nibbles.sec >> 8] ^= V[nibbles.third >> 4];
+            break;
         }
 
-        else if (nibbles.fourth == 0x04) // 0x8XY4; Adds value of VY to VX
+        case (0x04): // 0x8XY4; VX = VX + VY
         {
             // If VX + VY > 0xFF (max value for unsigned 8bit), then set carry flag
             // Adjust equation to: VX > 0xFF - VY
@@ -193,6 +199,47 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
             V[nibbles.sec >> 8] += V[nibbles.third >> 4];
             mPC += 2;
+            break;
+        }
+
+        case (0x05): // 0x8XY5; VX = VX - VY
+        {
+            // Check carry flag
+            // If first op > sec op, VF = 1; if first op < sec op, VF = 0
+            if (V[nibbles.sec >> 8] > V[nibbles.third >> 4])
+            {
+                V[0xF] = 1;
+            }
+
+            else if (V[nibbles.sec >> 8] < V[nibbles.third >> 4])
+            {
+                V[0xF] = 0;
+            }
+
+            V[nibbles.sec >> 8] -= V[nibbles.third >> 4];
+            break;
+        }
+
+        case (0x07): // 0x8XY6; VX = VY - VX
+        {
+            // Check carry flag
+            // If first op > sec op, VF = 1; if first op < sec op, VF = 0
+            if (V[nibbles.third >> 4] > V[nibbles.sec >> 8])
+            {
+                V[0xF] = 1;
+            }
+
+            else if (V[nibbles.third >> 4] < V[nibbles.sec >> 8])
+            {
+                V[0xF] = 0;
+            }
+
+            V[nibbles.third >> 4] -= V[nibbles.sec >> 8];
+            break;
+        }
+
+        default:
+            break;
         }
 
         break;
