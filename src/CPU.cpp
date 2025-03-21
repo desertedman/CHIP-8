@@ -178,10 +178,9 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         break;
     }
 
-    // Broken
     case (0x9000): // 0x9XY0; if VX != VY, skip
     {
-        if (V[nibbles.sec >> 8] != V[nibbles.third] >> 4)
+        if (V[nibbles.sec >> 8] != V[nibbles.third >> 4])
         {
             mPC += 2;
         }
