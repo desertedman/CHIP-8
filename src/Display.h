@@ -25,6 +25,6 @@ public:
     Display();
     bool initDisplay();
     void drawScreen(GPU &gpu);
-    SDL_EventType handleInput(SDL_Event &e);
-    bool close();
+    const SDL_Event getEvent();
+    void close();
 };

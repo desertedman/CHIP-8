@@ -169,7 +169,7 @@ void Chip8::runEngine()
     // 3. Handle input; should translate SDL events to our CPU
     // 3. Repeat according to a timer?
 
-    bool running = true;
+    running = true;
     while (running)
     {
         cycleCPU();
@@ -178,14 +178,36 @@ void Chip8::runEngine()
             drawToScreen();
         }
 
-        // Handle input and send to CPU
-        SDL_Event e;
-        if (mDisplay.handleInput(e) == SDL_QUIT)
-        {
-            running = false;
-        }
+        handleInput();
+    }
 
-        // else if (mDisplay.handleInput() == )
+    mDisplay.close();
+}
+
+void Chip8::handleInput()
+{
+    SDL_Event e = mDisplay.getEvent();
+    while (SDL_PollEvent(&e))
+    {
+        switch (e.type)
+        {
+        case SDL_QUIT:
+            running = false;
+            break;
+
+        case SDL_KEYDOWN:
+            switch (e.key.keysym.sym)
+            {
+            case SDLK_UP:
+                std::cout << "Key pressed\n";
+                break;
+            }
+
+            break;
+
+        default:
+            break;
+        }
     }
 }
 

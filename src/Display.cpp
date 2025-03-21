@@ -4,6 +4,7 @@ Display::Display()
 {
     mWindow = NULL;
     mRenderer = NULL;
+    mTexture = NULL;
 }
 
 bool Display::initDisplay()
@@ -60,21 +61,21 @@ void Display::drawScreen(GPU &gpu)
     SDL_RenderPresent(mRenderer);
 }
 
-SDL_EventType Display::handleInput(SDL_Event &e)
+const SDL_Event Display::getEvent()
 {
-    while (SDL_PollEvent(&e))
-    {
-        // User requests quit
-        if (e.type == SDL_QUIT)
-        {
-            return SDL_QUIT;
-        }
-    }
-
-    return SDL_KEYDOWN;
+    return e;
 }
 
-bool Display::close()
+void Display::close()
 {
-    return false;
+    SDL_DestroyRenderer(mRenderer); // Must destroy renderer before window!
+    mRenderer = NULL;
+
+    SDL_DestroyTexture(mTexture);
+    mTexture = NULL;
+
+    SDL_DestroyWindow(mWindow);
+    mWindow = NULL;
+
+    SDL_Quit();
 }
