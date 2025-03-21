@@ -166,16 +166,26 @@ void Chip8::runEngine()
 {
     // 1. Cycle CPU
     // 2. Draw screen (only if drawFlag is set)
+    // 3. Handle input; should translate SDL events to our CPU
     // 3. Repeat according to a timer?
 
-    while (true)
+    bool running = true;
+    while (running)
     {
         cycleCPU();
         if (mCPU.updateScreen())
         {
-            // drawToTerminal();
             drawToScreen();
         }
+
+        // Handle input and send to CPU
+        SDL_Event e;
+        if (mDisplay.handleInput(e) == SDL_QUIT)
+        {
+            running = false;
+        }
+
+        // else if (mDisplay.handleInput() == )
     }
 }
 
@@ -238,7 +248,6 @@ void Chip8::drawToScreen()
 {
     mDisplay.drawScreen(mGPU);
 }
-
 
 std::streamsize getFileSize(std::ifstream &inFS)
 {

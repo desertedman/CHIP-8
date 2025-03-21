@@ -18,11 +18,13 @@ private:
     SDL_Window *mWindow;                        // Window to render to
     SDL_Renderer *mRenderer;                    // Render target to draw to
     SDL_Texture *mTexture;                      // Texture to send to render
-    uint32_t mPixels[BASE_HEIGHT * BASE_WIDTH]; // Internal Pixel grid
+    uint32_t mPixels[BASE_HEIGHT * BASE_WIDTH]; // Representation of internal pixel grid
+    SDL_Event e;                                // Event handler
 
 public:
     Display();
     bool initDisplay();
     void drawScreen(GPU &gpu);
-    void handleEvents();
+    SDL_EventType handleInput(SDL_Event &e);
+    bool close();
 };

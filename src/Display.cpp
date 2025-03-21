@@ -60,6 +60,21 @@ void Display::drawScreen(GPU &gpu)
     SDL_RenderPresent(mRenderer);
 }
 
-void Display::handleEvents()
+SDL_EventType Display::handleInput(SDL_Event &e)
 {
+    while (SDL_PollEvent(&e))
+    {
+        // User requests quit
+        if (e.type == SDL_QUIT)
+        {
+            return SDL_QUIT;
+        }
+    }
+
+    return SDL_KEYDOWN;
+}
+
+bool Display::close()
+{
+    return false;
 }
