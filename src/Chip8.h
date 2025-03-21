@@ -33,6 +33,7 @@ public:
 
     void fillScreen();     // Debug function. Remove or put into private later
     void drawToTerminal(); // Debug function. Remove or put into private later
+    void drawToScreen();
 };
 
 std::streamsize getFileSize(std::ifstream &inFS);

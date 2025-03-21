@@ -173,7 +173,8 @@ void Chip8::runEngine()
         cycleCPU();
         if (mCPU.updateScreen())
         {
-            drawToTerminal();
+            // drawToTerminal();
+            drawToScreen();
         }
     }
 }
@@ -232,6 +233,12 @@ void Chip8::drawToTerminal()
     }
     std::cout << std::endl;
 }
+
+void Chip8::drawToScreen()
+{
+    mDisplay.drawScreen(mGPU);
+}
+
 
 std::streamsize getFileSize(std::ifstream &inFS)
 {
