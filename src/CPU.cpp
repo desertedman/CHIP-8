@@ -262,7 +262,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         }
 
         default:
-            std::cout << "Error! Opcode " << std::hex << (((nibbles.first | nibbles.sec) | nibbles.third) | nibbles.fourth) << "not implemented.\n";
+            std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << "not implemented.\n";
             break;
         }
 
@@ -371,7 +371,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     }
 
     default:
-        std::cout << "Error! Opcode " << std::hex << (((nibbles.first | nibbles.sec) | nibbles.third) | nibbles.fourth) << "not implemented.\n";
+        std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << "not implemented.\n";
         break;
     }
 }
