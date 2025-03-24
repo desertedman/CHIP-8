@@ -11,24 +11,10 @@
 #include <array>
 #include <cstdint> // Include for uint8_t
 
-struct Font {
-    uint8_t char0[5] = {0xF0, 0x90, 0x90, 0x90, 0xF0};
-    uint8_t char1[5] = {0x20, 0x60, 0x20, 0x20, 0x70};
-    uint8_t char2[5] = {0xF0, 0x10, 0xF0, 0x80, 0xF0};
-    uint8_t char3[5] = {0xF0, 0x10, 0xF0, 0x10, 0xF0};
-    uint8_t char4[5] = {0x90, 0x90, 0xF0, 0x10, 0x10};
-    uint8_t char5[5] = {0xF0, 0x80, 0xF0, 0x10, 0xF0};
-    uint8_t char6[5] = {0xF0, 0x80, 0xF0, 0x90, 0xF0};
-    uint8_t char7[5] = {0xF0, 0x10, 0x20, 0x40, 0x40};
-    uint8_t char8[5] = {0xF0, 0x90, 0xF0, 0x90, 0xF0};
-    uint8_t char9[5] = {0xF0, 0x90, 0xF0, 0x10, 0xF0};
-    uint8_t charA[5] = {0xF0, 0x90, 0xF0, 0x90, 0x90};
-    uint8_t charB[5] = {0xE0, 0x90, 0xE0, 0x90, 0xE0};
-    uint8_t charC[5] = {0xF0, 0x80, 0x80, 0x80, 0xF0};
-    uint8_t charD[5] = {0xE0, 0x90, 0x90, 0x90, 0xE0};
-    uint8_t charE[5] = {0xF0, 0x80, 0xF0, 0x80, 0xF0};
-    uint8_t charF[5] = {0xF0, 0x80, 0xF0, 0x80, 0x80};    
-};
+// Constants
+const int UPDATESPERSEC = 60;
+const int INSTRUCTIONSPERUPDATE = 9;
+const int INSTRUCTIONSPERSEC = UPDATESPERSEC * INSTRUCTIONSPERUPDATE;
 
 class Chip8
 {
@@ -39,6 +25,19 @@ private:
     std::streamsize mFileSize;           // Remove later
     GPU mGPU;
     CPU mCPU;
+    Display mDisplay;
+
+    uint8_t delayTimer;
+    uint8_t soundTimer;
+
+    clock_t prevTime;
+
+    void testCycleCPU(uint16_t opcode);
+    void cycleCPU();
+    void handleInput();             // Handle input and send to CPU
+    int calculateNumInstructions(); // Calculate number of instructions to execute since last timesnap
+
+    bool running;
 
 public:
     Chip8();
