@@ -46,6 +46,8 @@ bool Chip8::initialize()
         return false;
     }
 
+    running = true;
+
     return true;
 }
 
@@ -170,7 +172,6 @@ void Chip8::runEngine()
     // 3. Handle input; should translate SDL events to our CPU
     // 3. Repeat according to a timer?
 
-    running = true;
     while (running)
     {
         cycleCPU();
