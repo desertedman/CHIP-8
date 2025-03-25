@@ -37,6 +37,9 @@ private:
     uint16_t I;           // Stores memory addresses
     uint8_t V[REGISTERS]; // Registers V0 - VF
 
+    uint8_t delayTimer;
+    uint8_t soundTimer;
+
     bool drawFlag;
 
 public:
@@ -46,4 +49,9 @@ public:
     void decodeOpcode(const uint16_t &opcode);
     void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
     bool updateScreen(); // Responds if screen has been updated since last draw
+
+    int getDelayTimer();
+    int getSoundTimer();
+    void decrementDelayTimer();
+    void decrementSoundTimer();
 };

@@ -20,10 +20,7 @@ private:
     CPU mCPU;
     Display mDisplay;
 
-    uint8_t delayTimer;
-    uint8_t soundTimer;
-
-    int mInstructionsPerClock;
+    int mInstructionsPerFrame;
 
     void testCycleCPU(uint16_t opcode);
     void cycleCPU();

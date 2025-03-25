@@ -25,6 +25,9 @@ void CPU::initialize()
     I = 0;
 
     drawFlag = false;
+
+    delayTimer = 0;
+    soundTimer = 0;
 }
 
 uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &memory)
@@ -354,12 +357,17 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             break;
         }
 
-    // Broken
     case (0xF000):
     {
+        if ((nibbles.third | nibbles.fourth) == 0x07)
+        {
+            // V[nibbles.sec >> 8] = delayTimer;
+            // Decrement timer
+        }
+
         // 0xFX33; see https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
         // under "Example 3: Opcode 0xFX33"
-        if ((nibbles.third | nibbles.fourth) == 0x33)
+        else if ((nibbles.third | nibbles.fourth) == 0x33)
         {
             memory.at(I) = V[nibbles.sec >> 8] / 100;
             memory.at(I + 1) = (V[nibbles.sec >> 8] / 10) % 10;
@@ -383,4 +391,26 @@ bool CPU::updateScreen()
     return true;
 
     return false;
+}
+
+int CPU::getDelayTimer()
+{
+    return delayTimer;
+}
+
+int CPU::getSoundTimer()
+{
+    return soundTimer;
+}
+
+void CPU::decrementDelayTimer()
+{
+    if (delayTimer > 0)
+        delayTimer--;
+}
+
+void CPU::decrementSoundTimer()
+{
+    if (soundTimer > 0)
+        soundTimer--;
 }
