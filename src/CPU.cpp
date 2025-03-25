@@ -96,6 +96,9 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         // std::cout << "Current PC before jump: " << std::hex << mPC << std::endl;
 
+        // PC should remain constant, so decrement to counteract the increment in earlier fetch stage
+        mPC -= 2;
+
         mStack.at(mStackptr) = mPC;
         mStackptr++; // Should never be greater than 16!
         if (mStackptr > 16)
@@ -107,9 +110,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         // std::cout << "Current PC after jump: " << std::hex << mPC << std::endl;
         // std::cout << "Address stored on stack: " << std::hex << mStack.at(mStackptr - 1) << std::endl;
-        
-        // PC should remain constant, so decrement to counteract the increment in earlier fetch stage
-        mPC -= 2; 
+
         break;
     }
 
@@ -266,7 +267,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         }
 
         default:
-        std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << " not implemented.\n";
+            std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << " not implemented.\n";
             break;
         }
 
@@ -358,6 +359,14 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             break;
         }
 
+    case (0xE000):
+    {
+        if ((nibbles.third | nibbles.fourth) == 0x9E)
+        {
+
+        }
+    }
+
     case (0xF000):
     {
         if ((nibbles.third | nibbles.fourth) == 0x07) // 0xFX07; VX = delayTimer
@@ -395,7 +404,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         else if ((nibbles.third | nibbles.fourth) == 0x33) // 0xFX33
         {
             // VX = 0dXYZ
-            memory.at(I) = V[nibbles.sec >> 8] / 100;            // Grab X
+            memory.at(I) = V[nibbles.sec >> 8] / 100;              // Grab X
             memory.at(I + 1) = ((V[nibbles.sec >> 8]) / 10) % 10;  // Grab Y
             memory.at(I + 2) = ((V[nibbles.sec >> 8]) % 100) % 10; // Grab Z
         }
