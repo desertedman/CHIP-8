@@ -11,8 +11,6 @@
 const double FREQUENCY = 60; // Clocks per second
 const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
 
-const int NUM_KEYS = 16;
-
 class Chip8
 {
 private:

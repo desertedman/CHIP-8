@@ -18,6 +18,10 @@
 #define FONT_LOCATION 0x050
 #endif
 
+#ifndef NUM_KEYS
+#define NUM_KEYS 16
+#endif
+
 #include <array>
 #include <cstdint> // Include for uint8_t
 
@@ -47,6 +51,8 @@ private:
     bool drawFlag;
 
 public:
+    bool mInternalKeys[NUM_KEYS];
+
     // CPU(std::array<uint8_t, MEMORY> &memory);
     void initialize();
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);

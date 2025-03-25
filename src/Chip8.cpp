@@ -48,8 +48,7 @@ uint8_t SDL_KEYS[NUM_KEYS]{
     SDLK_z,
     SDLK_x,
     SDLK_c,
-    SDLK_v
-};
+    SDLK_v};
 
 bool Chip8::initialize()
 {
@@ -237,34 +236,43 @@ void Chip8::handleInput()
     SDL_Event e = mDisplay.getEvent();
     while (SDL_PollEvent(&e))
     {
-        switch (e.type)
+        if (e.type == SDL_QUIT)
         {
-        case SDL_QUIT:
             running = false;
-            break;
+        }
 
-        case SDL_KEYDOWN:
-            switch (e.key.keysym.sym)
+        if (e.type == SDL_KEYDOWN)
+        {
+            if (e.key.keysym.sym == SDLK_ESCAPE)
             {
-            case SDLK_ESCAPE:
                 running = false;
-                break;
+            }
 
-            default:
+            else
+            {
                 // Loop through all keys and check if pressed
                 for (int i = 0; i < NUM_KEYS; i++)
                 {
-                    if (e.key.keysym.sym == SDL_KEYS[i])
+                    if (e.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == false)
                     {
-                        SDL_KEYS[i] = 1;
+                        mCPU.mInternalKeys[i] = true;
                         std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " pressed.\n";
                     }
                 }
-                break;
             }
+        }
 
-        default:
-            break;
+        else if (e.type == SDL_KEYUP)
+        {
+            // Loop through all keys and check if released
+            for (int i = 0; i < NUM_KEYS; i++)
+            {
+                if (e.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true)
+                {
+                    mCPU.mInternalKeys[i] = false;
+                    std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " released.\n";
+                }
+            }
         }
     }
 }
