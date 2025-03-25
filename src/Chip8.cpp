@@ -52,12 +52,6 @@ bool Chip8::initialize()
     // Calculate number of instructions to run in a frame
     mInstructionsPerFrame = TARGET_INSTRUCTIONS_PER_SECOND / FREQUENCY;
 
-    // Reset state of all keys
-    for (int i = 0; i < KEY_COUNT; i++)
-    {
-        keysPressed[i] = false;
-    }
-
     return true;
 }
 
@@ -237,12 +231,18 @@ void Chip8::handleInput()
                 running = false;
                 break;
 
-            case SDLK_UP:
-                std::cout << "Key pressed\n";
+            default:
+                // Loop through all keys and check if pressed
+                for (int i = 0; i < NUM_KEYS; i++)
+                {
+                    if (e.key.keysym.sym == SDL_KEYS[i])
+                    {
+                        SDL_KEYS[i] = 1;
+                        std::cout << "Key " << SDL_KEYS[i] << " pressed.\n";
+                    }
+                }
                 break;
             }
-
-            break;
 
         default:
             break;

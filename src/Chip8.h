@@ -11,25 +11,26 @@
 const double FREQUENCY = 60; // Clocks per second
 const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
 
-enum KEYS
+const int NUM_KEYS = 16;
+
+uint8_t SDL_KEYS[NUM_KEYS]
 {
-    KEY_0,
-    KEY_1,
-    KEY_2,
-    KEY_3,
-    KEY_4,
-    KEY_5,
-    KEY_6,
-    KEY_7,
-    KEY_8,
-    KEY_9,
-    KEY_A,
-    KEY_B,
-    KEY_C,
-    KEY_D,
-    KEY_E,
-    KEY_F,
-    KEY_COUNT
+    SDLK_1,
+    SDLK_2,
+    SDLK_3,
+    SDLK_4,
+    SDLK_q,
+    SDLK_w,
+    SDLK_e,
+    SDLK_r,
+    SDLK_a,
+    SDLK_s,
+    SDLK_d,
+    SDLK_f,
+    SDLK_z,
+    SDLK_x,
+    SDLK_c,
+    SDLK_v
 };
 
 class Chip8
@@ -46,8 +47,6 @@ private:
     void testCycleCPU(uint16_t opcode);
     void cycleCPU();
     void handleInput(); // Handle input and send to CPU
-
-    bool keysPressed[KEY_COUNT];
 
     bool running;
 
