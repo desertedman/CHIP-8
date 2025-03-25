@@ -107,7 +107,9 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         // std::cout << "Current PC after jump: " << std::hex << mPC << std::endl;
         // std::cout << "Address stored on stack: " << std::hex << mStack.at(mStackptr - 1) << std::endl;
-
+        
+        // PC should remain constant, so decrement to counteract the increment in earlier fetch stage
+        mPC -= 2; 
         break;
     }
 
@@ -202,7 +204,6 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             }
 
             V[nibbles.sec >> 8] += V[nibbles.third >> 4];
-            mPC += 2;
             break;
         }
 
@@ -359,20 +360,64 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
     case (0xF000):
     {
-        if ((nibbles.third | nibbles.fourth) == 0x07)
+        if ((nibbles.third | nibbles.fourth) == 0x07) // 0xFX07; VX = delayTimer
         {
-            // V[nibbles.sec >> 8] = delayTimer;
-            // Decrement timer
+            V[nibbles.sec >> 8] = delayTimer;
         }
 
-        // 0xFX33; see https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-        // under "Example 3: Opcode 0xFX33"
-        else if ((nibbles.third | nibbles.fourth) == 0x33)
+        else if ((nibbles.third | nibbles.fourth) == 0x15)
         {
-            memory.at(I) = V[nibbles.sec >> 8] / 100;
-            memory.at(I + 1) = (V[nibbles.sec >> 8] / 10) % 10;
-            memory.at(I + 2) = (V[nibbles.sec >> 8] % 100) % 10;
-            mPC += 2;
+            delayTimer = V[nibbles.sec >> 8];
+        }
+
+        else if ((nibbles.third | nibbles.fourth) == 0x18)
+        {
+            soundTimer = V[nibbles.sec >> 8];
+        }
+
+        else if ((nibbles.third | nibbles.fourth) == 0x1E)
+        {
+            // If VX + I > 1000, then set carry flag
+            // Adjust equation to: VX > 1000 - I
+            if (V[nibbles.sec >> 8] > 1000 - I)
+            {
+                V[0xF] = 1; // Set carry flag
+            }
+
+            I += V[nibbles.sec >> 8];
+        }
+
+        else if ((nibbles.third | nibbles.fourth) == 0x29) // Unknown
+        {
+            I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION;
+        }
+
+        else if ((nibbles.third | nibbles.fourth) == 0x33) // 0xFX33
+        {
+            // VX = 0dXYZ
+            memory.at(I) = V[nibbles.sec >> 8] / 100;            // Grab X
+            memory.at(I + 1) = ((V[nibbles.sec >> 8]) / 10) % 10;  // Grab Y
+            memory.at(I + 2) = ((V[nibbles.sec >> 8]) % 100) % 10; // Grab Z
+        }
+
+        else if ((nibbles.third | nibbles.fourth) == 0x55)
+        {
+            int targetRegister = nibbles.sec >> 8;
+
+            for (int i = 0; i <= targetRegister; i++)
+            {
+                memory.at(I + i) = V[targetRegister];
+            }
+        }
+
+        else if ((nibbles.third | nibbles.fourth) == 0x65)
+        {
+            int targetRegister = nibbles.sec >> 8;
+
+            for (int i = 0; i <= targetRegister; i++)
+            {
+                V[targetRegister] = memory.at(I + i);
+            }
         }
 
         break;

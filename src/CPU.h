@@ -14,6 +14,10 @@
 #define REGISTERS 16
 #endif
 
+#ifndef FONT_LOCATION
+#define FONT_LOCATION 0x050
+#endif
+
 #include <array>
 #include <cstdint> // Include for uint8_t
 
