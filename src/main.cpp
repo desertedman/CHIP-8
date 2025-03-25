@@ -16,10 +16,11 @@ int main()
     }
 
     std::cout << "Attempting to load file..." << std::endl;
-    std::string Pong = "../roms/Pong (1 player).ch8";
+    std::string Pong1 = "../roms/Pong (1 player).ch8";
+    std::string Pong2 = "../roms/pong2.rom";
     std::string IBM = "../roms/IBM Logo.ch8";
     std::string Test = "../roms/test_opcode.ch8";
-    if (chip8.loadRom(Test))
+    if (chip8.loadRom(Pong1))
     {
         std::cout << "Successfully opened file!" << std::endl;
     }

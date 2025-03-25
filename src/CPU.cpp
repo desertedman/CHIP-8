@@ -266,7 +266,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         }
 
         default:
-            std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << "not implemented.\n";
+        std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << " not implemented.\n";
             break;
         }
 
@@ -387,7 +387,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             I += V[nibbles.sec >> 8];
         }
 
-        else if ((nibbles.third | nibbles.fourth) == 0x29) // Unknown
+        else if ((nibbles.third | nibbles.fourth) == 0x29) // 0xFX29; Load font character hexadecimal from VX into I; may need additional work done
         {
             I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION;
         }
@@ -424,7 +424,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     }
 
     default:
-        std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << "not implemented.\n";
+        std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << " not implemented.\n";
         break;
     }
 }
