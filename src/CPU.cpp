@@ -406,7 +406,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
             for (int i = 0; i <= targetRegister; i++)
             {
-                memory.at(I + i) = V[targetRegister];
+                memory.at(I + i) = V[i];
             }
         }
 
@@ -416,7 +416,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
             for (int i = 0; i <= targetRegister; i++)
             {
-                V[targetRegister] = memory.at(I + i);
+                V[i] = memory.at(I + i);
             }
         }
 
