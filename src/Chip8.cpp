@@ -32,6 +32,25 @@ uint8_t Font[80] =
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
+uint8_t SDL_KEYS[NUM_KEYS]{
+    SDLK_1,
+    SDLK_2,
+    SDLK_3,
+    SDLK_4,
+    SDLK_q,
+    SDLK_w,
+    SDLK_e,
+    SDLK_r,
+    SDLK_a,
+    SDLK_s,
+    SDLK_d,
+    SDLK_f,
+    SDLK_z,
+    SDLK_x,
+    SDLK_c,
+    SDLK_v
+};
+
 bool Chip8::initialize()
 {
     // Load font into memory
@@ -238,7 +257,7 @@ void Chip8::handleInput()
                     if (e.key.keysym.sym == SDL_KEYS[i])
                     {
                         SDL_KEYS[i] = 1;
-                        std::cout << "Key " << SDL_KEYS[i] << " pressed.\n";
+                        std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " pressed.\n";
                     }
                 }
                 break;

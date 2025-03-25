@@ -13,26 +13,6 @@ const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
 
 const int NUM_KEYS = 16;
 
-uint8_t SDL_KEYS[NUM_KEYS]
-{
-    SDLK_1,
-    SDLK_2,
-    SDLK_3,
-    SDLK_4,
-    SDLK_q,
-    SDLK_w,
-    SDLK_e,
-    SDLK_r,
-    SDLK_a,
-    SDLK_s,
-    SDLK_d,
-    SDLK_f,
-    SDLK_z,
-    SDLK_x,
-    SDLK_c,
-    SDLK_v
-};
-
 class Chip8
 {
 private:
