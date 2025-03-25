@@ -49,7 +49,14 @@ bool Chip8::initialize()
 
     running = true;
 
+    // Calculate number of instructions to run in a frame
     mInstructionsPerFrame = TARGET_INSTRUCTIONS_PER_SECOND / FREQUENCY;
+
+    // Reset state of all keys
+    for (int i = 0; i < KEY_COUNT; i++)
+    {
+        keysPressed[i] = false;
+    }
 
     return true;
 }
@@ -226,6 +233,10 @@ void Chip8::handleInput()
         case SDL_KEYDOWN:
             switch (e.key.keysym.sym)
             {
+            case SDLK_ESCAPE:
+                running = false;
+                break;
+
             case SDLK_UP:
                 std::cout << "Key pressed\n";
                 break;
