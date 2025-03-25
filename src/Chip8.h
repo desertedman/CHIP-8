@@ -8,6 +8,9 @@
 #include <array>
 #include <cstdint> // Include for uint8_t
 
+const double FREQUENCY = 60; // Clocks per second
+const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
+
 class Chip8
 {
 private:
@@ -19,6 +22,8 @@ private:
 
     uint8_t delayTimer;
     uint8_t soundTimer;
+
+    int mInstructionsPerClock;
 
     void testCycleCPU(uint16_t opcode);
     void cycleCPU();

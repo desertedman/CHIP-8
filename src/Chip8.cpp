@@ -9,6 +9,8 @@
 #include <cstring>
 #include <vector>
 #include <SDL2/SDL.h>
+#include <thread>
+#include <chrono>
 
 uint8_t Font[80] =
     {
@@ -47,6 +49,8 @@ bool Chip8::initialize()
     }
 
     running = true;
+
+    int mInstructionsPerFrame = TARGET_INSTRUCTIONS_PER_SECOND / FREQUENCY;
 
     return true;
 }
@@ -170,17 +174,40 @@ void Chip8::runEngine()
     // 1. Cycle CPU
     // 2. Draw screen (only if drawFlag is set)
     // 3. Handle input; should translate SDL events to our CPU
-    // 3. Repeat according to a timer?
+    // 3. Repeat 60 times a second (60 Hz)
+
+    double periodSec = 1.0 / FREQUENCY;                                   // Time in seconds to wait for one CPU cycle
+    std::chrono::duration<double, std::milli> periodMS(periodSec * 1000); // Convert to ms
+
+    auto nextTime = std::chrono::steady_clock::now() + periodMS; // Get current time
 
     while (running)
     {
-        cycleCPU();
+        for (int i = 0; i < mInstructionsPerClock; i++)
+        {
+            cycleCPU(); // Cycle CPU appropriate number of times
+        }
+
+        // Decrement timers
+        if (delayTimer > 0)
+        {
+            delayTimer--;
+        }
+        if (soundTimer > 0)
+        {
+            soundTimer--;
+        }
+
         if (mCPU.updateScreen())
         {
             drawToScreen();
         }
 
         handleInput();
+
+        // Sleep method
+        std::this_thread::sleep_until(nextTime);
+        nextTime += periodMS;
     }
 
     mDisplay.close();
