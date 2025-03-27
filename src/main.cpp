@@ -20,7 +20,7 @@ int main()
     std::string Pong2 = "../roms/pong2.rom";
     std::string IBM = "../roms/IBM Logo.ch8";
     std::string Test = "../roms/test_opcode.ch8";
-    if (chip8.loadRom(Pong1))
+    if (chip8.loadRom(Pong2))
     {
         std::cout << "Successfully opened file!" << std::endl;
     }

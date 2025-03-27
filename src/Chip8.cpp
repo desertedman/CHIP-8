@@ -33,22 +33,23 @@ uint8_t Font[80] =
 };
 
 uint8_t SDL_KEYS[NUM_KEYS]{
+    SDLK_x, // Corresponds to mInternalKey[0]
     SDLK_1,
     SDLK_2,
     SDLK_3,
-    SDLK_4,
     SDLK_q,
     SDLK_w,
     SDLK_e,
-    SDLK_r,
     SDLK_a,
     SDLK_s,
     SDLK_d,
-    SDLK_f,
     SDLK_z,
-    SDLK_x,
     SDLK_c,
-    SDLK_v};
+    SDLK_4,
+    SDLK_r,
+    SDLK_f,
+    SDLK_v // Corresponds to mInternalKey[15]
+};
 
 bool Chip8::initialize()
 {
@@ -257,6 +258,7 @@ void Chip8::handleInput()
                     {
                         mCPU.mInternalKeys[i] = true;
                         std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " pressed.\n";
+                        // std::cout << mCPU.mInternalKeys[i] << std::endl;
                     }
                 }
             }
@@ -271,6 +273,7 @@ void Chip8::handleInput()
                 {
                     mCPU.mInternalKeys[i] = false;
                     std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " released.\n";
+                    // std::cout << mCPU.mInternalKeys[i] << std::endl;
                 }
             }
         }

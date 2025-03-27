@@ -359,11 +359,23 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             break;
         }
 
-    case (0xE000):
+    case (0xE000): // Input opcodes
     {
         if ((nibbles.third | nibbles.fourth) == 0x9E)
         {
+            if (mInternalKeys[V[nibbles.sec >> 8]] == true)
+            {
+                std::cout << "Key detected\n";
+                mPC += 2;
+            }
+        }
 
+        else if ((nibbles.third | nibbles.fourth) == 0xA1)
+        {
+            if (mInternalKeys[V[nibbles.sec >> 8]] == false)
+            {
+                mPC += 2;
+            }
         }
     }
 
@@ -372,6 +384,27 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         if ((nibbles.third | nibbles.fourth) == 0x07) // 0xFX07; VX = delayTimer
         {
             V[nibbles.sec >> 8] = delayTimer;
+        }
+
+        else if ((nibbles.third | nibbles.fourth) == 0x0A)
+        {
+            bool anyKeyPressed = false;
+
+            for (int i = 0; i < NUM_KEYS; i++)
+            {
+                if (mInternalKeys[i] == true)
+                {
+                    anyKeyPressed = true;
+
+                    // Send hexadecimal value of char to VX
+                    V[nibbles.sec >> 8] = i;
+                }
+            }
+
+            if (!anyKeyPressed)
+            {
+                mPC -= 2;   // If no input is received, loop this instruction
+            }
         }
 
         else if ((nibbles.third | nibbles.fourth) == 0x15)
