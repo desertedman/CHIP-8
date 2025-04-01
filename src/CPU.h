@@ -53,6 +53,7 @@ private:
 
     bool drawFlag;
     bool keyWasPressedLF;
+    int keyLastPressed;
 
 private:
     // Opcode functions

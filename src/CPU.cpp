@@ -26,6 +26,7 @@ void CPU::initialize()
 
     drawFlag = false;
     keyWasPressedLF = false;
+    keyLastPressed = -1;
 
     delayTimer = 0;
     soundTimer = 0;
@@ -550,7 +551,8 @@ void CPU::opFX07() // VX = delayTimer
     V[nibbles.sec >> 8] = delayTimer;
 }
 
-// TODO: Rework this function
+// TODO: Verify this function, it may not work correctly.
+// Currently passes Input test, but still unsure.
 void CPU::opFX0A() // Wait on any key input. Loop until an input is received
 {
     // std::cout << "Waiting on input; 0xFX0A...\n";
@@ -562,10 +564,7 @@ void CPU::opFX0A() // Wait on any key input. Loop until an input is received
         {
             anyKeyPressed = true;
             keyWasPressedLF = true;
-            // std::cout << "Key " << i << " is pressed!\n";
-
-            // Send hexadecimal value of char to VX
-            V[nibbles.sec >> 8] = i;
+            keyLastPressed = i;
         }
     }
 
@@ -580,6 +579,9 @@ void CPU::opFX0A() // Wait on any key input. Loop until an input is received
         else // Key is released on current frame
         {
             keyWasPressedLF = false;
+
+            // Send hexadecimal value of RELEASED char to VX
+            V[nibbles.sec >> 8] = keyLastPressed;
         }
     }
 
