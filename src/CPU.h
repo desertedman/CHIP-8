@@ -51,6 +51,44 @@ private:
     bool drawFlag;
     bool keyWasPressedLF;
 
+private:
+    // Opcode functions
+    void op00E0();
+    void op00EE();
+    void op1NNN();
+    void op2NNN();
+    void op3XNN();
+    void op4XNN();
+    void op5XY0();
+    void op6XNN();
+    void op7XNN();
+    void op8XY0();
+    void op8XY1();
+    void op8XY2();
+    void op8XY3();
+    void op8XY4();
+    void op8XY5();
+    void op8XY6();
+    void op8XY7();
+    void op8XYE();
+    void op9XY0();
+    void opANNN();
+    void opBNNN();
+    void opCXNN();
+    void opDXYN();
+    void opEX9E();
+    void opEXA1();
+    void opFX07();
+    void opFX0A();
+    void opFX15();
+    void opFX18();
+    void opFX1E();
+    void opFX29();
+    void opFX33();
+    void opFX55();
+    void opFX65();
+
+
 public:
     bool mInternalKeys[NUM_KEYS];
 

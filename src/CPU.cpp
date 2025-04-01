@@ -546,3 +546,107 @@ void CPU::decrementSoundTimer()
     if (soundTimer > 0)
         soundTimer--;
 }
+
+// Opcode functions
+void CPU::op00E0()
+{}
+
+void CPU::op00EE()
+{}
+
+void CPU::op1NNN()
+{}
+
+void CPU::op2NNN()
+{}
+
+void CPU::op3XNN()
+{}
+
+void CPU::op4XNN()
+{}
+
+void CPU::op5XY0()
+{}
+
+void CPU::op6XNN()
+{}
+
+void CPU::op7XNN()
+{}
+
+void CPU::op8XY0()
+{}
+
+void CPU::op8XY1()
+{}
+
+void CPU::op8XY2()
+{}
+
+void CPU::op8XY3()
+{}
+
+void CPU::op8XY4()
+{}
+
+void CPU::op8XY5()
+{}
+
+void CPU::op8XY6()
+{}
+
+void CPU::op8XY7()
+{}
+
+void CPU::op8XYE()
+{}
+
+void CPU::op9XY0()
+{}
+
+void CPU::opANNN()
+{}
+
+void CPU::opBNNN()
+{}
+
+void CPU::opCXNN()
+{}
+
+void CPU::opDXYN()
+{}
+
+void CPU::opEX9E()
+{}
+
+void CPU::opEXA1()
+{}
+
+void CPU::opFX07()
+{}
+
+void CPU::opFX0A()
+{}
+
+void CPU::opFX15()
+{}
+
+void CPU::opFX18()
+{}
+
+void CPU::opFX1E()
+{}
+
+void CPU::opFX29()
+{}
+
+void CPU::opFX33()
+{}
+
+void CPU::opFX55()
+{}
+
+void CPU::opFX65()
+{}
+
