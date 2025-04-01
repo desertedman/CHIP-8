@@ -1,11 +1,10 @@
-CHIP-8 Emulator built in C++.
+CHIP-8 Emulator built in C++ for Linux systems.
 
-Built against g++ in Fedora 41. Requires SDL2
+Built against g++ in Fedora 41. Requires SDL2 and CMake
 
 TODO: 
-Add graphical rendering. Right now the program only renders to terminal
-
 Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
+Windows cross-compatibility?
 
 Resources: 
 
