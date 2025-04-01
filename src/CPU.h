@@ -32,6 +32,8 @@ struct Nibbles
     uint16_t sec;
     uint8_t third;
     uint8_t fourth;
+    uint8_t lastTwo;
+
     uint16_t opcode;
 };
 

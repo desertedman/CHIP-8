@@ -31,16 +31,17 @@ void CPU::initialize()
     soundTimer = 0;
 }
 
+// Not a fan of how this function modifies the CPU object's nibbles struct
+// Future refactorings might change this
 uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &memory)
 {
     // Fetch opcode
-    uint16_t opcode = (memory.at(mPC) << 8) | (memory.at(mPC + 1)); // Grab 2 bytes and combine them
-    nibbles.opcode = opcode;
+    nibbles.opcode = (memory.at(mPC) << 8) | (memory.at(mPC + 1)); // Grab 2 bytes and combine them
 
     // Increment PC
     mPC += 2;
 
-    return opcode;
+    return nibbles.opcode;
 }
 
 void CPU::decodeOpcode(const uint16_t &opcode)
@@ -49,6 +50,8 @@ void CPU::decodeOpcode(const uint16_t &opcode)
     nibbles.sec = opcode & 0x0F00;
     nibbles.third = opcode & 0x00F0;
     nibbles.fourth = opcode & 0x000F;
+
+    nibbles.lastTwo = (nibbles.third | nibbles.fourth);
 
     // printf("%0X %0X %0X %0X\n", nibbles.first, nibbles.sec, nibbles.third, nibbles.fourth);
 }
@@ -60,7 +63,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
     case 0x0000:
 
-        switch (nibbles.third | nibbles.fourth)
+        switch (nibbles.lastTwo)
         {
         case 0xE0:
             op00E0(gpu);
@@ -173,7 +176,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
     case 0xE000:
 
-        switch (nibbles.third | nibbles.fourth)
+        switch (nibbles.lastTwo)
         {
         case 0x9E:
             opEX9E();
@@ -192,7 +195,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
     case 0xF000:
 
-        switch (nibbles.third | nibbles.fourth)
+        switch (nibbles.lastTwo)
         {
 
         case 0x07:
