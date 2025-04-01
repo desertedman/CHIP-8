@@ -96,10 +96,6 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         // std::cout << "Current PC before jump: " << std::hex << mPC << std::endl;
 
-        // BELOW STATEMENT IS WRONG!! DO NOT LISTEN
-        // PC should remain constant, so decrement to counteract the increment in earlier fetch stage
-        // mPC -= 2;
-
         mStack.at(mStackptr) = mPC;
         mStackptr++; // Should never be greater than 16!
         if (mStackptr > 16)
@@ -175,18 +171,21 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         case (0x01): // 0x8XY1; VX = VX | VY
         {
             V[nibbles.sec >> 8] |= V[nibbles.third >> 4];
+            V[0xF] = 0;
             break;
         }
 
         case (0x02): // 0x8XY2; VX = VX & VY
         {
             V[nibbles.sec >> 8] &= V[nibbles.third >> 4];
+            V[0xF] = 0;
             break;
         }
 
         case (0x03): // 0x8XY3; VX = VX ^ VY
         {
             V[nibbles.sec >> 8] ^= V[nibbles.third >> 4];
+            V[0xF] = 0;
             break;
         }
 
@@ -387,7 +386,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         {
             if (mInternalKeys[V[nibbles.sec >> 8]] == true)
             {
-                std::cout << "Key detected\n";
+                // std::cout << "Key detected\n";
                 mPC += 2;
             }
         }
@@ -476,6 +475,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             {
                 memory.at(I + i) = V[i];
             }
+
+            I += targetRegister + 1; // Classic behavior; disable for modern
         }
 
         else if ((nibbles.third | nibbles.fourth) == 0x65)
@@ -486,6 +487,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             {
                 V[i] = memory.at(I + i);
             }
+
+            I += targetRegister + 1; // Classic behavior; disable for modern
         }
 
         break;
