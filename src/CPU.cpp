@@ -35,6 +35,7 @@ uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &memory)
 {
     // Fetch opcode
     uint16_t opcode = (memory.at(mPC) << 8) | (memory.at(mPC + 1)); // Grab 2 bytes and combine them
+    nibbles.opcode = opcode;
 
     // Increment PC
     mPC += 2;
@@ -54,464 +55,191 @@ void CPU::decodeOpcode(const uint16_t &opcode)
 
 void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 {
-    switch (nibbles.first) // Grab first hex char
+    switch (nibbles.first)
     {
 
-    case (0x0000): // Handles all 0x0XXX opcodes
-    {
+    case 0x0000:
 
-        uint8_t thirdFourth = nibbles.third | nibbles.fourth;
-
-        if (thirdFourth == 0xE0) // Clear screen op (0x00E0)
+        switch (nibbles.third | nibbles.fourth)
         {
-            drawFlag = true;
-
-            // std::cout << "Received clear screen op\n";
-
-            gpu.clearScreen();
-        }
-
-        else if (thirdFourth == 0xEE) // Return from subroutine
-        {
-            // std::cout << "Received return call\n";
-
-            // Pop stack and jump to address
-            mStackptr--;
-            mPC = mStack.at(mStackptr);
-
-            // std::cout << "Current PC after return: " << std::hex << mPC << std::endl;
-        }
-
-        break;
-    }
-
-    case (0x1000): // Jump instruction; PC jumps to NNN, derived from 0x1NNN
-    {
-        mPC = nibbles.sec | nibbles.third | nibbles.fourth;
-
-        // std::cout << "Jumping to address: " << std::hex << mPC << std::endl;
-        break;
-    }
-
-    case (0x2000): // Store current PC on stack, then jump to subroutine 0x2NNN
-    {
-        // std::cout << "Current PC before jump: " << std::hex << mPC << std::endl;
-
-        mStack.at(mStackptr) = mPC;
-        mStackptr++; // Should never be greater than 16!
-        if (mStackptr > 16)
-        {
-            std::cout << "mStackptr somehow greater than 16!" << std::endl;
-        }
-
-        mPC = nibbles.sec | nibbles.third | nibbles.fourth;
-
-        // std::cout << "Current PC after jump: " << std::hex << mPC << std::endl;
-        // std::cout << "Address stored on stack: " << std::hex << mStack.at(mStackptr - 1) << std::endl;
-
-        break;
-    }
-
-    case (0x3000): // 0x3XNN; if VX == NN, skip one instruction
-    {
-        if (V[nibbles.sec >> 8] == (nibbles.third | nibbles.fourth))
-        {
-            mPC += 2;
-        }
-
-        break;
-    }
-
-    case (0x4000): // 0x3XNN; if VX != NN, skip one instruction
-    {
-        if (V[nibbles.sec >> 8] != (nibbles.third | nibbles.fourth))
-        {
-            mPC += 2;
-        }
-
-        break;
-    }
-
-    case (0x5000): // 0x5XY0; if VX == VY, skip
-    {
-        if (V[nibbles.sec >> 8] == V[nibbles.third >> 4])
-        {
-            mPC += 2;
-        }
-
-        break;
-    }
-
-    case (0x6000): // 0x6XNN; set VX = NN
-    {
-        V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth);
-
-        // std::cout << "Register V" << std::hex << (nibbles.sec >> 8) << ": " << (nibbles.third | nibbles.fourth) << std::endl;
-        break;
-    }
-
-    case (0x7000): // 0x7XNN; Add NN to VX. Does not set carry flag
-    {
-        V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth);
-
-        // std::cout << "Register V" << std::hex << (nibbles.sec >> 8) << " after: " << static_cast<int>(V[nibbles.sec >> 8]) << std::endl;
-        break;
-    }
-
-    // Some Opcodes not implemented yet
-    case (0x8000):
-    {
-        switch (nibbles.fourth)
-        {
-        case (0x00): // 0x8XY0; Set VX = VY
-        {
-            V[nibbles.sec >> 8] = V[nibbles.third >> 4];
+        case 0xE0:
+            op00E0(gpu);
             break;
-        }
 
-        case (0x01): // 0x8XY1; VX = VX | VY
-        {
-            V[nibbles.sec >> 8] |= V[nibbles.third >> 4];
-            V[0xF] = 0;
+        case 0xEE:
+            op00EE();
             break;
-        }
-
-        case (0x02): // 0x8XY2; VX = VX & VY
-        {
-            V[nibbles.sec >> 8] &= V[nibbles.third >> 4];
-            V[0xF] = 0;
-            break;
-        }
-
-        case (0x03): // 0x8XY3; VX = VX ^ VY
-        {
-            V[nibbles.sec >> 8] ^= V[nibbles.third >> 4];
-            V[0xF] = 0;
-            break;
-        }
-
-        case (0x04): // 0x8XY4; VX = VX + VY
-        {
-            // If VX + VY > 0xFF (max value for unsigned 8bit), then set carry flag
-            // Adjust equation to: VX > 0xFF - VY
-            bool carryFlag = V[nibbles.sec >> 8] > 0xFF - V[nibbles.third >> 4];
-
-            V[nibbles.sec >> 8] += V[nibbles.third >> 4];
-
-            if (carryFlag)
-            {
-                V[0xF] = 1; // Set carry flag
-            }
-
-            else
-            {
-                V[0xF] = 0;
-            }
-
-            break;
-        }
-
-        case (0x05): // 0x8XY5; VX = VX - VY
-        {
-            // VX - VY < 0 - underflow; need to borrow from VF
-            // VX < VY
-            bool carryFlag = V[nibbles.sec >> 8] < V[nibbles.third >> 4];
-
-            V[nibbles.sec >> 8] -= V[nibbles.third >> 4];
-
-            // VX < VY; borrow occurred
-            if (carryFlag)
-            {
-                V[0xF] = 0;
-            }
-
-            // VX > VY; no borrow
-            else
-            {
-                V[0xF] = 1;
-            }
-
-            break;
-        }
-
-        case (0x06): // 0x8XY6; Bit shift right
-        {
-            // Modern behavior; VX = VY
-            V[nibbles.sec >> 8] = V[nibbles.third >> 4];
-
-            // Requires a temp variable in the edge case of 8FF6
-            // If we set VF to corresponding bit first, then we have just overwritten VF!
-            uint8_t carryBit = V[nibbles.sec >> 8] & 0b1; // Store last bit into temp variable
-            V[nibbles.sec >> 8] >>= 1;                    // Bitshift right in place
-
-            V[0xF] = carryBit; // Set register to last bit
-
-            break;
-        }
-
-        case (0x07): // 0x8XY7; VX = VY - VX
-        {
-            // VY - VX < 0 - underflow; need to borrow from VF
-            // VY < VX
-            bool carryFlag = V[nibbles.third >> 4] < V[nibbles.sec >> 8];
-
-            V[nibbles.sec >> 8] = V[nibbles.third >> 4] - V[nibbles.sec >> 8];
-
-            // VY < VX; borrow occurred
-            if (carryFlag)
-            {
-                V[0xF] = 0;
-            }
-
-            // VY > VX; no borrow
-            else
-            {
-                V[0xF] = 1;
-            }
-
-            break;
-        }
-
-        case (0x0E): // 0x8XYE; Bit shift left
-        {
-            // Modern behavior; VX = VY
-            V[nibbles.sec >> 8] = V[nibbles.third >> 4];
-
-            // Requires a temp variable in the edge case of 8FFE
-            // If we set VF to corresponding bit first, then we have just overwritten VF!
-            uint8_t carryBit = V[nibbles.sec >> 8] >> 7; // Store first bit into temp variable
-            V[nibbles.sec >> 8] <<= 1;                   // Bitshift left in place
-
-            V[0xF] = carryBit; // Set register to first bit
-
-            break;
-        }
 
         default:
-            std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << " not implemented.\n";
+            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
             break;
         }
 
         break;
-    }
 
-    case (0x9000): // 0x9XY0; if VX != VY, skip
-    {
-        if (V[nibbles.sec >> 8] != V[nibbles.third >> 4])
+    case 0x1000:
+        op1NNN();
+        break;
+
+    case 0x2000:
+        op2NNN();
+        break;
+
+    case 0x3000:
+        op3XNN();
+        break;
+
+    case 0x4000:
+        op4XNN();
+        break;
+
+    case 0x5000:
+        op5XY0();
+        break;
+
+    case 0x6000:
+        op6XNN();
+        break;
+
+    case 0x7000:
+        op7XNN();
+        break;
+
+    case 0x8000:
+        switch (nibbles.fourth)
         {
-            mPC += 2;
-        }
+        case 0x0:
+            op8XY0();
+            break;
 
-        break;
-    }
+        case 0x1:
+            op8XY1();
+            break;
 
-    case (0xA000): // 0xINNN; Set index register I to 0xNNN
-    {
-        I = nibbles.sec | nibbles.third | nibbles.fourth;
+        case 0x2:
+            op8XY2();
+            break;
 
-        // std::cout << std::hex << I << std::endl;
-        break;
-    }
+        case 0x3:
+            op8XY3();
+            break;
 
-    case (0xB000): // 0xBNNN; PC = NNN + V0
-    {
-        mPC = (nibbles.sec | nibbles.third | nibbles.fourth) + V[0];
+        case 0x4:
+            op8XY4();
+            break;
 
-        break;
-    }
+        case 0x5:
+            op8XY5();
+            break;
 
-    case (0xC000): // 0xCXNN; set VX to a random number, AND'd with NN
-    {
-        V[nibbles.sec >> 8] = (rand() % (0xFF + 1)) & (nibbles.third | nibbles.fourth);
+        case 0x6:
+            op8XY6();
+            break;
 
-        break;
-    }
+        case 0x7:
+            op8XY7();
+            break;
 
-    case (0xD000): // 0xDXYN
-        // Refer to:
-        // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
-        // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-        {
-            drawFlag = true;
+        case 0xE:
+            op8XYE();
+            break;
 
-            uint8_t x = V[nibbles.sec >> 8] % 64; // X, Y coordinates
-            uint8_t y = V[nibbles.third >> 4] % 32;
-            uint8_t N = nibbles.fourth; // This is our N pixels
-
-            // Screen X coordinates range from 0 - 63
-            // To make coordinates wrap, set X = X % 64. This gives remainder which is our new coordinate
-
-            V[0xF] = 0;
-            for (int yLine = 0; yLine < N; yLine++)
-            {
-                if (y + yLine > ROWS - 1)
-                {
-                    break;
-                }
-
-                uint8_t sprite = memory.at(I + yLine); // Grab sprite data
-
-                for (int xLine = 0; xLine < 8; xLine++)
-                {
-                    if (x + xLine > COLUMNS - 1)
-                    {
-                        break;
-                    }
-
-                    uint8_t pixel = sprite & (0x80 >> xLine); // Grab each pixel bit from left to right. Note that 0x80 is 0b1000 0000
-                    if (pixel)                                // Compare bit against current screen pixel
-                    {
-                        if (gpu.getPixel(x + xLine, y + yLine))
-                        {
-                            V[0xF] = 1;
-                        }
-
-                        gpu.xorPixel(x + xLine, y + yLine, 1);
-                    }
-
-                    // DO NOT INCREMENT X!!
-                    // x++;
-                }
-
-                // DO NOT INCREMENT Y!!
-                // y++;
-            }
-
+        default:
+            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
             break;
         }
 
-    case (0xE000): // Input opcodes
-    {
-        // 0xEX9E; check if key in VX is pressed or not. If it is, then skip an instruction
-        if ((nibbles.third | nibbles.fourth) == 0x9E)
+        break;
+
+    case 0x9000:
+        op9XY0();
+        break;
+
+    case 0xA000:
+        opANNN();
+        break;
+
+    case 0xB000:
+        opBNNN();
+        break;
+
+    case 0xC000:
+        opCXNN();
+        break;
+
+    case 0xD000:
+        opDXYN(gpu, memory);
+        break;
+
+    case 0xE000:
+
+        switch (nibbles.third | nibbles.fourth)
         {
-            if (mInternalKeys[V[nibbles.sec >> 8]] == true)
-            {
-                // std::cout << "Key detected\n";
-                mPC += 2;
-            }
-        }
+        case 0x9E:
+            opEX9E();
+            break;
 
-        // 0xEXA1; check if key in VX is pressed or not. If not, then skip an instruction
-        else if ((nibbles.third | nibbles.fourth) == 0xA1)
-        {
-            if (mInternalKeys[V[nibbles.sec >> 8]] == false)
-            {
-                mPC += 2;
-            }
-        }
-    }
+        case 0xA1:
+            opEXA1();
+            break;
 
-    case (0xF000):
-    {
-        if ((nibbles.third | nibbles.fourth) == 0x07) // 0xFX07; VX = delayTimer
-        {
-            V[nibbles.sec >> 8] = delayTimer;
-        }
-
-        // 0xFX0A; Wait on any key input. Loop until we receive an input
-        else if ((nibbles.third | nibbles.fourth) == 0x0A)
-        {
-            // std::cout << "Waiting on input; 0xFX0A...\n";
-            bool anyKeyPressed = false;
-
-            for (int i = 0; i < NUM_KEYS; i++)
-            {
-                if (mInternalKeys[i] == true)
-                {
-                    anyKeyPressed = true;
-                    keyWasPressedLF = true;
-                    // std::cout << "Key " << i << " is pressed!\n";
-
-                    // Send hexadecimal value of char to VX
-                    V[nibbles.sec >> 8] = i;
-                }
-            }
-
-            // Key was pressed last frame
-            if (keyWasPressedLF)
-            {
-                if (anyKeyPressed) // Loop until key is released!
-                {
-                    mPC -= 2;
-                }
-
-                else // Key is released on current frame
-                {
-                    keyWasPressedLF = false;
-                }
-            }
-
-            if (!anyKeyPressed)
-            {
-                mPC -= 2; // If no input is received, loop this instruction
-            }
-        }
-
-        else if ((nibbles.third | nibbles.fourth) == 0x15) // 0xFX15; delayTimer = VX
-        {
-            delayTimer = V[nibbles.sec >> 8];
-        }
-
-        else if ((nibbles.third | nibbles.fourth) == 0x18) // 0xFX18; soundTimer = VX
-        {
-            soundTimer = V[nibbles.sec >> 8];
-        }
-
-        else if ((nibbles.third | nibbles.fourth) == 0x1E) // 0xFX1E; I += VX
-        {
-            I += V[nibbles.sec >> 8];
-
-            // If VX + I > 1000, then set carry flag
-            // Adjust equation to: VX > 1000 - I
-            // if (V[nibbles.sec >> 8] > 1000 - I)
-            // {
-            //     V[0xF] = 1; // Set carry flag
-            // }
-        }
-
-        else if ((nibbles.third | nibbles.fourth) == 0x29) // 0xFX29; Load font character hexadecimal from VX into I; may need additional work done
-        {
-            I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION;
-        }
-
-        else if ((nibbles.third | nibbles.fourth) == 0x33) // 0xFX33
-        {
-            // VX = 0dXYZ
-            memory.at(I) = V[nibbles.sec >> 8] / 100;              // Grab X
-            memory.at(I + 1) = ((V[nibbles.sec >> 8]) / 10) % 10;  // Grab Y
-            memory.at(I + 2) = ((V[nibbles.sec >> 8]) % 100) % 10; // Grab Z
-        }
-
-        else if ((nibbles.third | nibbles.fourth) == 0x55)
-        {
-            int targetRegister = nibbles.sec >> 8;
-
-            for (int i = 0; i <= targetRegister; i++)
-            {
-                memory.at(I + i) = V[i];
-            }
-
-            I += targetRegister + 1; // Classic behavior; disable for modern
-        }
-
-        else if ((nibbles.third | nibbles.fourth) == 0x65)
-        {
-            int targetRegister = nibbles.sec >> 8;
-
-            for (int i = 0; i <= targetRegister; i++)
-            {
-                V[i] = memory.at(I + i);
-            }
-
-            I += targetRegister + 1; // Classic behavior; disable for modern
+        default:
+            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
+            break;
         }
 
         break;
-    }
+
+    case 0xF000:
+
+        switch (nibbles.third | nibbles.fourth)
+        {
+
+        case 0x07:
+            opFX07();
+            break;
+
+        case 0x0A:
+            opFX0A();
+            break;
+
+        case 0x15:
+            opFX15();
+            break;
+
+        case 0x18:
+            opFX18();
+            break;
+
+        case 0x1E:
+            opFX1E();
+            break;
+
+        case 0x29:
+            opFX29();
+            break;
+
+        case 0x33:
+            opFX33(memory);
+            break;
+
+        case 0x55:
+            opFX55(memory);
+            break;
+
+        case 0x65:
+            opFX65(memory);
+            break;
+
+        default:
+            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
+            break;
+        }
+
+        break;
 
     default:
-        std::cout << "Error! Opcode " << std::hex << (nibbles.first | nibbles.sec | nibbles.third | nibbles.fourth) << " not implemented.\n";
+        std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
         break;
     }
 }
@@ -564,7 +292,7 @@ void CPU::op00EE() // Return from subroutine
 
 void CPU::op1NNN() // Jump instruction; PC jumps to NNN
 {
-    mPC = nibbles.sec | nibbles.third | nibbles.fourth;
+    mPC = (nibbles.sec | nibbles.third | nibbles.fourth);
 }
 
 void CPU::op2NNN() // Store current PC on stack, then jump to NNN
@@ -576,12 +304,12 @@ void CPU::op2NNN() // Store current PC on stack, then jump to NNN
         std::cout << "mStackPtr somehow greater than 16!\n";
     }
 
-    mPC = nibbles.sec | nibbles.third | nibbles.fourth;
+    mPC = (nibbles.sec | nibbles.third | nibbles.fourth);
 }
 
 void CPU::op3XNN() // If VX == NN, skip one instruction
 {
-    if (V[nibbles.sec >> 8] == nibbles.third | nibbles.fourth)
+    if (V[nibbles.sec >> 8] == (nibbles.third | nibbles.fourth))
     {
         mPC += 2;
     }
@@ -589,7 +317,7 @@ void CPU::op3XNN() // If VX == NN, skip one instruction
 
 void CPU::op4XNN() // If VX != NN, skip one instruction
 {
-    if (V[nibbles.sec >> 8] != nibbles.third | nibbles.fourth)
+    if (V[nibbles.sec >> 8] != (nibbles.third | nibbles.fourth))
     {
         mPC += 2;
     }
@@ -605,7 +333,7 @@ void CPU::op5XY0() // If VX == VY, skip one instruction
 
 void CPU::op6XNN() // VX = NN
 {
-    V[nibbles.sec >> 8] = nibbles.third | nibbles.fourth;
+    V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth);
 }
 
 void CPU::op7XNN() // VX += NN
@@ -733,7 +461,7 @@ void CPU::op9XY0() // If VX != VY, skip
 
 void CPU::opANNN() // Set index register I to 0xNNN
 {
-    I = nibbles.sec | nibbles.third | nibbles.fourth;
+    I = (nibbles.sec | nibbles.third | nibbles.fourth);
 }
 
 void CPU::opBNNN() // PC = NNN + V0
