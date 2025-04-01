@@ -96,8 +96,9 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
     {
         // std::cout << "Current PC before jump: " << std::hex << mPC << std::endl;
 
+        // BELOW STATEMENT IS WRONG!! DO NOT LISTEN
         // PC should remain constant, so decrement to counteract the increment in earlier fetch stage
-        mPC -= 2;
+        // mPC -= 2;
 
         mStack.at(mStackptr) = mPC;
         mStackptr++; // Should never be greater than 16!
@@ -237,7 +238,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             break;
         }
 
-        case (0x07): // 0x8XY6; VX = VY - VX
+        case (0x07): // 0x8XY7; VX = VY - VX
         {
             // Check carry flag
             // If first op > sec op, VF = 1; if first op < sec op, VF = 0
@@ -251,7 +252,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                 V[0xF] = 0;
             }
 
-            V[nibbles.third >> 4] -= V[nibbles.sec >> 8];
+            V[nibbles.sec >> 8] = V[nibbles.third >> 4] - V[nibbles.sec >> 8];
             break;
         }
 
@@ -361,6 +362,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
     case (0xE000): // Input opcodes
     {
+        // 0xEX9E; check if key in VX is pressed or not. If it is, then skip an instruction
         if ((nibbles.third | nibbles.fourth) == 0x9E)
         {
             if (mInternalKeys[V[nibbles.sec >> 8]] == true)
@@ -370,6 +372,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             }
         }
 
+        // 0xEXA1; check if key in VX is pressed or not. If not, then skip an instruction
         else if ((nibbles.third | nibbles.fourth) == 0xA1)
         {
             if (mInternalKeys[V[nibbles.sec >> 8]] == false)
@@ -386,8 +389,10 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             V[nibbles.sec >> 8] = delayTimer;
         }
 
+        // 0xFX0A; Wait on any key input. Loop until we receive an input
         else if ((nibbles.third | nibbles.fourth) == 0x0A)
         {
+            std::cout << "Waiting on input; 0xFX0A...\n";
             bool anyKeyPressed = false;
 
             for (int i = 0; i < NUM_KEYS; i++)
@@ -395,6 +400,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                 if (mInternalKeys[i] == true)
                 {
                     anyKeyPressed = true;
+                    std::cout << "Key " << i << " is pressed!";
 
                     // Send hexadecimal value of char to VX
                     V[nibbles.sec >> 8] = i;
@@ -403,7 +409,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
             if (!anyKeyPressed)
             {
-                mPC -= 2;   // If no input is received, loop this instruction
+                mPC -= 2; // If no input is received, loop this instruction
             }
         }
 

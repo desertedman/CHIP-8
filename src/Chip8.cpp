@@ -48,7 +48,7 @@ uint8_t SDL_KEYS[NUM_KEYS]{
     SDLK_4,
     SDLK_r,
     SDLK_f,
-    SDLK_v // Corresponds to mInternalKey[15]
+    SDLK_v // Corresponds to mInternalKey[15] (or mInternalKey[F])
 };
 
 bool Chip8::initialize()
@@ -284,6 +284,7 @@ void Chip8::cycleCPU()
 {
     uint16_t opcode = mCPU.fetchOpcode(mMemory);
     mCPU.decodeOpcode(opcode);
+    // std::cout << "Opcode: " << std::hex << opcode << std::endl;
     mCPU.executeOpcode(mGPU, mMemory);
 }
 

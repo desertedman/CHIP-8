@@ -19,8 +19,10 @@ int main()
     std::string Pong1 = "../roms/Pong (1 player).ch8";
     std::string Pong2 = "../roms/pong2.rom";
     std::string IBM = "../roms/IBM Logo.ch8";
-    std::string Test = "../roms/test_opcode.ch8";
-    if (chip8.loadRom(Pong2))
+    std::string TestOpcode = "../roms/3-corax+.ch8";
+    std::string TestFlags = "../roms/4-flags.ch8";
+    std::string TestInput = "../roms/6-keypad.ch8";
+    if (chip8.loadRom(TestFlags))
     {
         std::cout << "Successfully opened file!" << std::endl;
     }
