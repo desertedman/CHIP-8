@@ -192,10 +192,12 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         case (0x04): // 0x8XY4; VX = VX + VY
         {
+            // Perform mathematical operation first, then carry flag
+            V[nibbles.sec >> 8] += V[nibbles.third >> 4];
+
             // If VX + VY > 0xFF (max value for unsigned 8bit), then set carry flag
             // Adjust equation to: VX > 0xFF - VY
-
-            if (V[nibbles.third >> 4] > (0xFF - V[nibbles.sec >> 8]))
+            if (V[nibbles.sec >> 8] > (0xFF - V[nibbles.third >> 4]))
             {
                 V[0xF] = 1; // Set carry flag
             }
@@ -205,7 +207,6 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                 V[0xF] = 0;
             }
 
-            V[nibbles.sec >> 8] += V[nibbles.third >> 4];
             break;
         }
 
