@@ -583,7 +583,7 @@ void CPU::opFX0A() // Wait on any key input. Loop until an input is received
         }
     }
 
-    if (!anyKeyPressed)
+    else if (!anyKeyPressed)
     {
         mPC -= 2; // If no input is received, loop this instruction
     }

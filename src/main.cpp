@@ -25,7 +25,7 @@ int main()
     std::string Flags = "../roms/4-flags.ch8";
     std::string Quirks = "../roms/5-quirks.ch8";
     std::string Input = "../roms/6-keypad.ch8";
-    if (chip8.loadRom(Quirks))
+    if (chip8.loadRom(Input))
     {
         std::cout << "Successfully opened file!" << std::endl;
     }
