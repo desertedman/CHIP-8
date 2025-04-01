@@ -32,7 +32,8 @@ void CPU::initialize()
 uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &memory)
 {
     // Fetch opcode
-    nibbles.opcode = (memory.at(mPC) << 8) | (memory.at(mPC + 1)); // Grab 2 bytes and combine them
+    uint16_t opcode = (memory.at(mPC) << 8) | (memory.at(mPC + 1)); // Grab 2 bytes and combine them
+    nibbles.opcode = opcode;
 
     // Increment PC
     mPC += 2;
