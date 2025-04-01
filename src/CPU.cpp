@@ -134,7 +134,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
     case (0x5000): // 0x5XY0; if VX == VY, skip
     {
-        if (V[nibbles.sec >> 8] == V[nibbles.third] >> 4)
+        if (V[nibbles.sec >> 8] == V[nibbles.third >> 4])
         {
             mPC += 2;
         }
@@ -241,8 +241,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
             // Requires a temp variable in the edge case of 8FF6
             // If we set VF to corresponding bit first, then we have just overwritten VF!
-            uint8_t carryBit = V[nibbles.sec >> 8] & 0b00000001; // Store last bit into temp variable
-            V[nibbles.sec >> 8] >>= 1;                           // Bitshift right in place
+            uint8_t carryBit = V[nibbles.sec >> 8] & 0b1; // Store last bit into temp variable
+            V[nibbles.sec >> 8] >>= 1;                    // Bitshift right in place
 
             V[0xF] = carryBit; // Set register to last bit
 
