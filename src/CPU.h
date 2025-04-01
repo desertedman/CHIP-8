@@ -49,6 +49,7 @@ private:
     uint8_t soundTimer;
 
     bool drawFlag;
+    bool keyWasPressedLF;
 
 public:
     bool mInternalKeys[NUM_KEYS];

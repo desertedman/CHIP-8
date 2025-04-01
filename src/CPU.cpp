@@ -25,6 +25,7 @@ void CPU::initialize()
     I = 0;
 
     drawFlag = false;
+    keyWasPressedLF = false;
 
     delayTimer = 0;
     soundTimer = 0;
@@ -419,10 +420,25 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
                 if (mInternalKeys[i] == true)
                 {
                     anyKeyPressed = true;
-                    std::cout << "Key " << i << " is pressed!";
+                    keyWasPressedLF = true;
+                    // std::cout << "Key " << i << " is pressed!\n";
 
                     // Send hexadecimal value of char to VX
                     V[nibbles.sec >> 8] = i;
+                }
+            }
+
+            // Key was pressed last frame
+            if (keyWasPressedLF)
+            {
+                if (anyKeyPressed) // Loop until key is released!
+                {
+                    mPC -= 2;
+                }
+
+                else // Key is released on current frame
+                {
+                    keyWasPressedLF = false;
                 }
             }
 
