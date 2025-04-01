@@ -53,7 +53,7 @@ private:
 
 private:
     // Opcode functions
-    void op00E0();
+    void op00E0(GPU &gpu);
     void op00EE();
     void op1NNN();
     void op2NNN();
@@ -75,7 +75,7 @@ private:
     void opANNN();
     void opBNNN();
     void opCXNN();
-    void opDXYN();
+    void opDXYN(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
     void opEX9E();
     void opEXA1();
     void opFX07();
@@ -84,9 +84,9 @@ private:
     void opFX18();
     void opFX1E();
     void opFX29();
-    void opFX33();
-    void opFX55();
-    void opFX65();
+    void opFX33(std::array<uint8_t, MEMORY> &memory);
+    void opFX55(std::array<uint8_t, MEMORY> &memory);
+    void opFX65(std::array<uint8_t, MEMORY> &memory);
 
 
 public:
