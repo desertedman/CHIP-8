@@ -3,11 +3,6 @@
 #include <iostream>
 #include <random>
 
-// CPU::CPU(std::array<uint8_t, MEMORY> &memory)
-// {
-//     // I = &memory.at(0);
-// }
-
 void CPU::initialize()
 {
     mPC = 0x200;

@@ -32,8 +32,8 @@ struct Nibbles
     uint16_t sec;
     uint8_t third;
     uint8_t fourth;
-    uint8_t lastTwo;
 
+    uint8_t lastTwo;
     uint16_t opcode;
 };
 
@@ -96,7 +96,6 @@ private:
 public:
     bool mInternalKeys[NUM_KEYS];
 
-    // CPU(std::array<uint8_t, MEMORY> &memory);
     void initialize();
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);
     void decodeOpcode(const uint16_t &opcode);
