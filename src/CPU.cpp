@@ -237,8 +237,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             // Modern behavior; VX = VY
             V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
-            V[0xF] = V[nibbles.sec >> 8] & 0b0001; // Store last bit into register
-            V[nibbles.sec >> 8] >>= 1;             // Bitshift right in place
+            V[0xF] = V[nibbles.sec >> 8] & 0b00000001; // Store last bit into register
+            V[nibbles.sec >> 8] >>= 1;                 // Bitshift right in place
 
             break;
         }
@@ -270,8 +270,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             // Modern behavior; VX = VY
             V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
-            V[0xF] = V[nibbles.sec >> 8] & 0b0001; // Store last bit into register
-            V[nibbles.sec >> 8] <<= 1;             // Bitshift left in place
+            V[0xF] = V[nibbles.sec >> 8] >> 7; // Store first bit into register
+            V[nibbles.sec >> 8] <<= 1;         // Bitshift left in place
 
             break;
         }
@@ -401,7 +401,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         // 0xFX0A; Wait on any key input. Loop until we receive an input
         else if ((nibbles.third | nibbles.fourth) == 0x0A)
         {
-            std::cout << "Waiting on input; 0xFX0A...\n";
+            // std::cout << "Waiting on input; 0xFX0A...\n";
             bool anyKeyPressed = false;
 
             for (int i = 0; i < NUM_KEYS; i++)
@@ -422,26 +422,26 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             }
         }
 
-        else if ((nibbles.third | nibbles.fourth) == 0x15)
+        else if ((nibbles.third | nibbles.fourth) == 0x15) // 0xFX15; delayTimer = VX
         {
             delayTimer = V[nibbles.sec >> 8];
         }
 
-        else if ((nibbles.third | nibbles.fourth) == 0x18)
+        else if ((nibbles.third | nibbles.fourth) == 0x18) // 0xFX18; soundTimer = VX
         {
             soundTimer = V[nibbles.sec >> 8];
         }
 
-        else if ((nibbles.third | nibbles.fourth) == 0x1E)
+        else if ((nibbles.third | nibbles.fourth) == 0x1E) // 0xFX1E; I += VX
         {
+            I += V[nibbles.sec >> 8];
+
             // If VX + I > 1000, then set carry flag
             // Adjust equation to: VX > 1000 - I
-            if (V[nibbles.sec >> 8] > 1000 - I)
-            {
-                V[0xF] = 1; // Set carry flag
-            }
-
-            I += V[nibbles.sec >> 8];
+            // if (V[nibbles.sec >> 8] > 1000 - I)
+            // {
+            //     V[0xF] = 1; // Set carry flag
+            // }
         }
 
         else if ((nibbles.third | nibbles.fourth) == 0x29) // 0xFX29; Load font character hexadecimal from VX into I; may need additional work done
