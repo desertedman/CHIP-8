@@ -4,6 +4,7 @@ Built against g++ in Fedora 41. Requires SDL2 and CMake
 
 TODO: 
 Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
+
 Windows cross-compatibility?
 
 Resources: 
