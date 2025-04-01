@@ -192,13 +192,13 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         case (0x04): // 0x8XY4; VX = VX + VY
         {
-            // Perform mathematical operation first, then carry flag
-            V[nibbles.sec >> 8] += V[nibbles.third >> 4];
-
             // If VX + VY > 0xFF (max value for unsigned 8bit), then set carry flag
             // Adjust equation to: VX > 0xFF - VY
-            // if (V[nibbles.sec >> 8] - V[nibbles.third >> 4] > (0xFF))
-            if (V[nibbles.sec >> 8] > (0xFF - V[nibbles.third >> 4]))
+            bool carryFlag = V[nibbles.sec >> 8] > 0xFF - V[nibbles.third >> 4];
+
+            V[nibbles.sec >> 8] += V[nibbles.third >> 4];
+
+            if (carryFlag)
             {
                 V[0xF] = 1; // Set carry flag
             }
@@ -213,20 +213,22 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         case (0x05): // 0x8XY5; VX = VX - VY
         {
-            // Perform math operation first, then carry
+            // VX - VY < 0 - underflow; need to borrow from VF
+            // VX < VY
+            bool carryFlag = V[nibbles.sec >> 8] < V[nibbles.third >> 4];
+
             V[nibbles.sec >> 8] -= V[nibbles.third >> 4];
 
-            // The comparison sign is negated - dont know why!
-            // If VX > VY, VF = 1; no borrow
-            if (V[nibbles.sec >> 8] <= V[nibbles.third >> 4])
-            {
-                V[0xF] = 1;
-            }
-
             // VX < VY; borrow occurred
-            else
+            if (carryFlag)
             {
                 V[0xF] = 0;
+            }
+
+            // VX > VY; no borrow
+            else
+            {
+                V[0xF] = 1;
             }
 
             break;
@@ -237,6 +239,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             // Modern behavior; VX = VY
             V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
+            // Requires a temp variable in the edge case of 8FF6
+            // If we set VF to corresponding bit first, then we have just overwritten VF!
             uint8_t carryBit = V[nibbles.sec >> 8] & 0b00000001; // Store last bit into temp variable
             V[nibbles.sec >> 8] >>= 1;                           // Bitshift right in place
 
@@ -247,21 +251,22 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         case (0x07): // 0x8XY7; VX = VY - VX
         {
-            // Perform math operation first, then carry
+            // VY - VX < 0 - underflow; need to borrow from VF
+            // VY < VX
+            bool carryFlag = V[nibbles.third >> 4] < V[nibbles.sec >> 8];
+
             V[nibbles.sec >> 8] = V[nibbles.third >> 4] - V[nibbles.sec >> 8];
 
-            // If VY > VX, VF = 1; if VY < VX, VF = 0
-            // Think about it like this: VF is set to 1 prior to operation.
-            // If VY > VX, then no need to "borrow" from VF, leaving VF at 1.
-            // If VY < VY, then we borrow from VF, setting VF t0 0.
-            if (V[nibbles.third >> 4] > V[nibbles.sec >> 8])
-            {
-                V[0xF] = 1;
-            }
-
-            else
+            // VY < VX; borrow occurred
+            if (carryFlag)
             {
                 V[0xF] = 0;
+            }
+
+            // VY > VX; no borrow
+            else
+            {
+                V[0xF] = 1;
             }
 
             break;
@@ -272,6 +277,8 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             // Modern behavior; VX = VY
             V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
+            // Requires a temp variable in the edge case of 8FFE
+            // If we set VF to corresponding bit first, then we have just overwritten VF!
             uint8_t carryBit = V[nibbles.sec >> 8] >> 7; // Store first bit into temp variable
             V[nibbles.sec >> 8] <<= 1;                   // Bitshift left in place
 
