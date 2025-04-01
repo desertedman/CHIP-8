@@ -212,19 +212,23 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         case (0x05): // 0x8XY5; VX = VX - VY
         {
-            // Check carry flag
-            // If first op > sec op, VF = 1; if first op < sec op, VF = 0
+            // Perform math operation first, then carry
+            V[nibbles.sec >> 8] -= V[nibbles.third >> 4];
+
+            // If VX > VY, VF = 1; if VY < VX, VF = 0
+            // Think about it like this: VF is set to 1 prior to operation.
+            // If VX > VY, then no need to "borrow" from VF, leaving VF at 1.
+            // If VX < VY, then we borrow from VF, setting VF t0 0.
             if (V[nibbles.sec >> 8] > V[nibbles.third >> 4])
             {
                 V[0xF] = 1;
             }
 
-            else if (V[nibbles.sec >> 8] < V[nibbles.third >> 4])
+            else
             {
                 V[0xF] = 0;
             }
 
-            V[nibbles.sec >> 8] -= V[nibbles.third >> 4];
             break;
         }
 
@@ -241,19 +245,23 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
         case (0x07): // 0x8XY7; VX = VY - VX
         {
-            // Check carry flag
-            // If first op > sec op, VF = 1; if first op < sec op, VF = 0
+            // Perform math operation first, then carry
+            V[nibbles.sec >> 8] = V[nibbles.third >> 4] - V[nibbles.sec >> 8];
+
+            // If VY > VX, VF = 1; if VY < VX, VF = 0
+            // Think about it like this: VF is set to 1 prior to operation.
+            // If VY > VX, then no need to "borrow" from VF, leaving VF at 1.
+            // If VY < VY, then we borrow from VF, setting VF t0 0.
             if (V[nibbles.third >> 4] > V[nibbles.sec >> 8])
             {
                 V[0xF] = 1;
             }
 
-            else if (V[nibbles.third >> 4] < V[nibbles.sec >> 8])
+            else
             {
                 V[0xF] = 0;
             }
 
-            V[nibbles.sec >> 8] = V[nibbles.third >> 4] - V[nibbles.sec >> 8];
             break;
         }
 
