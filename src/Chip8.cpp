@@ -11,6 +11,7 @@
 #include <SDL2/SDL.h>
 #include <thread>
 #include <chrono>
+#include <algorithm>
 
 uint8_t Font[80] =
     {
@@ -57,8 +58,7 @@ bool Chip8::initialize()
     int fontLength = sizeof(Font) / sizeof(uint8_t);
     std::memcpy(&mMemory.at(FONT_LOCATION), Font, fontLength);
 
-    // Initialize GPU and CPU; reset to their original states
-    mGPU.initialize();
+    // Initialize internal display and CPU; reset to their original states
     mCPU.initialize();
     if (!mDisplay.initDisplay())
     {
@@ -133,59 +133,59 @@ void Chip8::printMemory(int bytes)
 
 void Chip8::testEngine()
 {
-    {
-        // Test 00E0
-        mGPU.fillScreen();
-        drawToTerminal();
+    // {
+    //     // Test 00E0
+    //     mGPU.fillScreen();
+    //     drawToTerminal();
 
-        testCycleCPU(0x00E0);
-        drawToTerminal();
-    }
+    //     testCycleCPU(0x00E0);
+    //     drawToTerminal();
+    // }
 
-    {
-        // 0x1NNN
-        std::cout << "\tTesting 0x1NNN\n";
-        testCycleCPU(0x1AAA);
-    }
+    // {
+    //     // 0x1NNN
+    //     std::cout << "\tTesting 0x1NNN\n";
+    //     testCycleCPU(0x1AAA);
+    // }
 
-    {
-        // 0x2NNN and 0x00EE
-        std::cout << "\tTesting 0x2NNN\n";
-        testCycleCPU(0x235E);
+    // {
+    //     // 0x2NNN and 0x00EE
+    //     std::cout << "\tTesting 0x2NNN\n";
+    //     testCycleCPU(0x235E);
 
-        std::cout << "\tTesting 0x00EE\n";
-        testCycleCPU(0x00EE);
-    }
+    //     std::cout << "\tTesting 0x00EE\n";
+    //     testCycleCPU(0x00EE);
+    // }
 
-    {
-        // 0x6XNN
-        std::cout << "\tTesting 0x6XNN\n";
-        testCycleCPU(0x634A);
-    }
+    // {
+    //     // 0x6XNN
+    //     std::cout << "\tTesting 0x6XNN\n";
+    //     testCycleCPU(0x634A);
+    // }
 
-    {
-        // 0x7XNN
-        std::cout << "\tTesting 0x7XNN\n";
-        testCycleCPU(0x7501);
-        testCycleCPU(0x75FF);
-    }
+    // {
+    //     // 0x7XNN
+    //     std::cout << "\tTesting 0x7XNN\n";
+    //     testCycleCPU(0x7501);
+    //     testCycleCPU(0x75FF);
+    // }
 
-    {
-        // 0xANNN
-        std::cout << "\tTesting 0xANNN\n";
-        testCycleCPU(0xA501);
-    }
+    // {
+    //     // 0xANNN
+    //     std::cout << "\tTesting 0xANNN\n";
+    //     testCycleCPU(0xA501);
+    // }
 
-    {
-        // Fill pixel test
-        mGPU.setPixel(63, 31, true);
-        std::cout << mGPU.getPixel(63, 31) << std::endl;
+    // {
+    //     // Fill pixel test
+    //     mGPU.setPixel(63, 31, true);
+    //     std::cout << mGPU.getPixel(63, 31) << std::endl;
 
-        drawToTerminal();
+    //     drawToTerminal();
 
-        fillScreen();
-        drawToTerminal();
-    }
+    //     fillScreen();
+    //     drawToTerminal();
+    // }
 }
 
 void Chip8::runEngine()
@@ -285,18 +285,13 @@ void Chip8::cycleCPU()
     uint16_t opcode = mCPU.fetchOpcode(mMemory);
     mCPU.decodeOpcode(opcode);
     // std::cout << "Opcode: " << std::hex << opcode << std::endl;
-    mCPU.executeOpcode(mGPU, mMemory);
+    mCPU.executeOpcode(mMemory);
 }
 
 void Chip8::testCycleCPU(uint16_t opcode)
 {
-    mCPU.decodeOpcode(opcode);
-    mCPU.executeOpcode(mGPU, mMemory);
-}
-
-void Chip8::fillScreen()
-{
-    mGPU.fillScreen();
+    // mCPU.decodeOpcode(opcode);
+    // mCPU.executeOpcode(mGPU, mMemory);
 }
 
 void Chip8::drawToTerminal()
@@ -314,7 +309,7 @@ void Chip8::drawToTerminal()
 
         for (int x = 0; x < COLUMNS; x++)
         {
-            if (mGPU.getPixel(x, y))
+            if (mCPU.getPixel(x, y))
             {
                 std::cout << "*";
             }
@@ -338,7 +333,7 @@ void Chip8::drawToTerminal()
 
 void Chip8::drawToScreen()
 {
-    mDisplay.drawScreen(mGPU);
+    mDisplay.drawScreen(mCPU);
 }
 
 std::streamsize getFileSize(std::ifstream &inFS)

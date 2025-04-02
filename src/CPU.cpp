@@ -2,6 +2,7 @@
 #include "CPU.h"
 #include <iostream>
 #include <random>
+#include <algorithm>
 
 void CPU::initialize()
 {
@@ -18,6 +19,9 @@ void CPU::initialize()
 
     // Set memory pointer
     I = 0;
+
+    // Clear array; unnecessary since std::array is initialized to 0
+    std::fill(mPixels.begin(), mPixels.end(), false);
 
     drawFlag = false;
     keyWasPressedLF = false;
@@ -53,7 +57,7 @@ void CPU::decodeOpcode(const uint16_t &opcode)
     // printf("%0X %0X %0X %0X\n", nibbles.first, nibbles.sec, nibbles.third, nibbles.fourth);
 }
 
-void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
+void CPU::executeOpcode(std::array<uint8_t, MEMORY> &memory)
 {
     switch (nibbles.first)
     {
@@ -63,7 +67,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         switch (nibbles.lastTwo)
         {
         case 0xE0:
-            op00E0(gpu);
+            op00E0();
             break;
 
         case 0xEE:
@@ -168,7 +172,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
         break;
 
     case 0xD000:
-        opDXYN(gpu, memory);
+        opDXYN(memory);
         break;
 
     case 0xE000:
@@ -253,6 +257,23 @@ bool CPU::updateScreen()
     return false;
 }
 
+// Get an X, Y coordinate. Ranges from (0,0) to (63, 31)
+const bool CPU::getPixel(int x, int y)
+{
+    // Traverse Y rows first, then another x steps to reach 2D coordinate
+    int index = (y * COLUMNS) + x;
+    return mPixels[index];
+}
+
+// XOR a pixel with 1
+void CPU::xorPixel(int x, int y)
+{
+    // Traverse Y rows first, then another x steps to reach 2D coordinate
+    int index = (y * COLUMNS) + x;
+    mPixels[index] ^= 1;
+}
+
+
 int CPU::getDelayTimer()
 {
     return delayTimer;
@@ -276,11 +297,11 @@ void CPU::decrementSoundTimer()
 }
 
 // Opcode functions
-void CPU::op00E0(GPU &gpu) // Clear screen op
+void CPU::op00E0() // Clear screen op
 {
     drawFlag = true;
 
-    gpu.clearScreen();
+    std::fill(mPixels.begin(), mPixels.end(), false);
 }
 
 void CPU::op00EE() // Return from subroutine
@@ -481,7 +502,7 @@ void CPU::opCXNN() // Set VX to a random number, AND'd with NN
 // Refer to:
 // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
 // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
+void CPU::opDXYN(std::array<uint8_t, MEMORY> &memory)
 {
     drawFlag = true;
 
@@ -512,12 +533,12 @@ void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
             uint8_t pixel = sprite & (0x80 >> xLine); // Grab each pixel bit from left to right. Note that 0x80 is 0b1000 0000
             if (pixel)                                // Compare bit against current screen pixel
             {
-                if (gpu.getPixel(x + xLine, y + yLine))
+                if (getPixel(x + xLine, y + yLine))
                 {
                     V[0xF] = 1;
                 }
 
-                gpu.xorPixel(x + xLine, y + yLine, 1);
+                xorPixel(x + xLine, y + yLine);
             }
 
             // DO NOT INCREMENT X!!

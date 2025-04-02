@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GPU.h"
 #include "CPU.h"
 #include "Display.h"
 
@@ -19,9 +18,8 @@ class Chip8
 private:
     std::array<uint8_t, MEMORY> mMemory; // 4Kb of memory
     std::streamsize mFileSize;           // Remove later
-    GPU mGPU;
     CPU mCPU;
-    Display mDisplay;
+    Display mDisplay; // Display window
 
     int mInstructionsPerFrame;
 
@@ -39,7 +37,6 @@ public:
     void testEngine();
     void runEngine();
 
-    void fillScreen();     // Debug function. Remove or put into private later
     void drawToTerminal(); // Debug function. Remove or put into private later
     void drawToScreen();
 };

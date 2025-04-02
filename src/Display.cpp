@@ -38,14 +38,14 @@ bool Display::initDisplay()
     return true;
 }
 
-void Display::drawScreen(GPU &gpu)
+void Display::drawScreen(CPU &cpu)
 {
     int mPixelsItt = 0;                   // Iterator to travel mPixels array
     for (int y = 0; y < BASE_HEIGHT; y++) // Traverse each row
     {
         for (int x = 0; x < BASE_WIDTH; x++) // Traverse each column
         {
-            bool pixel = gpu.getPixel(x, y);
+            bool pixel = cpu.getPixel(x, y);
 
             // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to determine if pixel is colored or not
             mPixels[mPixelsItt] = 0xFFFFFFFF * pixel;

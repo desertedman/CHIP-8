@@ -1,6 +1,12 @@
 #pragma once
 
-#include "GPU.h"
+#ifndef ROWS
+#define ROWS 32
+#endif
+
+#ifndef COLUMNS
+#define COLUMNS 64
+#endif
 
 #ifndef MEMORY
 #define MEMORY 4096
@@ -40,10 +46,12 @@ struct Nibbles
 class CPU
 {
 private:
-    uint16_t mPC;                           // Program counter pointer
+    uint16_t mPC;                            // Program counter pointer
     std::array<uint16_t, STACK_SIZE> mStack; // Call stack
-    uint8_t mStackptr;                      // Location of top of stack; Range 0-15. 16 is very top (after) of stack!
+    uint8_t mStackptr;                       // Location of top of stack; Range 0-15. 16 is very top (after) of stack!
     Nibbles nibbles;
+
+    std::array<bool, ROWS * COLUMNS> mPixels; // Internal display; 32 rows x 64 cols
 
     uint16_t I;           // Stores memory addresses
     uint8_t V[REGISTERS]; // Registers V0 - VF
@@ -57,7 +65,7 @@ private:
 
 private:
     // Opcode functions
-    void op00E0(GPU &gpu);
+    void op00E0();
     void op00EE();
     void op1NNN();
     void op2NNN();
@@ -79,7 +87,7 @@ private:
     void opANNN();
     void opBNNN();
     void opCXNN();
-    void opDXYN(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
+    void opDXYN(std::array<uint8_t, MEMORY> &memory);
     void opEX9E();
     void opEXA1();
     void opFX07();
@@ -92,15 +100,17 @@ private:
     void opFX55(std::array<uint8_t, MEMORY> &memory);
     void opFX65(std::array<uint8_t, MEMORY> &memory);
 
-
 public:
     bool mInternalKeys[NUM_KEYS];
 
     void initialize();
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);
     void decodeOpcode(const uint16_t &opcode);
-    void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
+    void executeOpcode(std::array<uint8_t, MEMORY> &memory);
     bool updateScreen(); // Responds if screen has been updated since last draw
+
+    const bool getPixel(int x, int y);
+    void xorPixel(int x, int y);
 
     int getDelayTimer();
     int getSoundTimer();

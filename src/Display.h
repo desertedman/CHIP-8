@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPU.h" // For constants
+#include "CPU.h"
 
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -24,7 +24,7 @@ private:
 public:
     Display();
     bool initDisplay();
-    void drawScreen(GPU &gpu);
+    void drawScreen(CPU &cpu);
     const SDL_Event getEvent();
     void close();
 };
