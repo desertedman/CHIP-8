@@ -21,7 +21,7 @@ void CPU::initialize()
     I = 0;
 
     // Clear array; unnecessary since std::array is initialized to 0
-    std::fill(mPixels.begin(), mPixels.end(), false);
+    std::fill(mInternalPixels.begin(), mInternalPixels.end(), false);
 
     drawFlag = false;
     keyWasPressedLF = false;
@@ -262,7 +262,7 @@ const bool CPU::getPixel(int x, int y)
 {
     // Traverse Y rows first, then another x steps to reach 2D coordinate
     int index = (y * COLUMNS) + x;
-    return mPixels[index];
+    return mInternalPixels[index];
 }
 
 // XOR a pixel with 1
@@ -270,7 +270,7 @@ void CPU::xorPixel(int x, int y)
 {
     // Traverse Y rows first, then another x steps to reach 2D coordinate
     int index = (y * COLUMNS) + x;
-    mPixels[index] ^= 1;
+    mInternalPixels[index] ^= 1;
 }
 
 
@@ -301,7 +301,7 @@ void CPU::op00E0() // Clear screen op
 {
     drawFlag = true;
 
-    std::fill(mPixels.begin(), mPixels.end(), false);
+    std::fill(mInternalPixels.begin(), mInternalPixels.end(), false);
 }
 
 void CPU::op00EE() // Return from subroutine

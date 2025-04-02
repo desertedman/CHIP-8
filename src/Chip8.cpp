@@ -11,7 +11,6 @@
 #include <SDL2/SDL.h>
 #include <thread>
 #include <chrono>
-#include <algorithm>
 
 uint8_t Font[80] =
     {

@@ -51,7 +51,7 @@ private:
     uint8_t mStackptr;                       // Location of top of stack; Range 0-15. 16 is very top (after) of stack!
     Nibbles nibbles;
 
-    std::array<bool, ROWS * COLUMNS> mPixels; // Internal display; 32 rows x 64 cols
+    std::array<bool, ROWS * COLUMNS> mInternalPixels; // Internal display; 32 rows x 64 cols
 
     uint16_t I;           // Stores memory addresses
     uint8_t V[REGISTERS]; // Registers V0 - VF
