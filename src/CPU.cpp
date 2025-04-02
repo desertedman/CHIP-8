@@ -626,13 +626,6 @@ void CPU::opFX18() // soundTimer = VX
 void CPU::opFX1E() // I += VX
 {
     I += V[nibbles.sec >> 8];
-
-    // If VX + I > 1000, then set carry flag
-    // Adjust equation to: VX > 1000 - I
-    // if (V[nibbles.sec >> 8] > 1000 - I)
-    // {
-    //     V[0xF] = 1; // Set carry flag
-    // }
 }
 
 void CPU::opFX29() // Load font character hexadecimal from VX into I; may need additional work done
