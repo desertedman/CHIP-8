@@ -1,5 +1,5 @@
-#ifndef FILESIZE
-#define FILESIZE 3584 // 4096 - 512 = 3584
+#ifndef FILE_SIZE
+#define FILE_SIZE 3584 // 4096 - 512 = 3584
 #endif
 
 #include "Chip8.h"
@@ -87,9 +87,9 @@ bool Chip8::loadRom(const std::string &path)
 
     // Check file size
     mFileSize = getFileSize(inFS); // Get file size;
-    if (mFileSize > (FILESIZE))
+    if (mFileSize > (FILE_SIZE))
     {
-        std::cerr << "File is too large! Must be smaller than " << FILESIZE << " bytes!" << std::endl;
+        std::cerr << "File is too large! Must be smaller than " << FILE_SIZE << " bytes!" << std::endl;
 
         return false;
     }
@@ -257,7 +257,7 @@ void Chip8::handleInput()
                     if (e.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == false)
                     {
                         mCPU.mInternalKeys[i] = true;
-                        std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " pressed.\n";
+                        // std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " pressed.\n";
                         // std::cout << mCPU.mInternalKeys[i] << std::endl;
                     }
                 }
@@ -272,7 +272,7 @@ void Chip8::handleInput()
                 if (e.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true)
                 {
                     mCPU.mInternalKeys[i] = false;
-                    std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " released.\n";
+                    // std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << " released.\n";
                     // std::cout << mCPU.mInternalKeys[i] << std::endl;
                 }
             }

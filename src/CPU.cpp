@@ -285,6 +285,10 @@ void CPU::op00E0(GPU &gpu) // Clear screen op
 
 void CPU::op00EE() // Return from subroutine
 {
+    // Check if mStackptr underflows
+    // mStackptr - 1 < 0
+    // mStackptr < 1
+
     // Pop stack and jump to address
     mStackptr--;
     mPC = mStack.at(mStackptr);

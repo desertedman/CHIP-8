@@ -6,8 +6,8 @@
 #define MEMORY 4096
 #endif
 
-#ifndef STACKSIZE
-#define STACKSIZE 16
+#ifndef STACK_SIZE
+#define STACK_SIZE 16
 #endif
 
 #ifndef REGISTERS
@@ -41,7 +41,7 @@ class CPU
 {
 private:
     uint16_t mPC;                           // Program counter pointer
-    std::array<uint16_t, STACKSIZE> mStack; // Call stack
+    std::array<uint16_t, STACK_SIZE> mStack; // Call stack
     uint8_t mStackptr;                      // Location of top of stack; Range 0-15. 16 is very top (after) of stack!
     Nibbles nibbles;
 

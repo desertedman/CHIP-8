@@ -8,7 +8,10 @@
 #include <array>
 #include <cstdint> // Include for uint8_t
 
-const double FREQUENCY = 60; // Clocks per second
+#ifndef FREQUENCY
+#define FREQUENCY 60
+#endif
+
 const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
 
 class Chip8

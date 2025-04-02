@@ -1,9 +1,7 @@
 #include "Chip8.h"
-#include "Display.h"
 
 // TODO: Consider moving all constants into their own file
 
-#include <SDL2/SDL.h>
 #include <iostream>
 
 int main()
@@ -17,6 +15,7 @@ int main()
 
     std::cout << "Attempting to load file..." << std::endl;
     std::string SpaceInvaders = "../roms/Space Invaders [David Winter].ch8";
+    std::string Breakout = "../roms/breakout.rom";
     std::string Pong1 = "../roms/Pong (1 player).ch8";
     std::string Pong2 = "../roms/pong2.rom";
     std::string IBM = "../roms/IBM Logo.ch8";
@@ -25,7 +24,7 @@ int main()
     std::string Flags = "../roms/4-flags.ch8";
     std::string Quirks = "../roms/5-quirks.ch8";
     std::string Input = "../roms/6-keypad.ch8";
-    if (chip8.loadRom(Input))
+    if (chip8.loadRom(Breakout))
     {
         std::cout << "Successfully opened file!" << std::endl;
     }
