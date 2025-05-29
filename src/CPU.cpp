@@ -60,7 +60,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
 
     case 0x0000:
 
-        switch (nibbles.lastTwo)
+        switch (nibbles.sec | nibbles.lastTwo)
         {
         case 0xE0:
             op00E0(gpu);
