@@ -1,0 +1,68 @@
+#include "Rom.h"
+
+#include <fstream>
+#include <ios>
+#include <iostream>
+#include <stdexcept>
+#include <string>
+
+// Load and open a Rom
+Rom::Rom(const std::string &path) {
+  openFile(path);
+}
+
+Rom::~Rom() {
+  // Automatically close file on destruction
+  mFile.close();
+}
+
+bool Rom::openFile(const std::string &path) {
+  // Check if a file is already open
+  if (mFile.is_open()) {
+    mFile.close();
+  }
+
+  // Open file in binary mode; otherwise certain chars may be skipped
+  mFile.open(path, std::ios::binary | std::ios::ate);
+
+  if (!mFile) {
+    throw std::runtime_error("File at " + path + " failed to open\n");
+    return false;
+  }
+
+  // Check file size
+  std::streamsize fileSize = RomFunctions::getFileSize(mFile);
+  if (fileSize > ROM_FILE_SIZE) {
+    throw std::runtime_error("File is too large! Must be smaller than " + std::to_string(ROM_FILE_SIZE) + " bytes!\n");
+    return false;
+  }
+
+  else if (fileSize < -1) {
+    throw std::runtime_error("Failed to get file size");
+    return false;
+  }
+
+  else {
+    std::cout << "File is good; " << fileSize << " bytes.\n";
+    return true;
+  }
+}
+
+const std::ifstream& Rom::getFile() const {
+  return mFile;
+}
+
+std::streamsize RomFunctions::getFileSize(std::ifstream &inFS) {
+  // Get current position (at end)
+  std::streamsize fileSize = inFS.tellg();
+
+  if (fileSize == -1) {
+    std::cerr << "Error: Failed to get file size." << std::endl;
+    return 0;
+  }
+
+  // Move read position back to start of file
+  inFS.seekg(0, std::ios::beg);
+
+  return fileSize;
+}
