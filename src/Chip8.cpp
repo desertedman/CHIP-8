@@ -190,10 +190,11 @@ void Chip8::testEngine()
 
 void Chip8::runEngine()
 {
-    // 1. Cycle CPU
-    // 2. Draw screen (only if drawFlag is set)
-    // 3. Handle input; should translate SDL events to our CPU
-    // 3. Repeat 60 times a second (60 Hz)
+    // 1. Handle input; should translate SDL events to our CPU
+    // 2. Decrement timers
+    // 3. Cycle CPU
+    // 4. Draw screen (only if drawFlag is set)
+    // 5. Sleep til next frame; repeat 60 times per sec
 
     double periodSec = 1.0 / FREQUENCY;                                   // Time in seconds to wait for one frame
     std::chrono::duration<double, std::milli> periodMS(periodSec * 1000); // Convert to ms
@@ -202,10 +203,8 @@ void Chip8::runEngine()
 
     while (running)
     {
-        for (int i = 0; i < mInstructionsPerFrame; i++)
-        {
-            cycleCPU(); // Cycle CPU appropriate number of times
-        }
+        // Handle input
+        handleInput();
 
         // Decrement timers
         if (mCPU.getDelayTimer() > 0)
@@ -217,12 +216,19 @@ void Chip8::runEngine()
             mCPU.decrementSoundTimer();
         }
 
+        //  TODO: Currently running at 9.33 instructions for frame; we are losing one instruction every 3 frames!
+
+        // Execute instructions per frame
+        for (int i = 0; i < mInstructionsPerFrame; i++)
+        {
+            cycleCPU(); // Cycle CPU appropriate number of times
+        }
+
+        // Draw to screen
         if (mCPU.updateScreen())
         {
             drawToScreen();
         }
-
-        handleInput();
 
         // Sleep method
         std::this_thread::sleep_until(nextTime); // Sleep til next frame
