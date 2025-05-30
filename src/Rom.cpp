@@ -31,25 +31,29 @@ bool Rom::openFile(const std::string &path) {
   }
 
   // Check file size
-  std::streamsize fileSize = RomFunctions::getFileSize(mFile);
-  if (fileSize > ROM_FILE_SIZE) {
+  mFileSize = RomFunctions::getFileSize(mFile);
+  if (mFileSize > ROM_FILE_SIZE) {
     throw std::runtime_error("File is too large! Must be smaller than " + std::to_string(ROM_FILE_SIZE) + " bytes!\n");
     return false;
   }
 
-  else if (fileSize < -1) {
+  else if (mFileSize < -1) {
     throw std::runtime_error("Failed to get file size");
     return false;
   }
 
   else {
-    std::cout << "File is good; " << fileSize << " bytes.\n";
+    std::cout << "File is good; " << mFileSize << " bytes.\n";
     return true;
   }
 }
 
 const std::ifstream& Rom::getFile() const {
   return mFile;
+}
+
+const std::streamsize Rom::getSize() const {
+  return mFileSize;
 }
 
 std::streamsize RomFunctions::getFileSize(std::ifstream &inFS) {

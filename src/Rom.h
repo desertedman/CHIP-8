@@ -5,6 +5,7 @@
 class Rom {
 private:
   std::ifstream mFile;
+  std::streamsize mFileSize;
 
 public:
   static constexpr int ROM_FILE_SIZE = 3584;
@@ -13,6 +14,7 @@ public:
   ~Rom();
   bool openFile(const std::string &path);
   const std::ifstream& getFile() const;
+  const std::streamsize getSize() const;
 };
 
 namespace RomFunctions {
