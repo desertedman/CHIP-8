@@ -4,3 +4,4 @@ file(GLOB SOURCES src/*.cpp)
 
 add_executable(CHIP-8 ${SOURCES})
 target_link_libraries(CHIP-8 PRIVATE SDL2)
+
