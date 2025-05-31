@@ -13,7 +13,7 @@ Display::Display() {
   }
 
   catch (const std::runtime_error &e) {
-    throw(e.what());
+    throw;
   }
 }
 

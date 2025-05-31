@@ -13,7 +13,7 @@ Rom::Rom(const std::string &path) {
   }
 
   catch (const std::runtime_error &e) {
-    throw std::runtime_error(e.what());
+    throw;
   }
 }
 

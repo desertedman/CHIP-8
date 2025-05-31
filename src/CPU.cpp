@@ -265,15 +265,16 @@ void CPU::printOpcodeMissing() {
 }
 
 // Opcode functions
-void CPU::op00E0(GPU &gpu) // Clear screen op
-{
+
+// Clear screen op
+void CPU::op00E0(GPU &gpu) {
   drawFlag = true;
 
   gpu.clearScreen();
 }
 
-void CPU::op00EE() // Return from subroutine
-{
+// Return from subroutine
+void CPU::op00EE() {
   // Check if mStackptr underflows
   // mStackptr - 1 < 0
   // mStackptr < 1
@@ -283,13 +284,11 @@ void CPU::op00EE() // Return from subroutine
   mPC = mStack.at(mStackptr);
 }
 
-void CPU::op1NNN() // Jump instruction; PC jumps to NNN
-{
-  mPC = (nibbles.sec | nibbles.third | nibbles.fourth);
-}
+// Jump instruction; PC jumps to NNN
+void CPU::op1NNN() { mPC = (nibbles.sec | nibbles.third | nibbles.fourth); }
 
-void CPU::op2NNN() // Store current PC on stack, then jump to NNN
-{
+// Store current PC on stack, then jump to NNN
+void CPU::op2NNN() {
   mStack.at(mStackptr) = mPC;
   mStackptr++; // Should never be greater than 16!
   if (mStackptr > 16) {
@@ -299,62 +298,56 @@ void CPU::op2NNN() // Store current PC on stack, then jump to NNN
   mPC = (nibbles.sec | nibbles.third | nibbles.fourth);
 }
 
-void CPU::op3XNN() // If VX == NN, skip one instruction
-{
+// If VX == NN, skip one instruction
+void CPU::op3XNN() {
   if (V[nibbles.sec >> 8] == (nibbles.third | nibbles.fourth)) {
     mPC += 2;
   }
 }
 
-void CPU::op4XNN() // If VX != NN, skip one instruction
-{
+// If VX != NN, skip one instruction
+void CPU::op4XNN() {
   if (V[nibbles.sec >> 8] != (nibbles.third | nibbles.fourth)) {
     mPC += 2;
   }
 }
 
-void CPU::op5XY0() // If VX == VY, skip one instruction
-{
+// If VX == VY, skip one instruction
+void CPU::op5XY0() {
   if (V[nibbles.sec >> 8] == V[nibbles.third >> 4]) {
     mPC += 2;
   }
 }
 
-void CPU::op6XNN() // VX = NN
-{
-  V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth);
-}
+// VX = NN
+void CPU::op6XNN() { V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth); }
 
-void CPU::op7XNN() // VX += NN
-{
-  V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth);
-}
+// VX += NN
+void CPU::op7XNN() { V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth); }
 
-void CPU::op8XY0() // VX = VY
-{
-  V[nibbles.sec >> 8] = V[nibbles.third >> 4];
-}
+// VX = VY
+void CPU::op8XY0() { V[nibbles.sec >> 8] = V[nibbles.third >> 4]; }
 
-void CPU::op8XY1() // VX = VX | VY
-{
+// VX = VX | VY
+void CPU::op8XY1() {
   V[nibbles.sec >> 8] |= V[nibbles.third >> 4];
   V[0xF] = 0;
 }
 
-void CPU::op8XY2() // VX = VX & VY
-{
+// VX = VX & VY
+void CPU::op8XY2() {
   V[nibbles.sec >> 8] &= V[nibbles.third >> 4];
   V[0xF] = 0;
 }
 
-void CPU::op8XY3() // VX = VX ^ VY
-{
+// VX = VX ^ VY
+void CPU::op8XY3() {
   V[nibbles.sec >> 8] ^= V[nibbles.third >> 4];
   V[0xF] = 0;
 }
 
-void CPU::op8XY4() // VX = VX + VY
-{
+// VX = VX + VY
+void CPU::op8XY4() {
   // If VX + VY > 0xFF (max value for unsigned 8bit), then set carry flag
   // Adjust equation to: VX > 0xFF - VY
   bool carryFlag = V[nibbles.sec >> 8] > 0xFF - V[nibbles.third >> 4];
@@ -370,8 +363,8 @@ void CPU::op8XY4() // VX = VX + VY
   }
 }
 
-void CPU::op8XY5() // VX = VX - VY
-{
+// VX = VX - VY
+void CPU::op8XY5() {
   // VX - VY < 0 - underflow; need to borrow from VF
   // VX < VY
   bool carryFlag = V[nibbles.sec >> 8] < V[nibbles.third >> 4];
@@ -389,8 +382,8 @@ void CPU::op8XY5() // VX = VX - VY
   }
 }
 
-void CPU::op8XY6() // Bit shift right
-{
+// Bit shift right
+void CPU::op8XY6() {
   // Modern behavior; VX = VY
   V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
@@ -403,8 +396,8 @@ void CPU::op8XY6() // Bit shift right
   V[0xF] = carryBit; // Set register to last bit
 }
 
-void CPU::op8XY7() // VX = VY - VX
-{
+// VX = VY - VX
+void CPU::op8XY7() {
   // VY - VX < 0 - underflow; need to borrow from VF
   // VY < VX
   bool carryFlag = V[nibbles.third >> 4] < V[nibbles.sec >> 8];
@@ -422,8 +415,8 @@ void CPU::op8XY7() // VX = VY - VX
   }
 }
 
-void CPU::op8XYE() // Bit shift left
-{
+// Bit shift left
+void CPU::op8XYE() {
   // Modern behavior; VX = VY
   V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
@@ -436,25 +429,23 @@ void CPU::op8XYE() // Bit shift left
   V[0xF] = carryBit; // Set register to first bit
 }
 
-void CPU::op9XY0() // If VX != VY, skip
-{
+// If VX != VY, skip
+void CPU::op9XY0() {
   if (V[nibbles.sec >> 8] != V[nibbles.third >> 4]) {
     mPC += 2;
   }
 }
 
-void CPU::opANNN() // Set index register I to 0xNNN
-{
-  I = (nibbles.sec | nibbles.third | nibbles.fourth);
-}
+// Set index register I to 0xNNN
+void CPU::opANNN() { I = (nibbles.sec | nibbles.third | nibbles.fourth); }
 
-void CPU::opBNNN() // PC = NNN + V0
-{
+// PC = NNN + V0
+void CPU::opBNNN() {
   mPC = (nibbles.sec | nibbles.third | nibbles.fourth) + V[0];
 }
 
-void CPU::opCXNN() // Set VX to a random number, AND'd with NN
-{
+// Set VX to a random number, AND'd with NN
+void CPU::opCXNN() {
   V[nibbles.sec >> 8] =
       (rand() % (0xFF + 1)) & (nibbles.third | nibbles.fourth);
 }
@@ -529,8 +520,8 @@ void CPU::opFX07() // VX = delayTimer
   V[nibbles.sec >> 8] = delayTimer;
 }
 
-void CPU::opFX0A() // Wait on any key input. Loop until an input is received
-{
+// Wait on any key input. Loop until an input is received
+void CPU::opFX0A() {
   // std::cout << "Waiting on input; 0xFX0A...\n";
   bool anyKeyPressed = false;
 
@@ -563,26 +554,17 @@ void CPU::opFX0A() // Wait on any key input. Loop until an input is received
   }
 }
 
-void CPU::opFX15() // delayTimer = VX
-{
-  delayTimer = V[nibbles.sec >> 8];
-}
+// delayTimer = VX
+void CPU::opFX15() { delayTimer = V[nibbles.sec >> 8]; }
 
-void CPU::opFX18() // soundTimer = VX
-{
-  soundTimer = V[nibbles.sec >> 8];
-}
+// soundTimer = VX
+void CPU::opFX18() { soundTimer = V[nibbles.sec >> 8]; }
 
-void CPU::opFX1E() // I += VX
-{
-  I += V[nibbles.sec >> 8];
-}
+// I += VX
+void CPU::opFX1E() { I += V[nibbles.sec >> 8]; }
 
-void CPU::opFX29() // Load font character hexadecimal from VX into I; may need
-                   // additional work done
-{
-  I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION;
-}
+// Load font character hexadecimal from VX into I
+void CPU::opFX29() { I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION; }
 
 // TODO: Document this function
 void CPU::opFX33(std::array<uint8_t, MEMORY_SIZE> &memory) {

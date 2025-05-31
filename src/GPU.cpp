@@ -3,8 +3,8 @@
 GPU::GPU() { initialize(); }
 
 void GPU::initialize() {
-  clearScreen(); // Ensure that screen is cleared on creation. Probably
-                 // unnecessary
+  // Ensure that screen is cleared on creation. Probably unnecessary
+  clearScreen();
 }
 
 void GPU::clearScreen() {

@@ -5,6 +5,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <thread>
 
 uint8_t Font[80] = {
@@ -33,11 +34,15 @@ uint8_t SDL_KEYS[CPU::NUM_KEYS]{
     SDLK_v // Corresponds to mInternalKey[15] (or mInternalKey[F])
 };
 
-Chip8::Chip8() {
+Chip8::Chip8() try : mDisplay() {
   if (!initialize()) {
     std::cerr << "Failed to initialize engine!\n";
     exit(-1);
   }
+}
+
+catch (const std::runtime_error &e) {
+  throw;
 }
 
 bool Chip8::initialize() {
