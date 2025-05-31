@@ -54,7 +54,7 @@ uint8_t SDL_KEYS[NUM_KEYS]{
 
 Chip8::Chip8() {
     if (!initialize()) {
-      throw std::runtime_error("Failed to initialize engine!");
+      std::cerr << "Failed to initialize engine!\n";
       exit(-1);
     }
 }
