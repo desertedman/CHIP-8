@@ -36,6 +36,7 @@ private:
 
 public:
     Chip8();
+    ~Chip8();
 
     bool loadRom(Rom &rom);
     void printMemory(int bytes = 0);

@@ -59,6 +59,10 @@ Chip8::Chip8() {
     }
 }
 
+Chip8::~Chip8() {
+    mDisplay.close();
+}
+
 bool Chip8::initialize()
 {
     // Load font into memory
@@ -213,8 +217,6 @@ void Chip8::runEngine()
         std::this_thread::sleep_until(nextTime); // Sleep til next frame
         nextTime += periodMS;
     }
-
-    mDisplay.close();
 }
 
 void Chip8::handleInput()
