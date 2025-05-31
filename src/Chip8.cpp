@@ -54,10 +54,6 @@ Chip8::Chip8() {
     }
 }
 
-Chip8::~Chip8() {
-    mDisplay.close();
-}
-
 bool Chip8::initialize()
 {
     // Load font into memory
@@ -65,13 +61,9 @@ bool Chip8::initialize()
     std::memcpy(&mMemory.at(CPU::FONT_LOCATION), Font, fontLength);
 
     // Initialize GPU and CPU; reset to their original states
-    mGPU.initialize();
-    mCPU.initialize();
-    if (!mDisplay.initDisplay())
-    {
-        std::cout << "Failed to initialize display!\n";
-        return false;
-    }
+    // mGPU.initialize();
+    // mCPU.initialize();
+    // Ideally, should not need to initialize CPU and GPU manually
 
     running = true;
 

@@ -29,9 +29,11 @@ public:
     static constexpr int NUM_KEYS = 16;
 
 public:
+    CPU();
+    void initialize();
+
     bool mInternalKeys[NUM_KEYS];
 
-    void initialize();
     uint16_t fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory);
     void decodeOpcode(const uint16_t &opcode);
     void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory);

@@ -2,6 +2,10 @@
 #include "CPU.h"
 #include <iostream>
 
+CPU::CPU() {
+  initialize();
+}
+
 void CPU::initialize()
 {
     mPC = 0x200;

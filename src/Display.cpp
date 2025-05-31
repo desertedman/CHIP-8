@@ -7,6 +7,25 @@ Display::Display()
     mWindow = NULL;
     mRenderer = NULL;
     mTexture = NULL;
+
+    if (!initDisplay()) {
+      std::cerr << "Failed to initialize display!\n";
+      exit(-2);
+    }
+}
+
+Display::~Display()
+{
+    SDL_DestroyRenderer(mRenderer); // Must destroy renderer before window!
+    mRenderer = NULL;
+
+    SDL_DestroyTexture(mTexture);
+    mTexture = NULL;
+
+    SDL_DestroyWindow(mWindow);
+    mWindow = NULL;
+
+    SDL_Quit();
 }
 
 bool Display::initDisplay()
@@ -67,18 +86,4 @@ void Display::drawScreen(GPU &gpu)
 const SDL_Event Display::getEvent()
 {
     return e;
-}
-
-void Display::close()
-{
-    SDL_DestroyRenderer(mRenderer); // Must destroy renderer before window!
-    mRenderer = NULL;
-
-    SDL_DestroyTexture(mTexture);
-    mTexture = NULL;
-
-    SDL_DestroyWindow(mWindow);
-    mWindow = NULL;
-
-    SDL_Quit();
 }

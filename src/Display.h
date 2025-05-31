@@ -17,10 +17,13 @@ public:
 
 public:
     Display();
-    bool initDisplay();
+    ~Display();
+
     void drawScreen(GPU &gpu);
     const SDL_Event getEvent();
-    void close();
+
+private:
+    bool initDisplay();
 
 private:
     SDL_Window *mWindow;                        // Window to render to

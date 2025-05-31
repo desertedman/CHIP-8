@@ -10,7 +10,9 @@ public:
     static constexpr int ROWS = 64;
 
 public:
+    GPU();
     void initialize();
+
     void clearScreen();
     void fillScreen();
 

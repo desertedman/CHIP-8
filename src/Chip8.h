@@ -35,7 +35,6 @@ private:
 
 public:
     Chip8();
-    ~Chip8();
 
     void loadRom(Rom &rom);
     void runEngine();
