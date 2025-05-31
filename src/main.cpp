@@ -8,8 +8,6 @@
 
 int main()
 {
-    std::cout << "Attempting to load file..." << std::endl;
-
     // Roms
     std::string SpaceInvaders = "../roms/Space Invaders [David Winter].ch8";
     std::string Breakout = "../roms/breakout.rom";
@@ -23,13 +21,16 @@ int main()
     std::string Input = "../roms/6-keypad.ch8";
     std::string Dummy = "./asdfdg";
 
-    Rom rom(Breakout);
     try {
+      std::cout << "Attempting to load file..." << std::endl;
+      Rom rom(Breakout);
+
       std::unique_ptr<Chip8> chip8Ptr = std::make_unique<Chip8>();
       chip8Ptr->loadRom(rom);
 
       chip8Ptr->runEngine();
     }
+
     catch (const std::exception &e){
       std::cerr << "Exception caught: " << e.what() << std::endl;
     }

@@ -13,8 +13,7 @@ Rom::Rom(const std::string &path) {
   }
 
   catch (const std::runtime_error &e) {
-    std::cout << "File open error: " << e.what() << std::endl;
-    exit(-1);
+    throw std::runtime_error(e.what());
   }
 }
 

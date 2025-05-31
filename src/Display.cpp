@@ -9,8 +9,12 @@ Display::Display()
     mRenderer = NULL;
     mTexture = NULL;
 
-    if (!initDisplay()) {
-      throw std::runtime_error("Failed to initialize display!\n");
+    try {
+      initDisplay();
+    }
+
+    catch (const std::runtime_error &e) {
+      throw (e.what());
     }
 }
 
@@ -28,13 +32,12 @@ Display::~Display()
     SDL_Quit();
 }
 
-bool Display::initDisplay()
+void Display::initDisplay()
 {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
       throw std::runtime_error(std::string("SDL could not initialize! SDL_Error: ") + SDL_GetError() + "\n");
-      return false;
     }
 
     // Create window
@@ -45,7 +48,6 @@ bool Display::initDisplay()
     if (mWindow == NULL)
     {
         throw std::runtime_error(std::string("Window could not be created! SDL_Error: ") + SDL_GetError() + "\n");
-        return false;
     }
 
     // Create renderer
@@ -55,8 +57,6 @@ bool Display::initDisplay()
     // Create texture for frame buffer
     mTexture = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_ARGB8888,
                                  SDL_TEXTUREACCESS_STREAMING, BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
-
-    return true;
 }
 
 void Display::drawScreen(GPU &gpu)

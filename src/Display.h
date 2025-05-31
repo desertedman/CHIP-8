@@ -23,7 +23,7 @@ public:
     const SDL_Event getEvent();
 
 private:
-    bool initDisplay();
+    void initDisplay();
 
 private:
     SDL_Window *mWindow;                        // Window to render to
