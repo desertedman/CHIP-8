@@ -14,9 +14,9 @@
 #define REGISTERS 16
 #endif
 
-#ifndef FONT_LOCATION
-#define FONT_LOCATION 0x050
-#endif
+// #ifndef FONT_LOCATION
+// #define FONT_LOCATION 0x050
+// #endif
 
 #ifndef NUM_KEYS
 #define NUM_KEYS 16
@@ -106,4 +106,8 @@ public:
     int getSoundTimer();
     void decrementDelayTimer();
     void decrementSoundTimer();
+
+public:
+    static constexpr int FONT_LOCATION = 0x050;
+
 };
