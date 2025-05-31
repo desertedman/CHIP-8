@@ -48,11 +48,11 @@ bool Rom::openFile(const std::string &path) {
   }
 }
 
-const std::ifstream& Rom::getFile() const {
+std::ifstream& Rom::getFile(){
   return mFile;
 }
 
-const std::streamsize Rom::getSize() const {
+std::streamsize Rom::getSize() const {
   return mFileSize;
 }
 

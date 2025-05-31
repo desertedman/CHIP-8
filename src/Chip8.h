@@ -3,6 +3,7 @@
 #include "GPU.h"
 #include "CPU.h"
 #include "Display.h"
+#include "Rom.h"
 
 #include <iostream>
 #include <array>
@@ -33,7 +34,7 @@ private:
 
 public:
     bool initialize();
-    bool loadRom(const std::string &path);
+    bool loadRom(Rom &rom);
     void printMemory(int bytes = 0);
 
     void testEngine();

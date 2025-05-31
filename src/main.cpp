@@ -3,6 +3,7 @@
 // TODO: Consider moving all constants into their own file
 
 #include <iostream>
+// #include <memory>
 
 int main()
 {
@@ -24,19 +25,11 @@ int main()
     std::string Flags = "../roms/4-flags.ch8";
     std::string Quirks = "../roms/5-quirks.ch8";
     std::string Input = "../roms/6-keypad.ch8";
-    if (chip8.loadRom(Breakout))
-    {
-        std::cout << "Successfully opened file!" << std::endl;
-    }
 
-    else
-    {
-        std::cout << "Failed to open file! Closing." << std::endl;
-        return -1;
-    }
+    // std::shared_ptr<Rom> rom = std::make_shared<Rom>(Breakout);
+    Rom rom(Input);
+    chip8.loadRom(rom);
 
-    // chip8.printMemory();
-    // chip8.testEngine();
     chip8.runEngine();
 
     return 0;

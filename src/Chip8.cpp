@@ -74,46 +74,17 @@ bool Chip8::initialize()
     return true;
 }
 
-bool Chip8::loadRom(const std::string &path)
+bool Chip8::loadRom(Rom &rom)
 {
-    std::ifstream inFS;
+  // Allocate buffer for rom
+  std::vector<uint8_t> buffer(rom.getSize());
 
-    inFS.open(path, std::ios::binary | std::ios::ate); // Open file in binary mode; otherwise certain chars may be skipped
-    if (!inFS)                                         // File failed to open
-    {
-        std::cout << "File at " << path << " failed to open" << std::endl;
-        return false;
-    }
+  rom.getFile().read(reinterpret_cast<char *>(mMemory.data() + 0x200), rom.getSize());
 
-    // Check file size
-    mFileSize = getFileSize(inFS); // Get file size;
-    if (mFileSize > (FILE_SIZE))
-    {
-        std::cerr << "File is too large! Must be smaller than " << FILE_SIZE << " bytes!" << std::endl;
+  // Copy ROM into memory
+//   std::memcpy(mMemory.data() + 0x200, buffer.data(), rom.getSize());
 
-        return false;
-    }
-
-    else
-    {
-        std::cout << "File is good; " << mFileSize << " bytes." << std::endl;
-    }
-
-    // Allocate buffer for ROM
-    std::vector<uint8_t> buffer(mFileSize);
-    inFS.read(reinterpret_cast<char *>(buffer.data()), mFileSize); // Copy file content into buffer
-
-    if (inFS.fail()) // Check if the file read succeeded
-    {
-        std::cerr << "Error: Could not read the entire file!" << std::endl;
-        return false;
-    }
-
-    // Copy ROM into memory
-    std::memcpy(mMemory.data() + 0x200, buffer.data(), mFileSize);
-
-    inFS.close();
-    return true;
+  return true;
 }
 
 void Chip8::printMemory(int bytes)

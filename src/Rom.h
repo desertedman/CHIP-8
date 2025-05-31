@@ -13,8 +13,8 @@ public:
   Rom(const std::string &path);
   ~Rom();
   bool openFile(const std::string &path);
-  const std::ifstream& getFile() const;
-  const std::streamsize getSize() const;
+  std::ifstream& getFile();
+  std::streamsize getSize() const;
 };
 
 namespace RomFunctions {
