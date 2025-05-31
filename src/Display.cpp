@@ -1,6 +1,7 @@
 #include "Display.h"
 
-#include <iostream>
+#include <stdexcept>
+#include <string>
 
 Display::Display()
 {
@@ -9,8 +10,7 @@ Display::Display()
     mTexture = NULL;
 
     if (!initDisplay()) {
-      std::cerr << "Failed to initialize display!\n";
-      exit(-2);
+      throw std::runtime_error("Failed to initialize display!\n");
     }
 }
 
@@ -33,8 +33,8 @@ bool Display::initDisplay()
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-        return false;
+      throw std::runtime_error(std::string("SDL could not initialize! SDL_Error: ") + SDL_GetError() + "\n");
+      return false;
     }
 
     // Create window
@@ -44,7 +44,7 @@ bool Display::initDisplay()
 
     if (mWindow == NULL)
     {
-        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        throw std::runtime_error(std::string("Window could not be created! SDL_Error: ") + SDL_GetError() + "\n");
         return false;
     }
 

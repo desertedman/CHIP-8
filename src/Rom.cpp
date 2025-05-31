@@ -8,8 +8,13 @@
 
 // Load and open a Rom
 Rom::Rom(const std::string &path) {
-  if (!openFile(path)) {
-    throw std::runtime_error("File failed to open\n");
+  try {
+    openFile(path);
+  }
+
+  catch (const std::runtime_error &e) {
+    std::cout << "File open error: " << e.what() << std::endl;
+    exit(-1);
   }
 }
 
@@ -18,7 +23,7 @@ Rom::~Rom() {
   mFile.close();
 }
 
-bool Rom::openFile(const std::string &path) {
+void Rom::openFile(const std::string &path) {
   // Check if a file is already open
   if (mFile.is_open()) {
     mFile.close();
@@ -28,25 +33,21 @@ bool Rom::openFile(const std::string &path) {
   mFile.open(path, std::ios::binary | std::ios::ate);
 
   if (!mFile) {
-    std::cerr << "File at " << path << " failed to open\n";
-    return false;
+    throw std::runtime_error("File at " + path + " failed to open\n");
   }
 
   // Check file size
   mFileSize = RomFunctions::getFileSize(mFile);
   if (mFileSize > ROM_FILE_SIZE) {
-    std::cerr << "File is too large! Must be smaller than " << std::to_string(ROM_FILE_SIZE) << " bytes!\n";
-    return false;
+    throw std::runtime_error("File is too large! Must be smaller than " + std::to_string(ROM_FILE_SIZE) + " bytes!\n");
   }
 
-  else if (mFileSize < -1) {
-    std::cerr << "Failed to get file size";
-    return false;
+  else if (mFileSize == -1) {
+    throw std::runtime_error("Failed to get file size");
   }
 
   else {
     std::cout << "File is good; " << mFileSize << " bytes.\n";
-    return true;
   }
 }
 

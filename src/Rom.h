@@ -12,7 +12,7 @@ public:
 
   Rom(const std::string &path);
   ~Rom();
-  bool openFile(const std::string &path);
+  void openFile(const std::string &path);
   std::ifstream& getFile();
   std::streamsize getSize() const;
 };
