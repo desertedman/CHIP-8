@@ -8,7 +8,9 @@
 
 // Load and open a Rom
 Rom::Rom(const std::string &path) {
-  openFile(path);
+  if (!openFile(path)) {
+    throw std::runtime_error("File failed to open\n");
+  }
 }
 
 Rom::~Rom() {
@@ -33,12 +35,12 @@ bool Rom::openFile(const std::string &path) {
   // Check file size
   mFileSize = RomFunctions::getFileSize(mFile);
   if (mFileSize > ROM_FILE_SIZE) {
-    throw std::runtime_error("File is too large! Must be smaller than " + std::to_string(ROM_FILE_SIZE) + " bytes!\n");
+    std::cerr << "File is too large! Must be smaller than " << std::to_string(ROM_FILE_SIZE) << " bytes!\n";
     return false;
   }
 
   else if (mFileSize < -1) {
-    throw std::runtime_error("Failed to get file size");
+    std::cerr << "Failed to get file size";
     return false;
   }
 
