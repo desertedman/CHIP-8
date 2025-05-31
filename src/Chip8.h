@@ -21,7 +21,7 @@ private:
     bool initialize();
 
     std::array<uint8_t, MEMORY> mMemory; // 4Kb of memory
-    std::streamsize mFileSize;           // Remove later
+    std::streamsize mFileSize;
     GPU mGPU;
     CPU mCPU;
     Display mDisplay;
@@ -39,14 +39,14 @@ public:
     ~Chip8();
 
     void loadRom(Rom &rom);
-    void printMemory(int bytes = 0);
-
-    void testEngine();
     void runEngine();
-
-    void fillScreen();     // Debug function. Remove or put into private later
-    void drawToTerminal(); // Debug function. Remove or put into private later
     void drawToScreen();
+
+    // Debug functions
+    void printMemory(int bytes = 0);
+    void testEngine();
+    void fillScreen();
+    void drawToTerminal();
 };
 
 std::streamsize getFileSize(std::ifstream &inFS);

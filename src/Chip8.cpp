@@ -89,6 +89,9 @@ void Chip8::loadRom(Rom &rom)
 {
   // Read rom data into memory
   rom.getFile().read(reinterpret_cast<char *>(mMemory.data() + 0x200), rom.getSize());
+
+  // Save file size for debug purposes
+  mFileSize = rom.getSize();
 }
 
 void Chip8::printMemory(int bytes)
