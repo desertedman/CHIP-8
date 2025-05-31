@@ -85,13 +85,10 @@ bool Chip8::initialize()
     return true;
 }
 
-bool Chip8::loadRom(Rom &rom)
+void Chip8::loadRom(Rom &rom)
 {
   // Read rom data into memory
   rom.getFile().read(reinterpret_cast<char *>(mMemory.data() + 0x200), rom.getSize());
-
-  // TODO: Remove bool condition!
-  return true;
 }
 
 void Chip8::printMemory(int bytes)
