@@ -51,8 +51,6 @@ void Rom::openFile(const std::string &path) {
   }
 }
 
-std::ifstream &Rom::getFile() { return mFile; }
-
 std::streamsize Rom::getSize() const { return mFileSize; }
 
 std::streamsize RomFunctions::getFileSize(std::ifstream &inFS) {

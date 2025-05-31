@@ -1,7 +1,5 @@
 #include "Chip8.h"
 
-// TODO: Consider moving all constants into their own file
-
 #include <exception>
 #include <iostream>
 #include <memory>
@@ -19,6 +17,7 @@ int main() {
   std::string Quirks = "../roms/5-quirks.ch8";
   std::string Input = "../roms/6-keypad.ch8";
   std::string Dummy = "./asdfdg";
+  std::string LargeFile = "../roms/largeFile.txt";
 
   try {
     std::cout << "Attempting to load file..." << std::endl;

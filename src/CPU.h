@@ -30,8 +30,6 @@ public:
   CPU();
   void initialize();
 
-  bool mInternalKeys[NUM_KEYS];
-
   uint16_t fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory);
   void decodeOpcode(const uint16_t &opcode);
   void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory);
@@ -41,6 +39,12 @@ public:
   int getSoundTimer();
   void decrementDelayTimer();
   void decrementSoundTimer();
+
+public:
+  bool mInternalKeys[NUM_KEYS];
+
+private:
+  void printOpcodeMissing();
 
 private:
   uint16_t mPC;                            // Program counter pointer
@@ -60,8 +64,6 @@ private:
   int keyLastPressed;
 
 private:
-  void printOpcodeMissing();
-
   // Opcode functions
   void op00E0(GPU &gpu);
   void op00EE();
