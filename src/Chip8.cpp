@@ -1,7 +1,3 @@
-#ifndef FILE_SIZE
-#define FILE_SIZE 3584 // 4096 - 512 = 3584
-#endif
-
 #include "Chip8.h"
 
 #include <iostream>
@@ -10,7 +6,7 @@
 #include <SDL2/SDL.h>
 #include <thread>
 #include <chrono>
-#include <stdexcept>
+// #include <stdexcept>
 
 uint8_t Font[80] =
     {

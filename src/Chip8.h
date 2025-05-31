@@ -9,12 +9,6 @@
 #include <array>
 #include <cstdint> // Include for uint8_t
 
-#ifndef FREQUENCY
-#define FREQUENCY 60
-#endif
-
-const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
-
 class Chip8
 {
 private:
@@ -33,6 +27,11 @@ private:
     void handleInput(); // Handle input and send to CPU
 
     bool running;
+
+private:
+    // Constants
+    const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
+    const int FREQUENCY = 60;
 
 public:
     Chip8();
