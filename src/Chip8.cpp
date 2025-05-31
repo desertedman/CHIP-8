@@ -7,7 +7,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <vector>
 #include <SDL2/SDL.h>
 #include <thread>
 #include <chrono>
@@ -88,14 +87,10 @@ bool Chip8::initialize()
 
 bool Chip8::loadRom(Rom &rom)
 {
-  // Allocate buffer for rom
-  std::vector<uint8_t> buffer(rom.getSize());
-
+  // Read rom data into memory
   rom.getFile().read(reinterpret_cast<char *>(mMemory.data() + 0x200), rom.getSize());
 
-  // Copy ROM into memory
-//   std::memcpy(mMemory.data() + 0x200, buffer.data(), rom.getSize());
-
+  // TODO: Remove bool condition!
   return true;
 }
 
