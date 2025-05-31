@@ -12,9 +12,14 @@
 class Chip8
 {
 private:
+    // Constants
+    const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
+    const int FREQUENCY = 60;
+
+private:
     bool initialize();
 
-    std::array<uint8_t, MEMORY> mMemory; // 4Kb of memory
+    std::array<uint8_t, CPU::MEMORY_SIZE> mMemory; // 4Kb of memory
     std::streamsize mFileSize;
     GPU mGPU;
     CPU mCPU;
@@ -27,11 +32,6 @@ private:
     void handleInput(); // Handle input and send to CPU
 
     bool running;
-
-private:
-    // Constants
-    const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
-    const int FREQUENCY = 60;
 
 public:
     Chip8();
@@ -47,5 +47,3 @@ public:
     void fillScreen();
     void drawToTerminal();
 };
-
-std::streamsize getFileSize(std::ifstream &inFS);

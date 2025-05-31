@@ -2,26 +2,6 @@
 
 #include "GPU.h"
 
-#ifndef MEMORY
-#define MEMORY 4096
-#endif
-
-#ifndef STACK_SIZE
-#define STACK_SIZE 16
-#endif
-
-#ifndef REGISTERS
-#define REGISTERS 16
-#endif
-
-// #ifndef FONT_LOCATION
-// #define FONT_LOCATION 0x050
-// #endif
-
-#ifndef NUM_KEYS
-#define NUM_KEYS 16
-#endif
-
 #include <array>
 #include <cstdint> // Include for uint8_t
 
@@ -39,6 +19,28 @@ struct Nibbles
 
 class CPU
 {
+public:
+    // Constants
+    static constexpr int FONT_LOCATION = 0x050;
+    static constexpr int MEMORY_SIZE = 4096;
+    static constexpr int STACK_SIZE = 4096;
+    static constexpr int REGISTERS = 16;
+    static constexpr int NUM_KEYS = 16;
+
+public:
+    bool mInternalKeys[NUM_KEYS];
+
+    void initialize();
+    uint16_t fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory);
+    void decodeOpcode(const uint16_t &opcode);
+    void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory);
+    bool updateScreen(); // Responds if screen has been updated since last draw
+
+    int getDelayTimer();
+    int getSoundTimer();
+    void decrementDelayTimer();
+    void decrementSoundTimer();
+
 private:
     uint16_t mPC;                           // Program counter pointer
     std::array<uint16_t, STACK_SIZE> mStack; // Call stack
@@ -79,7 +81,7 @@ private:
     void opANNN();
     void opBNNN();
     void opCXNN();
-    void opDXYN(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
+    void opDXYN(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory);
     void opEX9E();
     void opEXA1();
     void opFX07();
@@ -88,26 +90,7 @@ private:
     void opFX18();
     void opFX1E();
     void opFX29();
-    void opFX33(std::array<uint8_t, MEMORY> &memory);
-    void opFX55(std::array<uint8_t, MEMORY> &memory);
-    void opFX65(std::array<uint8_t, MEMORY> &memory);
-
-
-public:
-    bool mInternalKeys[NUM_KEYS];
-
-    void initialize();
-    uint16_t fetchOpcode(const std::array<uint8_t, MEMORY> &memory);
-    void decodeOpcode(const uint16_t &opcode);
-    void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory);
-    bool updateScreen(); // Responds if screen has been updated since last draw
-
-    int getDelayTimer();
-    int getSoundTimer();
-    void decrementDelayTimer();
-    void decrementSoundTimer();
-
-public:
-    static constexpr int FONT_LOCATION = 0x050;
-
+    void opFX33(std::array<uint8_t, MEMORY_SIZE> &memory);
+    void opFX55(std::array<uint8_t, MEMORY_SIZE> &memory);
+    void opFX65(std::array<uint8_t, MEMORY_SIZE> &memory);
 };

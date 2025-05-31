@@ -28,7 +28,7 @@ void CPU::initialize()
 
 // Not a fan of how this function modifies the CPU object's nibbles struct
 // Future refactorings might change this
-uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY> &memory)
+uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory)
 {
     // Fetch opcode
     uint16_t opcode = (memory.at(mPC) << 8) | (memory.at(mPC + 1)); // Grab 2 bytes and combine them
@@ -52,7 +52,7 @@ void CPU::decodeOpcode(const uint16_t &opcode)
     // printf("%0X %0X %0X %0X\n", nibbles.first, nibbles.sec, nibbles.third, nibbles.fourth);
 }
 
-void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
+void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
 {
     switch (nibbles.first)
     {
@@ -480,7 +480,7 @@ void CPU::opCXNN() // Set VX to a random number, AND'd with NN
 // Refer to:
 // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
 // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY> &memory)
+void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
 {
     drawFlag = true;
 
@@ -619,7 +619,7 @@ void CPU::opFX29() // Load font character hexadecimal from VX into I; may need a
 }
 
 // TODO: Document this function
-void CPU::opFX33(std::array<uint8_t, MEMORY> &memory)
+void CPU::opFX33(std::array<uint8_t, MEMORY_SIZE> &memory)
 {
     // VX = 0dXYZ
     memory.at(I) = V[nibbles.sec >> 8] / 100;              // Grab X
@@ -628,7 +628,7 @@ void CPU::opFX33(std::array<uint8_t, MEMORY> &memory)
 }
 
 // TODO: Document this function
-void CPU::opFX55(std::array<uint8_t, MEMORY> &memory)
+void CPU::opFX55(std::array<uint8_t, MEMORY_SIZE> &memory)
 {
     int targetRegister = nibbles.sec >> 8;
 
@@ -641,7 +641,7 @@ void CPU::opFX55(std::array<uint8_t, MEMORY> &memory)
 }
 
 // TODO: Document this function
-void CPU::opFX65(std::array<uint8_t, MEMORY> &memory)
+void CPU::opFX65(std::array<uint8_t, MEMORY_SIZE> &memory)
 {
     int targetRegister = nibbles.sec >> 8;
 

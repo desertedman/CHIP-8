@@ -28,7 +28,7 @@ uint8_t Font[80] =
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-uint8_t SDL_KEYS[NUM_KEYS]{
+uint8_t SDL_KEYS[CPU::NUM_KEYS]{
     SDLK_x, // Corresponds to mInternalKey[0]
     SDLK_1,
     SDLK_2,
@@ -230,7 +230,7 @@ void Chip8::handleInput()
             else
             {
                 // Loop through all keys and check if pressed
-                for (int i = 0; i < NUM_KEYS; i++)
+                for (int i = 0; i < CPU::NUM_KEYS; i++)
                 {
                     if (e.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == false)
                     {
@@ -245,7 +245,7 @@ void Chip8::handleInput()
         else if (e.type == SDL_KEYUP)
         {
             // Loop through all keys and check if released
-            for (int i = 0; i < NUM_KEYS; i++)
+            for (int i = 0; i < CPU::NUM_KEYS; i++)
             {
                 if (e.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true)
                 {
@@ -317,18 +317,4 @@ void Chip8::drawToTerminal()
 void Chip8::drawToScreen()
 {
     mDisplay.drawScreen(mGPU);
-}
-
-std::streamsize getFileSize(std::ifstream &inFS)
-{
-    std::streamsize fileSize = inFS.tellg(); // Get current position (at end)
-    if (fileSize == -1)
-    {
-        std::cerr << "Error: Failed to get file size." << std::endl;
-        return 0;
-    }
-
-    inFS.seekg(0, std::ios::beg); // Move read position back to start of file
-
-    return fileSize;
 }
