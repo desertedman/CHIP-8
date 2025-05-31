@@ -1,5 +1,7 @@
 #include "Display.h"
 
+#include <iostream>
+
 Display::Display()
 {
     mWindow = NULL;
@@ -54,7 +56,7 @@ void Display::drawScreen(GPU &gpu)
     }
 
     // Update screen
-    SDL_UpdateTexture(mTexture, NULL, mPixels, 64 * sizeof(uint32_t));
+    SDL_UpdateTexture(mTexture, NULL, mPixels, BASE_WIDTH * sizeof(uint32_t));
 
     // Clear screen and render
     SDL_RenderClear(mRenderer);

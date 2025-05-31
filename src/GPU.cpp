@@ -1,7 +1,5 @@
 #include "GPU.h"
 
-#include <iostream>
-
 void GPU::initialize()
 {
     clearScreen(); // Ensure that screen is cleared on creation. Probably unnecessary

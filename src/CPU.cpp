@@ -497,7 +497,7 @@ void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
     V[0xF] = 0;
     for (int yLine = 0; yLine < N; yLine++)
     {
-        if (y + yLine > ROWS - 1)
+        if (y + yLine > GPU::ROWS - 1)
         {
             break;
         }
@@ -506,7 +506,7 @@ void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
 
         for (int xLine = 0; xLine < 8; xLine++)
         {
-            if (x + xLine > COLUMNS - 1)
+            if (x + xLine > GPU::COLUMNS - 1)
             {
                 break;
             }

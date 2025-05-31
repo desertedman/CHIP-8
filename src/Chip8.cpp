@@ -280,17 +280,17 @@ void Chip8::fillScreen()
 void Chip8::drawToTerminal()
 {
     // Draw top border
-    for (int i = 0; i < COLUMNS; i++)
+    for (int i = 0; i < GPU::COLUMNS; i++)
     {
         std::cout << "_";
     }
     std::cout << std::endl;
 
-    for (int y = 0; y < ROWS; y++)
+    for (int y = 0; y < GPU::ROWS; y++)
     {
         std::cout << "| "; // Beginning of screen row
 
-        for (int x = 0; x < COLUMNS; x++)
+        for (int x = 0; x < GPU::COLUMNS; x++)
         {
             if (mGPU.getPixel(x, y))
             {
@@ -307,7 +307,7 @@ void Chip8::drawToTerminal()
     }
 
     // Draw bottom border
-    for (int i = 0; i < COLUMNS; i++)
+    for (int i = 0; i < GPU::COLUMNS; i++)
     {
         std::cout << "_";
     }
