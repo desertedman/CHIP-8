@@ -14,7 +14,7 @@ bool Display::initDisplay()
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
         return false;
     }
 
@@ -25,7 +25,7 @@ bool Display::initDisplay()
 
     if (mWindow == NULL)
     {
-        std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return false;
     }
 
