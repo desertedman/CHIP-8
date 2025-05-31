@@ -3,16 +3,18 @@
 // TODO: Consider moving all constants into their own file
 
 #include <iostream>
-// #include <memory>
+#include <memory>
 
 int main()
 {
-    Chip8 chip8;
-    if (!chip8.initialize())
-    {
-        std::cout << "Failed to initialize, exiting...\n";
-        return -1;
-    }
+    std::unique_ptr<Chip8> chip8Ptr = std::make_unique<Chip8>();
+
+    // Chip8 chip8;
+    // if (!chip8.initialize())
+    // {
+    //     std::cout << "Failed to initialize, exiting...\n";
+    //     return -1;
+    // }
 
     std::cout << "Attempting to load file..." << std::endl;
     std::string SpaceInvaders = "../roms/Space Invaders [David Winter].ch8";
@@ -27,10 +29,11 @@ int main()
     std::string Input = "../roms/6-keypad.ch8";
 
     // std::shared_ptr<Rom> rom = std::make_shared<Rom>(Breakout);
-    Rom rom(Input);
-    chip8.loadRom(rom);
 
-    chip8.runEngine();
+    Rom rom(Breakout);
+    chip8Ptr->loadRom(rom);
+
+    chip8Ptr->runEngine();
 
     return 0;
 }

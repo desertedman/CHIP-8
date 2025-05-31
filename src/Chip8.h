@@ -18,6 +18,8 @@ const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
 class Chip8
 {
 private:
+    bool initialize();
+
     std::array<uint8_t, MEMORY> mMemory; // 4Kb of memory
     std::streamsize mFileSize;           // Remove later
     GPU mGPU;
@@ -33,7 +35,8 @@ private:
     bool running;
 
 public:
-    bool initialize();
+    Chip8();
+
     bool loadRom(Rom &rom);
     void printMemory(int bytes = 0);
 

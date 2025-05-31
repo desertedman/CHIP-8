@@ -11,6 +11,7 @@
 #include <SDL2/SDL.h>
 #include <thread>
 #include <chrono>
+#include <stdexcept>
 
 uint8_t Font[80] =
     {
@@ -50,6 +51,13 @@ uint8_t SDL_KEYS[NUM_KEYS]{
     SDLK_f,
     SDLK_v // Corresponds to mInternalKey[15] (or mInternalKey[F])
 };
+
+Chip8::Chip8() {
+    if (!initialize()) {
+      throw std::runtime_error("Failed to initialize engine!");
+      exit(-1);
+    }
+}
 
 bool Chip8::initialize()
 {
