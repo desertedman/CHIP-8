@@ -2,24 +2,23 @@
 
 #include <array>
 
-class GPU
-{
-public: 
-    // Constants
-    static constexpr int COLUMNS = 64;
-    static constexpr int ROWS = 32;
+class GPU {
+public:
+  // Constants
+  static constexpr int COLUMNS = 64;
+  static constexpr int ROWS = 32;
 
 public:
-    GPU();
-    void initialize();
+  GPU();
+  void initialize();
 
-    void clearScreen();
-    void fillScreen();
+  void clearScreen();
+  void fillScreen();
 
-    const bool getPixel(int x, int y);
-    void setPixel(int x, int y, bool status);
-    void xorPixel(int x, int y, bool status);
+  const bool getPixel(int x, int y);
+  void setPixel(int x, int y, bool status);
+  void xorPixel(int x, int y, bool status);
 
 private:
-    std::array<std::array<bool, COLUMNS>, ROWS> mScreen; // 32 rows of 64 columns
+  std::array<std::array<bool, COLUMNS>, ROWS> mScreen; // 32 rows of 64 columns
 };

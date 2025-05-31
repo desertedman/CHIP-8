@@ -38,7 +38,8 @@ void Rom::openFile(const std::string &path) {
   // Check file size
   mFileSize = RomFunctions::getFileSize(mFile);
   if (mFileSize > ROM_FILE_SIZE) {
-    throw std::runtime_error("File is too large! Must be smaller than " + std::to_string(ROM_FILE_SIZE) + " bytes!\n");
+    throw std::runtime_error("File is too large! Must be smaller than " +
+                             std::to_string(ROM_FILE_SIZE) + " bytes!\n");
   }
 
   else if (mFileSize == -1) {
@@ -50,13 +51,9 @@ void Rom::openFile(const std::string &path) {
   }
 }
 
-std::ifstream& Rom::getFile(){
-  return mFile;
-}
+std::ifstream &Rom::getFile() { return mFile; }
 
-std::streamsize Rom::getSize() const {
-  return mFileSize;
-}
+std::streamsize Rom::getSize() const { return mFileSize; }
 
 std::streamsize RomFunctions::getFileSize(std::ifstream &inFS) {
   // Get current position (at end)

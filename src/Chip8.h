@@ -1,48 +1,47 @@
 #pragma once
 
-#include "GPU.h"
 #include "CPU.h"
 #include "Display.h"
+#include "GPU.h"
 #include "Rom.h"
 
-#include <iostream>
 #include <array>
 #include <cstdint> // Include for uint8_t
+#include <iostream>
 
-class Chip8
-{
+class Chip8 {
 private:
-    // Constants
-    const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
-    const int FREQUENCY = 60;
+  // Constants
+  const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
+  const int FREQUENCY = 60;
 
 private:
-    bool initialize();
+  bool initialize();
 
-    std::array<uint8_t, CPU::MEMORY_SIZE> mMemory; // 4Kb of memory
-    std::streamsize mFileSize;
-    GPU mGPU;
-    CPU mCPU;
-    Display mDisplay;
+  std::array<uint8_t, CPU::MEMORY_SIZE> mMemory; // 4Kb of memory
+  std::streamsize mFileSize;
+  GPU mGPU;
+  CPU mCPU;
+  Display mDisplay;
 
-    int mInstructionsPerFrame;
+  int mInstructionsPerFrame;
 
-    void testCycleCPU(uint16_t opcode);
-    void cycleCPU();
-    void handleInput(); // Handle input and send to CPU
+  void testCycleCPU(uint16_t opcode);
+  void cycleCPU();
+  void handleInput(); // Handle input and send to CPU
 
-    bool running;
+  bool running;
 
 public:
-    Chip8();
+  Chip8();
 
-    void loadRom(Rom &rom);
-    void runEngine();
-    void drawToScreen();
+  void loadRom(Rom &rom);
+  void runEngine();
+  void drawToScreen();
 
-    // Debug functions
-    void printMemory(int bytes = 0);
-    void testEngine();
-    void fillScreen();
-    void drawToTerminal();
+  // Debug functions
+  void printMemory(int bytes = 0);
+  void testEngine();
+  void fillScreen();
+  void drawToTerminal();
 };
