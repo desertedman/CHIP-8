@@ -66,7 +66,7 @@ bool Chip8::initialize()
 {
     // Load font into memory
     int fontLength = sizeof(Font) / sizeof(uint8_t);
-    std::memcpy(&mMemory.at(FONT_LOCATION), Font, fontLength);
+    std::memcpy(&mMemory.at(CPU::FONT_LOCATION), Font, fontLength);
 
     // Initialize GPU and CPU; reset to their original states
     mGPU.initialize();

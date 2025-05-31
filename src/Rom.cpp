@@ -28,7 +28,7 @@ bool Rom::openFile(const std::string &path) {
   mFile.open(path, std::ios::binary | std::ios::ate);
 
   if (!mFile) {
-    throw std::runtime_error("File at " + path + " failed to open\n");
+    std::cerr << "File at " << path << " failed to open\n";
     return false;
   }
 
