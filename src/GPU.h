@@ -7,7 +7,7 @@ class GPU
 public: 
     // Constants
     static constexpr int COLUMNS = 64;
-    static constexpr int ROWS = 64;
+    static constexpr int ROWS = 32;
 
 public:
     GPU();
