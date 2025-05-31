@@ -7,6 +7,8 @@
 
 struct Nibbles
 {
+    uint16_t opcode;
+
     // Order of hex bytes from most to least significant
     uint16_t first;
     uint16_t sec;
@@ -14,7 +16,6 @@ struct Nibbles
     uint8_t fourth;
 
     uint8_t lastTwo;
-    uint16_t opcode;
 };
 
 class CPU
@@ -58,6 +59,8 @@ private:
     int keyLastPressed;
 
 private:
+    void printOpcodeMissing();
+
     // Opcode functions
     void op00E0(GPU &gpu);
     void op00EE();

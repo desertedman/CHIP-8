@@ -26,22 +26,21 @@ void CPU::initialize()
     soundTimer = 0;
 }
 
-// Not a fan of how this function modifies the CPU object's nibbles struct
-// Future refactorings might change this
 uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory)
 {
     // Fetch opcode
     uint16_t opcode = (memory.at(mPC) << 8) | (memory.at(mPC + 1)); // Grab 2 bytes and combine them
-    nibbles.opcode = opcode;
 
     // Increment PC
     mPC += 2;
 
-    return nibbles.opcode;
+    return opcode;
 }
 
 void CPU::decodeOpcode(const uint16_t &opcode)
 {
+    nibbles.opcode = opcode;
+
     nibbles.first = opcode & 0xF000;
     nibbles.sec = opcode & 0x0F00;
     nibbles.third = opcode & 0x00F0;
@@ -70,7 +69,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
             break;
 
         default:
-            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
+            printOpcodeMissing();
             break;
         }
 
@@ -144,7 +143,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
             break;
 
         default:
-            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
+            printOpcodeMissing();
             break;
         }
 
@@ -183,7 +182,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
             break;
 
         default:
-            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
+            printOpcodeMissing();
             break;
         }
 
@@ -231,14 +230,14 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory)
             break;
 
         default:
-            std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
+            printOpcodeMissing();
             break;
         }
 
         break;
 
     default:
-        std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
+        printOpcodeMissing();
         break;
     }
 }
@@ -272,6 +271,10 @@ void CPU::decrementSoundTimer()
 {
     if (soundTimer > 0)
         soundTimer--;
+}
+
+void CPU::printOpcodeMissing() {
+    std::cout << "Error! Opcode " << std::hex << nibbles.opcode << " not implemented.\n";
 }
 
 // Opcode functions
@@ -550,8 +553,6 @@ void CPU::opFX07() // VX = delayTimer
     V[nibbles.sec >> 8] = delayTimer;
 }
 
-// TODO: Verify this function, it may not work correctly.
-// Currently passes Input test, but still unsure.
 void CPU::opFX0A() // Wait on any key input. Loop until an input is received
 {
     // std::cout << "Waiting on input; 0xFX0A...\n";
@@ -600,17 +601,9 @@ void CPU::opFX18() // soundTimer = VX
     soundTimer = V[nibbles.sec >> 8];
 }
 
-// TODO: Verify behavior of this function
 void CPU::opFX1E() // I += VX
 {
     I += V[nibbles.sec >> 8];
-
-    // If VX + I > 1000, then set carry flag
-    // Adjust equation to: VX > 1000 - I
-    // if (V[nibbles.sec >> 8] > 1000 - I)
-    // {
-    //     V[0xF] = 1; // Set carry flag
-    // }
 }
 
 void CPU::opFX29() // Load font character hexadecimal from VX into I; may need additional work done
