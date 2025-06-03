@@ -21,7 +21,7 @@ Display::Display() {
     // Create window
     mWindow = SDL_CreateWindow("CHIP-8", SDL_WINDOWPOS_CENTERED,
                               SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-                              SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+                              SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     // Create renderer
     mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
