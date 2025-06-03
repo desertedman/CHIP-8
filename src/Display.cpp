@@ -5,6 +5,7 @@
 #include "imgui_impl_sdlrenderer2.h"
 
 #include <SDL2/SDL_video.h>
+#include <SDL_render.h>
 #include <stdexcept>
 #include <string>
 
@@ -53,7 +54,7 @@ Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   mIo = &ImGui::GetIO();
-  (void)mIo;
+  // (void)mIo;
   mIo->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
   // Setup style
@@ -80,43 +81,6 @@ Display::~Display() {
   mWindow = NULL;
 
   SDL_Quit();
-}
-
-// This function is not used anymore!
-void Display::initDisplay() {
-
-  // Throw an error so I don't use this
-  throw std::runtime_error("Stop using initDisplay!\n");
-
-  // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    throw std::runtime_error(
-        std::string("SDL could not initialize! SDL_Error: ") + SDL_GetError() +
-        "\n");
-  }
-
-  // Create window
-  mWindow = SDL_CreateWindow("CHIP-8", SDL_WINDOWPOS_UNDEFINED,
-                             SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-                             SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-
-  // Create renderer
-  mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
-  SDL_RenderSetLogicalSize(
-      mRenderer, SCREEN_WIDTH,
-      SCREEN_HEIGHT); // Render canvas with SCREEN resolution
-
-  // Ensure that window and renderer were initialized properly
-  if (mWindow == NULL || mRenderer == NULL) {
-    throw std::runtime_error(
-        std::string("Window could not be created! SDL_Error: ") +
-        SDL_GetError() + "\n");
-  }
-
-  // Create texture for frame buffer
-  mTexture = SDL_CreateTexture(
-      mRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
-      BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
 }
 
 void Display::drawScreen(GPU &gpu) {
@@ -151,16 +115,17 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::Text("(B)");
 
     {
-      std::string pauseStatus;
+      // Construct pauseString based on pauseStatus
+      std::string pauseString;
 
       if (mChip8Ptr->getPauseStatus() == false) {
-        pauseStatus = "Pause";
+        pauseString = "Pause";
       }
       else {
-        pauseStatus = "Unpause";
+        pauseString = "Unpause";
       }
 
-      if (ImGui::Button(pauseStatus.c_str())) {
+      if (ImGui::Button(pauseString.c_str())) {
         mChip8Ptr->togglePause();
       }
     }
@@ -186,6 +151,10 @@ void Display::drawScreen(GPU &gpu) {
       mChip8Ptr->calcSpeed();
     }
 
+    int displayW, displayH;
+    SDL_GetWindowSize(mWindow, &displayW, &displayH);
+    ImGui::Text("Resolution: %d x %d", displayW, displayH);
+
     if (ImGui::Button("Quit")) {
       mChip8Ptr->quitEngine();
     }
@@ -195,6 +164,7 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::End();
   }
   ImGui::Render();
+  // SDL_RenderSetScale(mRenderer, mIo->DisplayFramebufferScale.x, mIo->DisplayFramebufferScale.y);
 
   // Update screen
   SDL_UpdateTexture(mTexture, NULL, mPixels, BASE_WIDTH * sizeof(uint32_t));
