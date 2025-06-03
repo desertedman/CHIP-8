@@ -154,11 +154,11 @@ void Chip8::runEngine() {
   auto nextTime =
       std::chrono::steady_clock::now() + periodMS; // Get current time
 
-  SDL_Event e;
+  SDL_Event event;
 
   while (running) {
     // Handle input
-    handleInput(e);
+    handleInput(event);
 
     if (pause == false) {
       // Decrement timers
@@ -187,38 +187,38 @@ void Chip8::runEngine() {
   }
 }
 
-void Chip8::handleInput(SDL_Event &mEvent) {
-  while (SDL_PollEvent(&mEvent)) {
-    ImGui_ImplSDL2_ProcessEvent(&mEvent);
+void Chip8::handleInput(SDL_Event &event) {
+  while (SDL_PollEvent(&event)) {
+    ImGui_ImplSDL2_ProcessEvent(&event);
 
-    if (mEvent.type == SDL_QUIT) {
+    if (event.type == SDL_QUIT) {
       setQuit();
     }
 
-    // else if (e.type == SDL_WINDOWEVENT && e.window)
+    // else if (mEvent.type == SDL_WINDOWEVENT && e.window)
 
 
-    else if (mEvent.type == SDL_KEYDOWN) {
-      if (mEvent.key.keysym.sym == SDLK_ESCAPE) {
+    else if (event.type == SDL_KEYDOWN) {
+      if (event.key.keysym.sym == SDLK_ESCAPE) {
         setQuit();
       }
 
-      else if (mEvent.key.keysym.sym == SDLK_SPACE) {
+      else if (event.key.keysym.sym == SDLK_SPACE) {
         togglePause();
       }
 
-      else if (mEvent.key.keysym.sym == SDLK_b) {
+      else if (event.key.keysym.sym == SDLK_b) {
         toggleGUI();
       }
 
-      else if (mEvent.key.keysym.sym == SDLK_RETURN) {
+      else if (event.key.keysym.sym == SDLK_RETURN) {
         resetEngine();
       }
 
       else {
         // Loop through all keys and check if pressed
         for (int i = 0; i < CPU::NUM_KEYS; i++) {
-          if (mEvent.key.keysym.sym == SDL_KEYS[i] &&
+          if (event.key.keysym.sym == SDL_KEYS[i] &&
               mCPU.mInternalKeys[i] == false) {
             mCPU.mInternalKeys[i] = true;
             // std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << "
@@ -228,10 +228,10 @@ void Chip8::handleInput(SDL_Event &mEvent) {
       }
     }
 
-    else if (mEvent.type == SDL_KEYUP) {
+    else if (event.type == SDL_KEYUP) {
       // Loop through all keys and check if released
       for (int i = 0; i < CPU::NUM_KEYS; i++) {
-        if (mEvent.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true) {
+        if (event.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true) {
           mCPU.mInternalKeys[i] = false;
           // std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << "
           // released.\n"; std::cout << mCPU.mInternalKeys[i] << std::endl;
