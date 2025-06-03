@@ -36,7 +36,6 @@ private:
 
   uint32_t mPixels[BASE_HEIGHT *
                    BASE_WIDTH]; // Representation of internal pixel grid
-  SDL_Event e;                  // Event handler
 
   ImGuiIO* mIo;
 };

@@ -155,9 +155,11 @@ void Chip8::runEngine() {
   auto nextTime =
       std::chrono::steady_clock::now() + periodMS; // Get current time
 
+  SDL_Event e;
+
   while (running) {
     // Handle input
-    handleInput();
+    handleInput(e);
 
     // Decrement timers
     if (mCPU.getDelayTimer() > 0) {
@@ -186,8 +188,7 @@ void Chip8::runEngine() {
   }
 }
 
-void Chip8::handleInput() {
-  SDL_Event e = mDisplay.getEvent();
+void Chip8::handleInput(SDL_Event &e) {
   while (SDL_PollEvent(&e)) {
     ImGui_ImplSDL2_ProcessEvent(&e);
 

@@ -33,7 +33,7 @@ private:
 
   void testCycleCPU(uint16_t opcode);
   void cycleCPU();
-  void handleInput(); // Handle input and send to CPU
+  void handleInput(SDL_Event &e); // Handle input and send to CPU
 
 private:
   std::array<uint8_t, CPU::MEMORY_SIZE> mMemory; // 4Kb of memory

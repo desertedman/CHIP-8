@@ -42,24 +42,25 @@ Display::Display() {
           SDL_GetError() + "\n");
     }
 
-    // Initialize Imgui
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    mIo = &ImGui::GetIO();
-    (void)mIo;
-    mIo->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-
-    // Setup style
-    ImGui::StyleColorsDark();
-
-    // Setup backends
-    ImGui_ImplSDL2_InitForSDLRenderer(mWindow, mRenderer);
-    ImGui_ImplSDLRenderer2_Init(mRenderer);
   }
 
   catch (const std::runtime_error &e) {
     throw;
   }
+
+  // Initialize Imgui
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  mIo = &ImGui::GetIO();
+  (void)mIo;
+  mIo->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+  // Setup style
+  ImGui::StyleColorsDark();
+
+  // Setup backends
+  ImGui_ImplSDL2_InitForSDLRenderer(mWindow, mRenderer);
+  ImGui_ImplSDLRenderer2_Init(mRenderer);
 }
 
 Display::~Display() {
@@ -142,5 +143,3 @@ void Display::drawScreen(GPU &gpu) {
   ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), mRenderer);
   SDL_RenderPresent(mRenderer);
 }
-
-const SDL_Event Display::getEvent() { return e; }
