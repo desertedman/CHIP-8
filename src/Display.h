@@ -40,9 +40,9 @@ private:
 
   int mWindowWidth;
   int mWindowHeight;
-  SDL_Rect mRect;
+  SDL_Rect mDrawRect;
 
-  uint32_t mPixels[BASE_HEIGHT *
+  uint32_t mPixelColor[BASE_HEIGHT *
                    BASE_WIDTH]; // Representation of internal pixel grid
 
   ImGuiIO *mIo;

@@ -11,7 +11,8 @@
 
 // Calculate initial screen resolution
 // int Display::mScreenWidth = Display::BASE_WIDTH * Display::SCREEN_MULITPLIER;
-// int Display::mScreenHeight = Display::BASE_HEIGHT * Display::SCREEN_MULITPLIER;
+// int Display::mScreenHeight = Display::BASE_HEIGHT *
+// Display::SCREEN_MULITPLIER;
 
 Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
   mRenderImGui = true;
@@ -94,22 +95,25 @@ Display::~Display() {
 }
 
 void Display::calculateResolution() {
-  // ratio = width / height
-  // height * ratio = width
-  // height = width/ratio
-
-  // float aspectRatio = static_cast<float>(BASE_WIDTH) / BASE_HEIGHT;
-  // mScreenHeight = mScreenWidth / aspectRatio;
-
   // Grab current window resolution
   SDL_GetWindowSize(mWindow, &mWindowWidth, &mWindowHeight);
 
-  // Calculate smallest integer scale that can fit within window size
+  // Calculate smallest integer scale that can cleanly fit within window size
+  int scale = std::min(mWindowWidth / BASE_WIDTH, mWindowHeight / BASE_HEIGHT);
 
-  mRect.x = 0;
-  mRect.y = 0;
-  mRect.w = mWindowWidth;
-  mRect.h = mWindowHeight;
+  int renderWidth = BASE_WIDTH * scale;
+  int renderHeight = BASE_HEIGHT * scale;
+
+  if (renderWidth > mWindowWidth) {
+    std::cout << "Width greater than actual window\n";
+  } else if (renderHeight > mWindowHeight) {
+    std::cout << "Height greater than actual window\n";
+  }
+
+  mDrawRect.x = 0;
+  mDrawRect.y = 0;
+  mDrawRect.w = renderWidth;
+  mDrawRect.h = renderHeight;
 }
 
 void Display::drawScreen(GPU &gpu) {
@@ -122,7 +126,7 @@ void Display::drawScreen(GPU &gpu) {
 
       // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to
       // determine if pixel is colored or not
-      mPixels[mPixelsItt] = 0xFFFFFFFF * pixel;
+      mPixelColor[mPixelsItt] = 0xFFFFFFFF * pixel;
       mPixelsItt++;
     }
   }
@@ -185,7 +189,7 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::SameLine();
     ImGui::Text("(ESC)");
 
-    ImGui::Text("Internal Resolution: %d x %d", mWindowWidth, mWindowHeight);
+    ImGui::Text("Internal Resolution: %d x %d", mDrawRect.w, mDrawRect.h);
 
     ImGui::End();
   }
@@ -194,11 +198,13 @@ void Display::drawScreen(GPU &gpu) {
   // mIo->DisplayFramebufferScale.y);
 
   // Update screen
-  SDL_UpdateTexture(mTexture, NULL, mPixels, BASE_WIDTH * sizeof(uint32_t));
+  SDL_UpdateTexture(mTexture, NULL, mPixelColor, BASE_WIDTH * sizeof(uint32_t));
 
   // Clear screen and render
+  SDL_RenderSetLogicalSize(mRenderer, mWindowWidth, mWindowHeight);
+  SDL_SetRenderDrawColor(mRenderer, 128, 128, 128, 255);
   SDL_RenderClear(mRenderer);
-  SDL_RenderCopy(mRenderer, mTexture, NULL, &mRect);
+  SDL_RenderCopy(mRenderer, mTexture, NULL, &mDrawRect);
   ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), mRenderer);
   SDL_RenderPresent(mRenderer);
 }
