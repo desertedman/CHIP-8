@@ -3,7 +3,9 @@
 #include "imgui_impl_sdl2.h"
 
 #include <SDL2/SDL.h>
+#include <SDL_events.h>
 #include <SDL_keycode.h>
+#include <SDL_video.h>
 #include <chrono>
 #include <cstring>
 #include <fstream>
@@ -195,8 +197,9 @@ void Chip8::handleInput(SDL_Event &event) {
       setQuit();
     }
 
-    // else if (mEvent.type == SDL_WINDOWEVENT && e.window)
-
+    else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
+      Display::mScreenWidth = event.window.data1;
+    }
 
     else if (event.type == SDL_KEYDOWN) {
       if (event.key.keysym.sym == SDLK_ESCAPE) {

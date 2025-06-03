@@ -9,9 +9,13 @@
 #include <stdexcept>
 #include <string>
 
+// Calculate initial screen resolution
+int Display::mScreenWidth = Display::BASE_WIDTH * Display::SCREEN_MULITPLIER;
+
 Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
   mRenderImGui = true;
   mChip8Ptr = inputChip8Ptr;
+  calculateResolution();
 
   try {
     // Initialize SDL
@@ -23,14 +27,15 @@ Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
 
     // Create window
     mWindow = SDL_CreateWindow(
-        "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-        SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+        "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mScreenWidth,
+        mScreenHeight,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 
     // Create renderer
     mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
-    SDL_RenderSetLogicalSize(
-        mRenderer, SCREEN_WIDTH,
-        SCREEN_HEIGHT); // Render canvas with SCREEN resolution
+    // SDL_RenderSetLogicalSize(
+    //     mRenderer, mScreenWidth,
+    //     mScreenHeight); // Render canvas with SCREEN resolution
 
     // Create texture for frame buffer
     mTexture = SDL_CreateTexture(
@@ -83,6 +88,20 @@ Display::~Display() {
   SDL_Quit();
 }
 
+void Display::calculateResolution() {
+  // ratio = width / height
+  // height * ratio = width
+  // height = width/ratio
+
+  float aspectRatio = static_cast<float>(BASE_WIDTH) / BASE_HEIGHT;
+  mScreenHeight = mScreenWidth / aspectRatio;
+
+  mRect.x = 0;
+  mRect.y = 0;
+  mRect.w = mScreenWidth;
+  mRect.h = mScreenHeight;
+}
+
 void Display::drawScreen(GPU &gpu) {
   int mPixelsItt = 0;                   // Iterator to travel mPixels array
   for (int y = 0; y < BASE_HEIGHT; y++) // Traverse each row
@@ -120,8 +139,7 @@ void Display::drawScreen(GPU &gpu) {
 
       if (mChip8Ptr->getPauseStatus() == false) {
         pauseString = "Pause";
-      }
-      else {
+      } else {
         pauseString = "Unpause";
       }
 
@@ -160,7 +178,8 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::End();
   }
   ImGui::Render();
-  // SDL_RenderSetScale(mRenderer, mIo->DisplayFramebufferScale.x, mIo->DisplayFramebufferScale.y);
+  // SDL_RenderSetScale(mRenderer, mIo->DisplayFramebufferScale.x,
+  // mIo->DisplayFramebufferScale.y);
 
   // Update screen
   SDL_UpdateTexture(mTexture, NULL, mPixels, BASE_WIDTH * sizeof(uint32_t));

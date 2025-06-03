@@ -6,6 +6,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
+#include <SDL_rect.h>
 #include <memory>
 
 class Chip8;
@@ -17,8 +18,6 @@ public:
   static constexpr int BASE_WIDTH = 64;
 
   static constexpr int SCREEN_MULITPLIER = 15;
-  static constexpr int SCREEN_HEIGHT = BASE_HEIGHT * SCREEN_MULITPLIER;
-  static constexpr int SCREEN_WIDTH = BASE_WIDTH * SCREEN_MULITPLIER;
 
 public:
   Display(std::shared_ptr<Chip8> &inputChip8Ptr);
@@ -30,11 +29,16 @@ public:
   std::shared_ptr<Chip8> mChip8Ptr;
   bool mRenderImGui;
 
+  void calculateResolution();
+  static int mScreenWidth;
+
 private:
   SDL_Window *mWindow;     // Window to render to
   SDL_Renderer *mRenderer; // Render target to draw to
   SDL_Texture *mTexture;   // Texture to send to render
-  // SDL_GLContext mContext;
+
+  int mScreenHeight;
+  SDL_Rect mRect;
 
   uint32_t mPixels[BASE_HEIGHT *
                    BASE_WIDTH]; // Representation of internal pixel grid
