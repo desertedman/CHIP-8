@@ -38,8 +38,8 @@ private:
   SDL_Renderer *mRenderer; // Render target to draw to
   SDL_Texture *mTexture;   // Texture to send to render
 
-  int mScreenWidth;
-  int mScreenHeight;
+  int mWindowWidth;
+  int mWindowHeight;
   SDL_Rect mRect;
 
   uint32_t mPixels[BASE_HEIGHT *

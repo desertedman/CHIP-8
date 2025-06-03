@@ -17,8 +17,8 @@ Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
   mRenderImGui = true;
   mChip8Ptr = inputChip8Ptr;
 
-  mScreenHeight = BASE_HEIGHT * Display::SCREEN_MULITPLIER;
-  mScreenWidth = BASE_WIDTH * Display::SCREEN_MULITPLIER;
+  mWindowHeight = BASE_HEIGHT * Display::SCREEN_MULITPLIER;
+  mWindowWidth = BASE_WIDTH * Display::SCREEN_MULITPLIER;
 
   calculateResolution();
 
@@ -32,8 +32,8 @@ Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
 
     // Create window
     mWindow = SDL_CreateWindow(
-        "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mScreenWidth,
-        mScreenHeight,
+        "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWindowWidth,
+        mWindowHeight,
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 
     // Create renderer
@@ -102,12 +102,14 @@ void Display::calculateResolution() {
   // mScreenHeight = mScreenWidth / aspectRatio;
 
   // Grab current window resolution
-  SDL_GetWindowSize(mWindow, &mScreenWidth, &mScreenHeight);
+  SDL_GetWindowSize(mWindow, &mWindowWidth, &mWindowHeight);
+
+  // Calculate smallest integer scale that can fit within window size
 
   mRect.x = 0;
   mRect.y = 0;
-  mRect.w = mScreenWidth;
-  mRect.h = mScreenHeight;
+  mRect.w = mWindowWidth;
+  mRect.h = mWindowHeight;
 }
 
 void Display::drawScreen(GPU &gpu) {
@@ -183,7 +185,7 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::SameLine();
     ImGui::Text("(ESC)");
 
-    ImGui::Text("Internal Resolution: %d x %d", mScreenWidth, mScreenHeight);
+    ImGui::Text("Internal Resolution: %d x %d", mWindowWidth, mWindowHeight);
 
     ImGui::End();
   }
