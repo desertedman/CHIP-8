@@ -187,35 +187,38 @@ void Chip8::runEngine() {
   }
 }
 
-void Chip8::handleInput(SDL_Event &e) {
-  while (SDL_PollEvent(&e)) {
-    ImGui_ImplSDL2_ProcessEvent(&e);
+void Chip8::handleInput(SDL_Event &mEvent) {
+  while (SDL_PollEvent(&mEvent)) {
+    ImGui_ImplSDL2_ProcessEvent(&mEvent);
 
-    if (e.type == SDL_QUIT) {
+    if (mEvent.type == SDL_QUIT) {
       setQuit();
     }
 
-    else if (e.type == SDL_KEYDOWN) {
-      if (e.key.keysym.sym == SDLK_ESCAPE) {
+    // else if (e.type == SDL_WINDOWEVENT && e.window)
+
+
+    else if (mEvent.type == SDL_KEYDOWN) {
+      if (mEvent.key.keysym.sym == SDLK_ESCAPE) {
         setQuit();
       }
 
-      else if (e.key.keysym.sym == SDLK_SPACE) {
+      else if (mEvent.key.keysym.sym == SDLK_SPACE) {
         togglePause();
       }
 
-      else if (e.key.keysym.sym == SDLK_b) {
+      else if (mEvent.key.keysym.sym == SDLK_b) {
         toggleGUI();
       }
 
-      else if (e.key.keysym.sym == SDLK_RETURN) {
+      else if (mEvent.key.keysym.sym == SDLK_RETURN) {
         resetEngine();
       }
 
       else {
         // Loop through all keys and check if pressed
         for (int i = 0; i < CPU::NUM_KEYS; i++) {
-          if (e.key.keysym.sym == SDL_KEYS[i] &&
+          if (mEvent.key.keysym.sym == SDL_KEYS[i] &&
               mCPU.mInternalKeys[i] == false) {
             mCPU.mInternalKeys[i] = true;
             // std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << "
@@ -225,10 +228,10 @@ void Chip8::handleInput(SDL_Event &e) {
       }
     }
 
-    else if (e.type == SDL_KEYUP) {
+    else if (mEvent.type == SDL_KEYUP) {
       // Loop through all keys and check if released
       for (int i = 0; i < CPU::NUM_KEYS; i++) {
-        if (e.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true) {
+        if (mEvent.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true) {
           mCPU.mInternalKeys[i] = false;
           // std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << "
           // released.\n"; std::cout << mCPU.mInternalKeys[i] << std::endl;
