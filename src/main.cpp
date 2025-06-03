@@ -1,4 +1,5 @@
 #include "Chip8.h"
+#include "Display.h"
 
 #include <exception>
 #include <iostream>
@@ -22,8 +23,7 @@ int main() {
   try {
     Chip8 chip8;
     Display display(&chip8);
-    chip8.mDisplay = display;
-
+    chip8.mDisplay = &display;
 
     std::cout << "Attempting to load file..." << std::endl;
     Rom rom(Breakout);

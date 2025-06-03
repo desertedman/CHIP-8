@@ -211,8 +211,7 @@ void Chip8::handleInput(SDL_Event &e) {
       }
 
       else if (e.key.keysym.sym == SDLK_SPACE) {
-        mCPU.initialize();
-        mGPU.initialize();
+        resetEngine();
       }
 
       else {
@@ -283,4 +282,9 @@ void Chip8::drawToTerminal() {
     std::cout << "_";
   }
   std::cout << std::endl;
+}
+
+void Chip8::resetEngine() {
+  mCPU.initialize();
+  mGPU.initialize();
 }

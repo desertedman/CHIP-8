@@ -18,6 +18,7 @@ public:
 
   void loadRom(Rom &rom);
   void runEngine();
+  void resetEngine();
 
   // Debug functions
   void printMemory(int bytes = 0);
