@@ -199,15 +199,7 @@ void Chip8::handleInput(SDL_Event &e) {
       }
 
       else if (e.key.keysym.sym == SDLK_b) {
-        if (mDisplay->mRenderImGui == true) {
-          mDisplay->mRenderImGui = false;
-          std::cout << "Toggling gui off\n";
-        }
-
-        else if (mDisplay->mRenderImGui == false) {
-          mDisplay->mRenderImGui = true;
-          std::cout << "Toggling gui on\n";
-        }
+        toggleGUI();
       }
 
       else if (e.key.keysym.sym == SDLK_SPACE) {
@@ -287,4 +279,18 @@ void Chip8::drawToTerminal() {
 void Chip8::resetEngine() {
   mCPU.initialize();
   mGPU.initialize();
+  std::cout << "State reset\n";
 }
+
+void Chip8::toggleGUI() {
+  if (mDisplay->mRenderImGui == true) {
+    mDisplay->mRenderImGui = false;
+    std::cout << "Toggling gui off\n";
+  }
+
+  else if (mDisplay->mRenderImGui == false) {
+    mDisplay->mRenderImGui = true;
+    std::cout << "Toggling gui on\n";
+  }
+}
+

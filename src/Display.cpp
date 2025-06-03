@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <string>
 
-Display::Display(Chip8 *chip8Ptr) {
+Display::Display(Chip8 *chip8Ptr) : chip8(chip8Ptr) {
   mRenderImGui = true;
 
   try {
@@ -82,7 +82,12 @@ Display::~Display() {
   SDL_Quit();
 }
 
+// This function is not used anymore!
 void Display::initDisplay() {
+
+  // Throw an error so I don't use this
+  throw std::runtime_error("Stop using initDisplay!\n");
+
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     throw std::runtime_error(
@@ -136,7 +141,22 @@ void Display::drawScreen(GPU &gpu) {
 
   // Draw to ImGui frame
   if (mRenderImGui) {
-    ImGui::ShowDemoWindow(&mRenderImGui);
+    // ImGui::ShowDemoWindow(&mRenderImGui);
+    ImGui::Begin("CHIP-8 Menu");
+
+    if (ImGui::Button("Toggle GUI")) {
+      chip8->toggleGUI();
+    }
+    ImGui::SameLine();
+    ImGui::Text("(B)");
+
+    if (ImGui::Button("Reset emulator")) {
+      chip8->resetEngine();
+    }
+    ImGui::SameLine();
+    ImGui::Text("(Space)");
+
+    ImGui::End();
   }
   ImGui::Render();
 

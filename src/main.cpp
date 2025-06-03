@@ -21,16 +21,16 @@ int main() {
   std::string LargeFile = "../roms/largeFile.txt";
 
   try {
-    Chip8 chip8;
-    Display display(&chip8);
-    chip8.mDisplay = &display;
+    Chip8 *chip8 = new Chip8;
+    Display display(chip8);
+    (*chip8).mDisplay = &display;
 
     std::cout << "Attempting to load file..." << std::endl;
     Rom rom(Breakout);
 
-    chip8.loadRom(rom);
+    (*chip8).loadRom(rom);
 
-    chip8.runEngine();
+    (*chip8).runEngine();
   }
 
   catch (const std::exception &e) {

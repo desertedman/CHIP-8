@@ -18,7 +18,10 @@ public:
 
   void loadRom(Rom &rom);
   void runEngine();
+
+  void quit();
   void resetEngine();
+  void toggleGUI();
 
   // Debug functions
   void printMemory(int bytes = 0);
