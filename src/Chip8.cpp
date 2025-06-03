@@ -2,6 +2,7 @@
 #include "imgui_impl_sdl2.h"
 
 #include <SDL2/SDL.h>
+#include <SDL_keycode.h>
 #include <chrono>
 #include <cstring>
 #include <fstream>
@@ -211,6 +212,11 @@ void Chip8::handleInput(SDL_Event &e) {
           mDisplay.mRenderImGui = true;
           std::cout << "Toggling gui on\n";
         }
+      }
+
+      else if (e.key.keysym.sym == SDLK_SPACE) {
+        mCPU.initialize();
+        mGPU.initialize();
       }
 
       else {
