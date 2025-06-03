@@ -8,6 +8,8 @@
 #include <string>
 
 Display::Display() {
+  mRenderImGui = true;
+
   try {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -125,8 +127,10 @@ void Display::drawScreen(GPU &gpu) {
   ImGui_ImplSDL2_NewFrame();
   ImGui::NewFrame();
 
-  bool show_window = true;
-  ImGui::ShowDemoWindow(&show_window);
+  // Draw to ImGui frame
+  if (mRenderImGui) {
+    ImGui::ShowDemoWindow(&mRenderImGui);
+  }
   ImGui::Render();
 
   // Update screen

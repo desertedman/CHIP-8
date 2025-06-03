@@ -1,4 +1,5 @@
 #include "Chip8.h"
+#include "imgui_impl_sdl2.h"
 
 #include <SDL2/SDL.h>
 #include <chrono>
@@ -188,6 +189,8 @@ void Chip8::runEngine() {
 void Chip8::handleInput() {
   SDL_Event e = mDisplay.getEvent();
   while (SDL_PollEvent(&e)) {
+    ImGui_ImplSDL2_ProcessEvent(&e);
+
     if (e.type == SDL_QUIT) {
       running = false;
     }
@@ -195,6 +198,18 @@ void Chip8::handleInput() {
     if (e.type == SDL_KEYDOWN) {
       if (e.key.keysym.sym == SDLK_ESCAPE) {
         running = false;
+      }
+
+      else if (e.key.keysym.sym == SDLK_b) {
+        if (mDisplay.mRenderImGui == true) {
+          mDisplay.mRenderImGui = false;
+          std::cout << "Toggling gui off\n";
+        }
+
+        else if (mDisplay.mRenderImGui == false) {
+          mDisplay.mRenderImGui = true;
+          std::cout << "Toggling gui on\n";
+        }
       }
 
       else {

@@ -13,7 +13,7 @@ public:
   static constexpr int BASE_HEIGHT = 32;
   static constexpr int BASE_WIDTH = 64;
 
-  static constexpr int SCREEN_MULITPLIER = 20;
+  static constexpr int SCREEN_MULITPLIER = 15;
   static constexpr int SCREEN_HEIGHT = BASE_HEIGHT * SCREEN_MULITPLIER;
   static constexpr int SCREEN_WIDTH = BASE_WIDTH * SCREEN_MULITPLIER;
 
@@ -23,6 +23,7 @@ public:
 
   void drawScreen(GPU &gpu);
   const SDL_Event getEvent();
+  bool mRenderImGui;
 
 private:
   void initDisplay();
