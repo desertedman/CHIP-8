@@ -8,21 +8,22 @@
 #include <stdexcept>
 #include <string>
 
-Display::Display(Chip8 *chip8Ptr) : chip8(chip8Ptr) {
+Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
   mRenderImGui = true;
+  mChip8Ptr = inputChip8Ptr;
 
   try {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
       throw std::runtime_error(
-          std::string("SDL could not initialize! SDL_Error: ") + SDL_GetError() +
-          "\n");
+          std::string("SDL could not initialize! SDL_Error: ") +
+          SDL_GetError() + "\n");
     }
 
     // Create window
-    mWindow = SDL_CreateWindow("CHIP-8", SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-                              SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    mWindow = SDL_CreateWindow(
+        "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
+        SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     // Create renderer
     mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
@@ -34,7 +35,6 @@ Display::Display(Chip8 *chip8Ptr) : chip8(chip8Ptr) {
     mTexture = SDL_CreateTexture(
         mRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
         BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
-
 
     // Ensure that everything was initialized properly
     if (mWindow == NULL || mRenderer == NULL) {
@@ -145,22 +145,28 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::Begin("CHIP-8 Menu");
 
     if (ImGui::Button("Toggle GUI")) {
-      chip8->toggleGUI();
+      mChip8Ptr->toggleGUI();
     }
     ImGui::SameLine();
     ImGui::Text("(B)");
 
     if (ImGui::Button("Pause")) {
-      chip8->resetEngine();
+      mChip8Ptr->resetEngine();
     }
     ImGui::SameLine();
     ImGui::Text("(Space)");
 
     if (ImGui::Button("Reset emulator")) {
-      chip8->resetEngine();
+      mChip8Ptr->resetEngine();
     }
     ImGui::SameLine();
     ImGui::Text("(Enter)");
+
+    if (ImGui::Button("Quit")) {
+      mChip8Ptr->quitEngine();
+    }
+    ImGui::SameLine();
+    ImGui::Text("(ESC)");
 
     ImGui::End();
   }

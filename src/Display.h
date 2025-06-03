@@ -6,6 +6,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
+#include <memory>
 
 class Chip8;
 
@@ -20,13 +21,13 @@ public:
   static constexpr int SCREEN_WIDTH = BASE_WIDTH * SCREEN_MULITPLIER;
 
 public:
-  Display(Chip8 *chip8Ptr);
+  Display(std::shared_ptr<Chip8> &inputChip8Ptr);
   ~Display();
 
   void drawScreen(GPU &gpu);
   const SDL_Event getEvent();
 
-  Chip8 *chip8;
+  std::shared_ptr<Chip8> mChip8Ptr;
   bool mRenderImGui;
 
 private:
@@ -41,5 +42,5 @@ private:
   uint32_t mPixels[BASE_HEIGHT *
                    BASE_WIDTH]; // Representation of internal pixel grid
 
-  ImGuiIO* mIo;
+  ImGuiIO *mIo;
 };

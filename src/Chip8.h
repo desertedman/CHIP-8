@@ -14,15 +14,16 @@ class Display;
 class Chip8 {
 public:
   Chip8();
-  Display *mDisplay;
 
   void loadRom(Rom &rom);
   void runEngine();
 
-  void quit();
+  void quitEngine();
   void togglePause();
   void resetEngine();
   void toggleGUI();
+
+  Display *mDisplay;
 
   // Debug functions
   void printMemory(int bytes = 0);

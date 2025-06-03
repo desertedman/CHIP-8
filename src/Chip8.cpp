@@ -1,5 +1,5 @@
-#include "Display.h"
 #include "Chip8.h"
+#include "Display.h"
 #include "imgui_impl_sdl2.h"
 
 #include <SDL2/SDL.h>
@@ -199,7 +199,7 @@ void Chip8::handleInput(SDL_Event &e) {
 
     if (e.type == SDL_KEYDOWN) {
       if (e.key.keysym.sym == SDLK_ESCAPE) {
-        running = false;
+        quitEngine();
       }
 
       else if (e.key.keysym.sym == SDLK_SPACE) {
@@ -284,6 +284,11 @@ void Chip8::drawToTerminal() {
   std::cout << std::endl;
 }
 
+void Chip8::quitEngine() {
+  running = false;
+  std::cout << "Quitting emulator...\n";
+}
+
 void Chip8::togglePause() {
   if (pause) {
     pause = false;
@@ -297,7 +302,7 @@ void Chip8::togglePause() {
 void Chip8::resetEngine() {
   mCPU.initialize();
   mGPU.initialize();
-  std::cout << "State reset\n";
+  std::cout << "State has been reset!\n";
 }
 
 void Chip8::toggleGUI() {
@@ -311,4 +316,3 @@ void Chip8::toggleGUI() {
     std::cout << "Toggling gui on\n";
   }
 }
-
