@@ -195,7 +195,7 @@ void Chip8::handleInput(SDL_Event &e) {
       setQuit();
     }
 
-    if (e.type == SDL_KEYDOWN) {
+    else if (e.type == SDL_KEYDOWN) {
       if (e.key.keysym.sym == SDLK_ESCAPE) {
         setQuit();
       }
