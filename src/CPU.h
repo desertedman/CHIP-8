@@ -33,7 +33,6 @@ public:
   uint16_t fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory);
   void decodeOpcode(const uint16_t &opcode);
   void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory);
-  bool updateScreen(); // Responds if screen has been updated since last draw
 
   int getDelayTimer();
   int getSoundTimer();

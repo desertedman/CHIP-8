@@ -150,8 +150,19 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::SameLine();
     ImGui::Text("(B)");
 
-    if (ImGui::Button("Pause")) {
-      mChip8Ptr->resetEngine();
+    {
+      std::string pauseStatus;
+
+      if (mChip8Ptr->getPauseStatus() == false) {
+        pauseStatus = "Pause";
+      }
+      else {
+        pauseStatus = "Unpause";
+      }
+
+      if (ImGui::Button(pauseStatus.c_str())) {
+        mChip8Ptr->togglePause();
+      }
     }
     ImGui::SameLine();
     ImGui::Text("(Space)");
@@ -161,6 +172,19 @@ void Display::drawScreen(GPU &gpu) {
     }
     ImGui::SameLine();
     ImGui::Text("(Enter)");
+
+    // Configure emulation speed
+    ImGui::Text("Instructions per Frame (Speed)");
+    ImGui::SliderInt("##speedslider",
+                     &(mChip8Ptr->TARGET_INSTRUCTIONS_PER_SECOND), 300, 1100);
+    if (ImGui::Button("Set speed")) {
+      mChip8Ptr->calcSpeed();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Reset speed")) {
+      mChip8Ptr->resetSpeed();
+      mChip8Ptr->calcSpeed();
+    }
 
     if (ImGui::Button("Quit")) {
       mChip8Ptr->quitEngine();

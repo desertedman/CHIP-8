@@ -58,7 +58,7 @@ bool Chip8::initialize() {
   running = true;
 
   // Calculate number of instructions to run in a frame
-  mInstructionsPerFrame = TARGET_INSTRUCTIONS_PER_SECOND / FREQUENCY;
+  calcSpeed();
 
   return true;
 }
@@ -176,12 +176,10 @@ void Chip8::runEngine() {
       for (int i = 0; i < mInstructionsPerFrame; i++) {
         cycleCPU(); // Cycle CPU appropriate number of times
       }
-
-      // Draw to screen
-      if (mCPU.updateScreen()) {
-        mDisplay->drawScreen(mGPU);
-      }
     }
+
+    // Draw screen outside of pause loop so that ImGui still updates
+    mDisplay->drawScreen(mGPU);
 
     // Sleep method
     std::this_thread::sleep_until(nextTime); // Sleep til next frame
@@ -289,14 +287,29 @@ void Chip8::quitEngine() {
   std::cout << "Quitting emulator...\n";
 }
 
+void Chip8::calcSpeed() {
+  mInstructionsPerFrame = TARGET_INSTRUCTIONS_PER_SECOND / FREQUENCY;
+}
+
+void Chip8::resetSpeed() {
+  TARGET_INSTRUCTIONS_PER_SECOND = DEFAULT_INSTRUCTIONS_PER_SECOND;
+}
+
+
 void Chip8::togglePause() {
   if (pause) {
     pause = false;
+    std::cout << "Unpaused\n";
   }
 
   else {
     pause = true;
+    std::cout << "Paused\n";
   }
+}
+
+bool Chip8::getPauseStatus() {
+  return pause;
 }
 
 void Chip8::resetEngine() {

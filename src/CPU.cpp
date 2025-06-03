@@ -237,14 +237,6 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory) {
   }
 }
 
-bool CPU::updateScreen() {
-  if (drawFlag)
-    drawFlag = false;
-  return true;
-
-  return false;
-}
-
 int CPU::getDelayTimer() { return delayTimer; }
 
 int CPU::getSoundTimer() { return soundTimer; }

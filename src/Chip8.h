@@ -19,10 +19,14 @@ public:
   void runEngine();
 
   void quitEngine();
+  void calcSpeed();
+  void resetSpeed();
   void togglePause();
+  bool getPauseStatus();
   void resetEngine();
   void toggleGUI();
 
+  int TARGET_INSTRUCTIONS_PER_SECOND = DEFAULT_INSTRUCTIONS_PER_SECOND;
   Display *mDisplay;
 
   // Debug functions
@@ -33,8 +37,8 @@ public:
 
 private:
   // Constants
-  const int TARGET_INSTRUCTIONS_PER_SECOND = 560;
-  const int FREQUENCY = 60;
+  static constexpr int FREQUENCY = 60;
+  static constexpr int DEFAULT_INSTRUCTIONS_PER_SECOND = 560;
 
 private:
   bool initialize();
