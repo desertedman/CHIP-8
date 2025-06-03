@@ -2,7 +2,7 @@
 
 #include <exception>
 #include <iostream>
-#include <memory>
+// #include <memory>
 
 int main() {
   // Roms
@@ -20,13 +20,17 @@ int main() {
   std::string LargeFile = "../roms/largeFile.txt";
 
   try {
+    Chip8 chip8;
+    Display display(&chip8);
+    chip8.mDisplay = display;
+
+
     std::cout << "Attempting to load file..." << std::endl;
     Rom rom(Breakout);
 
-    std::unique_ptr<Chip8> chip8Ptr = std::make_unique<Chip8>();
-    chip8Ptr->loadRom(rom);
+    chip8.loadRom(rom);
 
-    chip8Ptr->runEngine();
+    chip8.runEngine();
   }
 
   catch (const std::exception &e) {

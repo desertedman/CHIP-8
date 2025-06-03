@@ -7,6 +7,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 
+class Chip8;
+
 class Display {
 public:
   // Constants
@@ -18,11 +20,13 @@ public:
   static constexpr int SCREEN_WIDTH = BASE_WIDTH * SCREEN_MULITPLIER;
 
 public:
-  Display();
+  Display(Chip8 *chip8Ptr);
   ~Display();
 
   void drawScreen(GPU &gpu);
   const SDL_Event getEvent();
+
+  Chip8 *chip8;
   bool mRenderImGui;
 
 private:

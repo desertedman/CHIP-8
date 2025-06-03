@@ -1,3 +1,4 @@
+#include "Chip8.h"
 #include "Display.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
@@ -7,7 +8,7 @@
 #include <stdexcept>
 #include <string>
 
-Display::Display() {
+Display::Display(Chip8 *chip8Ptr) : chip8(chip8Ptr){
   mRenderImGui = true;
 
   try {

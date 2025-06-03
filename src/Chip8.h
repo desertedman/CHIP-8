@@ -1,21 +1,23 @@
 #pragma once
 
 #include "CPU.h"
-#include "Display.h"
 #include "GPU.h"
 #include "Rom.h"
 
+#include <SDL_events.h>
 #include <array>
 #include <cstdint> // Include for uint8_t
 #include <iostream>
 
+class Display;
+
 class Chip8 {
 public:
   Chip8();
+  Display *mDisplay;
 
   void loadRom(Rom &rom);
   void runEngine();
-  void drawToScreen();
 
   // Debug functions
   void printMemory(int bytes = 0);
@@ -40,7 +42,6 @@ private:
   std::streamsize mFileSize;
   GPU mGPU;
   CPU mCPU;
-  Display mDisplay;
 
   int mInstructionsPerFrame;
   bool running;

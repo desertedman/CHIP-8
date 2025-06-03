@@ -1,3 +1,4 @@
+#include "Display.h"
 #include "Chip8.h"
 #include "imgui_impl_sdl2.h"
 
@@ -7,7 +8,6 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
 #include <thread>
 
 uint8_t Font[80] = {
@@ -36,15 +36,11 @@ uint8_t SDL_KEYS[CPU::NUM_KEYS]{
     SDLK_v // Corresponds to mInternalKey[15] (or mInternalKey[F])
 };
 
-Chip8::Chip8() try : mDisplay() {
+Chip8::Chip8() {
   if (!initialize()) {
     std::cerr << "Failed to initialize engine!\n";
     exit(-1);
   }
-}
-
-catch (const std::runtime_error &e) {
-  throw;
 }
 
 bool Chip8::initialize() {
@@ -180,7 +176,7 @@ void Chip8::runEngine() {
 
     // Draw to screen
     if (mCPU.updateScreen()) {
-      drawToScreen();
+      mDisplay->drawScreen(mGPU);
     }
 
     // Sleep method
@@ -203,13 +199,13 @@ void Chip8::handleInput(SDL_Event &e) {
       }
 
       else if (e.key.keysym.sym == SDLK_b) {
-        if (mDisplay.mRenderImGui == true) {
-          mDisplay.mRenderImGui = false;
+        if (mDisplay->mRenderImGui == true) {
+          mDisplay->mRenderImGui = false;
           std::cout << "Toggling gui off\n";
         }
 
-        else if (mDisplay.mRenderImGui == false) {
-          mDisplay.mRenderImGui = true;
+        else if (mDisplay->mRenderImGui == false) {
+          mDisplay->mRenderImGui = true;
           std::cout << "Toggling gui on\n";
         }
       }
@@ -288,5 +284,3 @@ void Chip8::drawToTerminal() {
   }
   std::cout << std::endl;
 }
-
-void Chip8::drawToScreen() { mDisplay.drawScreen(mGPU); }
