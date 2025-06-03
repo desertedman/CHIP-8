@@ -1,18 +1,58 @@
 #include "Display.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl2.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_sdlrenderer2.h"
 
+#include <SDL2/SDL_video.h>
 #include <stdexcept>
 #include <string>
 
 Display::Display() {
-  mWindow = NULL;
-  mRenderer = NULL;
-  mTexture = NULL;
-
   try {
-    initDisplay();
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+      throw std::runtime_error(
+          std::string("SDL could not initialize! SDL_Error: ") + SDL_GetError() +
+          "\n");
+    }
+
+    // Create window
+    mWindow = SDL_CreateWindow("CHIP-8", SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
+                              SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+
+    // Create renderer
+    mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
+    SDL_RenderSetLogicalSize(
+        mRenderer, SCREEN_WIDTH,
+        SCREEN_HEIGHT); // Render canvas with SCREEN resolution
+
+    // Create texture for frame buffer
+    mTexture = SDL_CreateTexture(
+        mRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+        BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
+
+
+    // Ensure that everything was initialized properly
+    if (mWindow == NULL || mRenderer == NULL) {
+      throw std::runtime_error(
+          std::string("Window could not be created! SDL_Error: ") +
+          SDL_GetError() + "\n");
+    }
+
+    // Initialize Imgui
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    mIo = &ImGui::GetIO();
+    (void)mIo;
+    mIo->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    // Setup style
+    ImGui::StyleColorsDark();
+
+    // Setup backends
+    ImGui_ImplSDL2_InitForSDLRenderer(mWindow, mRenderer);
+    ImGui_ImplSDLRenderer2_Init(mRenderer);
   }
 
   catch (const std::runtime_error &e) {
@@ -80,12 +120,22 @@ void Display::drawScreen(GPU &gpu) {
     }
   }
 
+  // Start ImGui frame
+  ImGui_ImplSDLRenderer2_NewFrame();
+  ImGui_ImplSDL2_NewFrame();
+  ImGui::NewFrame();
+
+  bool show_window = true;
+  ImGui::ShowDemoWindow(&show_window);
+  ImGui::Render();
+
   // Update screen
   SDL_UpdateTexture(mTexture, NULL, mPixels, BASE_WIDTH * sizeof(uint32_t));
 
   // Clear screen and render
   SDL_RenderClear(mRenderer);
   SDL_RenderCopy(mRenderer, mTexture, NULL, NULL);
+  ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), mRenderer);
   SDL_RenderPresent(mRenderer);
 }
 
