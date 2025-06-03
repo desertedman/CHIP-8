@@ -199,6 +199,8 @@ void Chip8::handleInput(SDL_Event &event) {
 
     else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
       Display::mScreenWidth = event.window.data1;
+      // Display::mScreenHeight = event.window.data2;
+      mDisplay->calculateResolution();
     }
 
     else if (event.type == SDL_KEYDOWN) {

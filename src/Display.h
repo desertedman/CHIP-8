@@ -25,12 +25,13 @@ public:
 
   void drawScreen(GPU &gpu);
   const SDL_Event getEvent();
+  void calculateResolution();
 
   std::shared_ptr<Chip8> mChip8Ptr;
   bool mRenderImGui;
 
-  void calculateResolution();
   static int mScreenWidth;
+  // static int mScreenHeight;
 
 private:
   SDL_Window *mWindow;     // Window to render to

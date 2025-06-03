@@ -11,6 +11,7 @@
 
 // Calculate initial screen resolution
 int Display::mScreenWidth = Display::BASE_WIDTH * Display::SCREEN_MULITPLIER;
+// int Display::mScreenHeight = Display::BASE_HEIGHT * Display::SCREEN_MULITPLIER;
 
 Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
   mRenderImGui = true;
@@ -175,6 +176,8 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::SameLine();
     ImGui::Text("(ESC)");
 
+    ImGui::Text("Internal Resolution: %d x %d", mScreenWidth, mScreenHeight);
+
     ImGui::End();
   }
   ImGui::Render();
@@ -186,7 +189,7 @@ void Display::drawScreen(GPU &gpu) {
 
   // Clear screen and render
   SDL_RenderClear(mRenderer);
-  SDL_RenderCopy(mRenderer, mTexture, NULL, NULL);
+  SDL_RenderCopy(mRenderer, mTexture, NULL, &mRect);
   ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), mRenderer);
   SDL_RenderPresent(mRenderer);
 }
