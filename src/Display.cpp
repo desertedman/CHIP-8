@@ -64,6 +64,11 @@ Display::Display() {
 }
 
 Display::~Display() {
+  // Shutdown ImGui
+  ImGui_ImplSDLRenderer2_Shutdown();
+  ImGui_ImplSDL2_Shutdown();
+  ImGui::DestroyContext();
+
   SDL_DestroyRenderer(mRenderer); // Must destroy renderer before window!
   mRenderer = NULL;
 
