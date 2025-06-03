@@ -1,4 +1,7 @@
 #include "Display.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl2.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 #include <stdexcept>
 #include <string>
@@ -43,17 +46,18 @@ void Display::initDisplay() {
                              SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
                              SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-  if (mWindow == NULL) {
-    throw std::runtime_error(
-        std::string("Window could not be created! SDL_Error: ") +
-        SDL_GetError() + "\n");
-  }
-
   // Create renderer
   mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
   SDL_RenderSetLogicalSize(
       mRenderer, SCREEN_WIDTH,
       SCREEN_HEIGHT); // Render canvas with SCREEN resolution
+
+  // Ensure that window and renderer were initialized properly
+  if (mWindow == NULL || mRenderer == NULL) {
+    throw std::runtime_error(
+        std::string("Window could not be created! SDL_Error: ") +
+        SDL_GetError() + "\n");
+  }
 
   // Create texture for frame buffer
   mTexture = SDL_CreateTexture(
