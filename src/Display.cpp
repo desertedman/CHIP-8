@@ -24,7 +24,7 @@ Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
     // Create window
     mWindow = SDL_CreateWindow(
         "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-        SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+        SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
 
     // Create renderer
     mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
@@ -151,12 +151,8 @@ void Display::drawScreen(GPU &gpu) {
       mChip8Ptr->calcSpeed();
     }
 
-    int displayW, displayH;
-    SDL_GetWindowSize(mWindow, &displayW, &displayH);
-    ImGui::Text("Resolution: %d x %d", displayW, displayH);
-
     if (ImGui::Button("Quit")) {
-      mChip8Ptr->quitEngine();
+      mChip8Ptr->setQuit();
     }
     ImGui::SameLine();
     ImGui::Text("(ESC)");

@@ -192,12 +192,12 @@ void Chip8::handleInput(SDL_Event &e) {
     ImGui_ImplSDL2_ProcessEvent(&e);
 
     if (e.type == SDL_QUIT) {
-      running = false;
+      setQuit();
     }
 
     if (e.type == SDL_KEYDOWN) {
       if (e.key.keysym.sym == SDLK_ESCAPE) {
-        quitEngine();
+        setQuit();
       }
 
       else if (e.key.keysym.sym == SDLK_SPACE) {
@@ -282,7 +282,7 @@ void Chip8::drawToTerminal() {
   std::cout << std::endl;
 }
 
-void Chip8::quitEngine() {
+void Chip8::setQuit() {
   running = false;
   std::cout << "Quitting emulator...\n";
 }

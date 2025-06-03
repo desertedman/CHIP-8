@@ -18,7 +18,7 @@ public:
   void loadRom(Rom &rom);
   void runEngine();
 
-  void quitEngine();
+  void setQuit();
   void calcSpeed();
   void resetSpeed();
   void togglePause();
