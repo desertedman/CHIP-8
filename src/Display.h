@@ -30,7 +30,7 @@ public:
   std::shared_ptr<Chip8> mChip8Ptr;
   bool mRenderImGui;
 
-  static int mScreenWidth;
+  // static int mScreenWidth;
   // static int mScreenHeight;
 
 private:
@@ -38,6 +38,7 @@ private:
   SDL_Renderer *mRenderer; // Render target to draw to
   SDL_Texture *mTexture;   // Texture to send to render
 
+  int mScreenWidth;
   int mScreenHeight;
   SDL_Rect mRect;
 

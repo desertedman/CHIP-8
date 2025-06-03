@@ -10,12 +10,16 @@
 #include <string>
 
 // Calculate initial screen resolution
-int Display::mScreenWidth = Display::BASE_WIDTH * Display::SCREEN_MULITPLIER;
+// int Display::mScreenWidth = Display::BASE_WIDTH * Display::SCREEN_MULITPLIER;
 // int Display::mScreenHeight = Display::BASE_HEIGHT * Display::SCREEN_MULITPLIER;
 
 Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
   mRenderImGui = true;
   mChip8Ptr = inputChip8Ptr;
+
+  mScreenHeight = BASE_HEIGHT * Display::SCREEN_MULITPLIER;
+  mScreenWidth = BASE_WIDTH * Display::SCREEN_MULITPLIER;
+
   calculateResolution();
 
   try {
@@ -94,8 +98,11 @@ void Display::calculateResolution() {
   // height * ratio = width
   // height = width/ratio
 
-  float aspectRatio = static_cast<float>(BASE_WIDTH) / BASE_HEIGHT;
-  mScreenHeight = mScreenWidth / aspectRatio;
+  // float aspectRatio = static_cast<float>(BASE_WIDTH) / BASE_HEIGHT;
+  // mScreenHeight = mScreenWidth / aspectRatio;
+
+  // Grab current window resolution
+  SDL_GetWindowSize(mWindow, &mScreenWidth, &mScreenHeight);
 
   mRect.x = 0;
   mRect.y = 0;
