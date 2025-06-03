@@ -20,6 +20,7 @@ public:
   void runEngine();
 
   void quit();
+  void togglePause();
   void resetEngine();
   void toggleGUI();
 
@@ -49,4 +50,5 @@ private:
 
   int mInstructionsPerFrame;
   bool running;
+  bool pause;
 };

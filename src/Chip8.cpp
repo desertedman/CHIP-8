@@ -37,6 +37,8 @@ uint8_t SDL_KEYS[CPU::NUM_KEYS]{
 };
 
 Chip8::Chip8() {
+  pause = false;
+
   if (!initialize()) {
     std::cerr << "Failed to initialize engine!\n";
     exit(-1);
@@ -158,25 +160,27 @@ void Chip8::runEngine() {
     // Handle input
     handleInput(e);
 
-    // Decrement timers
-    if (mCPU.getDelayTimer() > 0) {
-      mCPU.decrementDelayTimer();
-    }
-    if (mCPU.getSoundTimer() > 0) {
-      mCPU.decrementSoundTimer();
-    }
+    if (pause == false) {
+      // Decrement timers
+      if (mCPU.getDelayTimer() > 0) {
+        mCPU.decrementDelayTimer();
+      }
+      if (mCPU.getSoundTimer() > 0) {
+        mCPU.decrementSoundTimer();
+      }
 
-    //  TODO: Currently running at 9.33 instructions for frame; we are losing
-    //  one instruction every 3 frames!
+      //  TODO: Currently running at 9.33 instructions for frame; we are losing
+      //  one instruction every 3 frames!
 
-    // Execute instructions per frame
-    for (int i = 0; i < mInstructionsPerFrame; i++) {
-      cycleCPU(); // Cycle CPU appropriate number of times
-    }
+      // Execute instructions per frame
+      for (int i = 0; i < mInstructionsPerFrame; i++) {
+        cycleCPU(); // Cycle CPU appropriate number of times
+      }
 
-    // Draw to screen
-    if (mCPU.updateScreen()) {
-      mDisplay->drawScreen(mGPU);
+      // Draw to screen
+      if (mCPU.updateScreen()) {
+        mDisplay->drawScreen(mGPU);
+      }
     }
 
     // Sleep method
@@ -198,11 +202,15 @@ void Chip8::handleInput(SDL_Event &e) {
         running = false;
       }
 
+      else if (e.key.keysym.sym == SDLK_SPACE) {
+        togglePause();
+      }
+
       else if (e.key.keysym.sym == SDLK_b) {
         toggleGUI();
       }
 
-      else if (e.key.keysym.sym == SDLK_SPACE) {
+      else if (e.key.keysym.sym == SDLK_RETURN) {
         resetEngine();
       }
 
@@ -276,6 +284,16 @@ void Chip8::drawToTerminal() {
   std::cout << std::endl;
 }
 
+void Chip8::togglePause() {
+  if (pause) {
+    pause = false;
+  }
+
+  else {
+    pause = true;
+  }
+}
+
 void Chip8::resetEngine() {
   mCPU.initialize();
   mGPU.initialize();
@@ -288,7 +306,7 @@ void Chip8::toggleGUI() {
     std::cout << "Toggling gui off\n";
   }
 
-  else if (mDisplay->mRenderImGui == false) {
+  else {
     mDisplay->mRenderImGui = true;
     std::cout << "Toggling gui on\n";
   }

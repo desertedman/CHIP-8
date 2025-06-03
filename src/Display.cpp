@@ -150,11 +150,17 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::SameLine();
     ImGui::Text("(B)");
 
-    if (ImGui::Button("Reset emulator")) {
+    if (ImGui::Button("Pause")) {
       chip8->resetEngine();
     }
     ImGui::SameLine();
     ImGui::Text("(Space)");
+
+    if (ImGui::Button("Reset emulator")) {
+      chip8->resetEngine();
+    }
+    ImGui::SameLine();
+    ImGui::Text("(Enter)");
 
     ImGui::End();
   }
