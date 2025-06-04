@@ -7,16 +7,6 @@
 #include <string>
 
 // Load and open a Rom
-Rom::Rom(const std::string &path) {
-  try {
-    openFile(path);
-  }
-
-  catch (const std::runtime_error &e) {
-    throw;
-  }
-}
-
 Rom::~Rom() {
   // Automatically close file on destruction
   mFile.close();

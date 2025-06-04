@@ -8,7 +8,6 @@ public:
   static constexpr int ROM_FILE_SIZE = 3584;
 
 public:
-  Rom(const std::string &path);
   ~Rom();
   void openFile(const std::string &path);
   std::streamsize getSize() const;

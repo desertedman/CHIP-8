@@ -15,7 +15,7 @@ class Chip8 {
 public:
   Chip8();
 
-  void loadRom(Rom &rom);
+  void loadRom(const std::string &path);
   void runEngine();
 
   void setQuit();
@@ -41,8 +41,6 @@ private:
   static constexpr int DEFAULT_INSTRUCTIONS_PER_SECOND = 560;
 
 private:
-  bool initialize();
-
   void testCycleCPU(uint16_t opcode);
   void cycleCPU();
   void handleInput(SDL_Event &e); // Handle input and send to CPU
@@ -52,8 +50,10 @@ private:
   std::streamsize mFileSize;
   GPU mGPU;
   CPU mCPU;
+  Rom mRom;
 
   int mInstructionsPerFrame;
   bool running;
   bool pause;
+  bool loaded;
 };

@@ -40,14 +40,8 @@ uint8_t SDL_KEYS[CPU::NUM_KEYS]{
 
 Chip8::Chip8() {
   pause = false;
+  loaded = false;
 
-  if (!initialize()) {
-    std::cerr << "Failed to initialize engine!\n";
-    exit(-1);
-  }
-}
-
-bool Chip8::initialize() {
   // Load font into memory
   int fontLength = sizeof(Font) / sizeof(uint8_t);
   std::memcpy(&mMemory.at(CPU::FONT_LOCATION), Font, fontLength);
@@ -62,16 +56,20 @@ bool Chip8::initialize() {
   // Calculate number of instructions to run in a frame
   calcSpeed();
 
-  return true;
 }
 
-void Chip8::loadRom(Rom &rom) {
+void Chip8::loadRom(const std::string &path) {
+  mRom.openFile(path);
+
   // Read rom data into memory
-  rom.mFile.read(reinterpret_cast<char *>(mMemory.data() + 0x200),
-                 rom.getSize());
+  mRom.mFile.read(reinterpret_cast<char *>(mMemory.data() + 0x200),
+                 mRom.getSize());
 
   // Save file size for debug purposes
-  mFileSize = rom.getSize();
+  mFileSize = mRom.getSize();
+
+  resetEngine();
+  loaded = true;
 }
 
 void Chip8::printMemory(int bytes) {
@@ -162,7 +160,7 @@ void Chip8::runEngine() {
     // Handle input
     handleInput(event);
 
-    if (pause == false) {
+    if (pause == false && loaded == true) {
       // Decrement timers
       if (mCPU.getDelayTimer() > 0) {
         mCPU.decrementDelayTimer();

@@ -26,9 +26,7 @@ int main() {
     chip8->mDisplay = &display;
 
     std::cout << "Attempting to load file..." << std::endl;
-    Rom rom(Breakout);
 
-    chip8->loadRom(rom);
     chip8->runEngine();
   }
 

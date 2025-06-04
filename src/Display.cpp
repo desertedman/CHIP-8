@@ -78,6 +78,8 @@ Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
 }
 
 Display::~Display() {
+  mChip8Ptr = NULL;
+
   // Shutdown ImGui
   ImGui_ImplSDLRenderer2_Shutdown();
   ImGui_ImplSDL2_Shutdown();
@@ -172,7 +174,7 @@ void Display::drawScreen(GPU &gpu) {
     ImGui::Text("(Enter)");
 
     // Configure emulation speed
-    ImGui::Text("Instructions per Frame (Speed)");
+    ImGui::Text("Instructions per second (Speed)");
     ImGui::SliderInt("##speedslider",
                      &(mChip8Ptr->TARGET_INSTRUCTIONS_PER_SECOND), 300, 1100);
     if (ImGui::Button("Set speed")) {
@@ -184,7 +186,7 @@ void Display::drawScreen(GPU &gpu) {
       mChip8Ptr->calcSpeed();
     }
 
-    openFile();
+    showOpenFileButton();
 
     if (ImGui::Button("Quit")) {
       mChip8Ptr->setQuit();
@@ -212,7 +214,7 @@ void Display::drawScreen(GPU &gpu) {
   SDL_RenderPresent(mRenderer);
 }
 
-void Display::openFile() {
+void Display::showOpenFileButton() {
   // open Dialog Simple
   if (ImGui::Button("Open ROM")) {
     IGFD::FileDialogConfig config;
@@ -225,6 +227,7 @@ void Display::openFile() {
     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
       std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
       std::cout << "Path: " << filePathName << std::endl;
+      mChip8Ptr->loadRom(filePathName);
     }
 
     // close
