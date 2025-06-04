@@ -1,9 +1,11 @@
 #include "GPU.h"
 
-GPU::GPU() { initialize(); }
+GPU::GPU() { 
+  // Ensure that screen is cleared on creation. Probably unnecessary
+  initialize();
+}
 
 void GPU::initialize() {
-  // Ensure that screen is cleared on creation. Probably unnecessary
   clearScreen();
 }
 

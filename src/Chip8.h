@@ -8,6 +8,15 @@
 #include <array>
 #include <cstdint> // Include for uint8_t
 #include <iostream>
+#include <sys/types.h>
+
+namespace Constants {
+  static constexpr int FREQUENCY = 60;
+  static constexpr int DEFAULT_INSTRUCTIONS_PER_SECOND = 560;
+
+  static constexpr int BASE_WIDTH = 64;
+  static constexpr int BASE_HEIGHT = 32;
+}
 
 class Display;
 
@@ -26,29 +35,24 @@ public:
   void resetEngine();
   void toggleGUI();
 
-  int TARGET_INSTRUCTIONS_PER_SECOND = DEFAULT_INSTRUCTIONS_PER_SECOND;
+  int mTargetInstructionsPerSecond = Constants::DEFAULT_INSTRUCTIONS_PER_SECOND;
   Display *mDisplay;
 
   // Debug functions
   void printMemory(int bytes = 0);
-  void testEngine();
-  void fillScreen();
+  // void testEngine();
   void drawToTerminal();
-
-private:
-  // Constants
-  static constexpr int FREQUENCY = 60;
-  static constexpr int DEFAULT_INSTRUCTIONS_PER_SECOND = 560;
 
 private:
   void testCycleCPU(uint16_t opcode);
   void cycleCPU();
   void handleInput(SDL_Event &e); // Handle input and send to CPU
+  uint8_t getPixel(int xCoord, int yCoord);
 
-private:
   std::array<uint8_t, CPU::MEMORY_SIZE> mMemory; // 4Kb of memory
+  std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> mPixels;
   std::streamsize mFileSize;
-  GPU mGPU;
+  // GPU mGPU;
   CPU mCPU;
   Rom mRom;
 
@@ -57,6 +61,7 @@ private:
   bool pause;
   bool loaded;
 };
+
 
 namespace Emulator {
   void runEmulator();

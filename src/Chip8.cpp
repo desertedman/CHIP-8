@@ -7,6 +7,7 @@
 #include <SDL_keycode.h>
 #include <SDL_video.h>
 #include <chrono>
+#include <cstdint>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -38,6 +39,12 @@ uint8_t SDL_KEYS[CPU::NUM_KEYS]{
     SDLK_v // Corresponds to mInternalKey[15] (or mInternalKey[F])
 };
 
+enum PIXEL_COLOR : uint8_t {
+  PIXEL_OFF = 0,
+  PIXEL_ON = 1,
+  PIXEL_ERROR = 255,
+};
+
 Chip8::Chip8() {
   pause = false;
   loaded = false;
@@ -52,10 +59,22 @@ Chip8::Chip8() {
   // mCPU.initialize();
   // Ideally, should not need to initialize CPU and GPU manually
 
+  mPixels.fill(PIXEL_OFF);
   running = true;
 
   // Calculate number of instructions to run in a frame
   calcSpeed();
+}
+
+uint8_t Chip8::getPixel(int xCoord, int yCoord) {
+  // Coordinates should range from 0-63, 0-31
+  if (xCoord >= 64 || yCoord >= 32) {
+    return 255;
+  }
+
+  int height = Constants::BASE_WIDTH * yCoord;
+  
+  return mPixels[height + xCoord];
 }
 
 void Chip8::loadRom(const std::string &path) {
@@ -86,61 +105,61 @@ void Chip8::printMemory(int bytes) {
   std::cout << "\n";
 }
 
-void Chip8::testEngine() {
-  {
-    // Test 00E0
-    mGPU.fillScreen();
-    drawToTerminal();
-
-    testCycleCPU(0x00E0);
-    drawToTerminal();
-  }
-
-  {
-    // 0x1NNN
-    std::cout << "\tTesting 0x1NNN\n";
-    testCycleCPU(0x1AAA);
-  }
-
-  {
-    // 0x2NNN and 0x00EE
-    std::cout << "\tTesting 0x2NNN\n";
-    testCycleCPU(0x235E);
-
-    std::cout << "\tTesting 0x00EE\n";
-    testCycleCPU(0x00EE);
-  }
-
-  {
-    // 0x6XNN
-    std::cout << "\tTesting 0x6XNN\n";
-    testCycleCPU(0x634A);
-  }
-
-  {
-    // 0x7XNN
-    std::cout << "\tTesting 0x7XNN\n";
-    testCycleCPU(0x7501);
-    testCycleCPU(0x75FF);
-  }
-
-  {
-    // 0xANNN
-    std::cout << "\tTesting 0xANNN\n";
-    testCycleCPU(0xA501);
-  }
-
-  {
-    // Fill pixel test
-    mGPU.setPixel(63, 31, true);
-    std::cout << mGPU.getPixel(63, 31) << std::endl;
-
-    drawToTerminal();
-
-    fillScreen();
-    drawToTerminal();
-  }
-}
+// void Chip8::testEngine() {
+//   {
+//     // Test 00E0
+//     mGPU.fillScreen();
+//     drawToTerminal();
+//
+//     testCycleCPU(0x00E0);
+//     drawToTerminal();
+//   }
+//
+//   {
+//     // 0x1NNN
+//     std::cout << "\tTesting 0x1NNN\n";
+//     testCycleCPU(0x1AAA);
+//   }
+//
+//   {
+//     // 0x2NNN and 0x00EE
+//     std::cout << "\tTesting 0x2NNN\n";
+//     testCycleCPU(0x235E);
+//
+//     std::cout << "\tTesting 0x00EE\n";
+//     testCycleCPU(0x00EE);
+//   }
+//
+//   {
+//     // 0x6XNN
+//     std::cout << "\tTesting 0x6XNN\n";
+//     testCycleCPU(0x634A);
+//   }
+//
+//   {
+//     // 0x7XNN
+//     std::cout << "\tTesting 0x7XNN\n";
+//     testCycleCPU(0x7501);
+//     testCycleCPU(0x75FF);
+//   }
+//
+//   {
+//     // 0xANNN
+//     std::cout << "\tTesting 0xANNN\n";
+//     testCycleCPU(0xA501);
+//   }
+//
+//   {
+//     // Fill pixel test
+//     mGPU.setPixel(63, 31, true);
+//     std::cout << mGPU.getPixel(63, 31) << std::endl;
+//
+//     drawToTerminal();
+//
+//     fillScreen();
+//     drawToTerminal();
+//   }
+// }
 
 void Chip8::runEngine() {
   // 1. Handle input; should translate SDL events to our CPU
@@ -149,7 +168,7 @@ void Chip8::runEngine() {
   // 4. Draw screen (only if drawFlag is set)
   // 5. Sleep til next frame; repeat 60 times per sec
 
-  double periodSec = 1.0 / FREQUENCY; // Time in seconds to wait for one frame
+  double periodSec = 1.0 / Constants::FREQUENCY; // Time in seconds to wait for one frame
   std::chrono::duration<double, std::milli> periodMS(periodSec *
                                                      1000); // Convert to ms
 
@@ -256,8 +275,6 @@ void Chip8::testCycleCPU(uint16_t opcode) {
   mCPU.executeOpcode(mGPU, mMemory);
 }
 
-void Chip8::fillScreen() { mGPU.fillScreen(); }
-
 void Chip8::drawToTerminal() {
   // Draw top border
   for (int i = 0; i < GPU::COLUMNS; i++) {
@@ -294,11 +311,11 @@ void Chip8::setQuit() {
 }
 
 void Chip8::calcSpeed() {
-  mInstructionsPerFrame = TARGET_INSTRUCTIONS_PER_SECOND / FREQUENCY;
+  mInstructionsPerFrame = mTargetInstructionsPerSecond  / Constants::FREQUENCY;
 }
 
 void Chip8::resetSpeed() {
-  TARGET_INSTRUCTIONS_PER_SECOND = DEFAULT_INSTRUCTIONS_PER_SECOND;
+  mTargetInstructionsPerSecond = Constants::DEFAULT_INSTRUCTIONS_PER_SECOND;
 }
 
 
@@ -320,7 +337,7 @@ bool Chip8::getPauseStatus() {
 
 void Chip8::resetEngine() {
   mCPU.initialize();
-  mGPU.initialize();
+  mPixels.fill(PIXEL_OFF);
   std::cout << "State has been reset!\n";
 }
 
