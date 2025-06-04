@@ -41,6 +41,7 @@ uint8_t SDL_KEYS[CPU::NUM_KEYS]{
 Chip8::Chip8() {
   pause = false;
   loaded = false;
+  mDisplay = NULL;
 
   // Load font into memory
   int fontLength = sizeof(Font) / sizeof(uint8_t);
@@ -55,10 +56,11 @@ Chip8::Chip8() {
 
   // Calculate number of instructions to run in a frame
   calcSpeed();
-
 }
 
 void Chip8::loadRom(const std::string &path) {
+  std::cout << "Attempting to load file..." << std::endl;
+
   mRom.openFile(path);
 
   // Read rom data into memory
@@ -331,5 +333,19 @@ void Chip8::toggleGUI() {
   else {
     mDisplay->mRenderImGui = true;
     std::cout << "Toggling gui on\n";
+  }
+}
+
+void Emulator::runEmulator() {
+  try {
+    std::shared_ptr<Chip8> chip8 = std::make_shared<Chip8>();
+    Display display(chip8);
+    chip8->mDisplay = &display;
+
+    chip8->runEngine();
+  }
+
+  catch (const std::exception &e) {
+    std::cerr << "Exception caught: " << e.what() << std::endl;
   }
 }

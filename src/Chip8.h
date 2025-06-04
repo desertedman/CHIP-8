@@ -57,3 +57,7 @@ private:
   bool pause;
   bool loaded;
 };
+
+namespace Emulator {
+  void runEmulator();
+}
