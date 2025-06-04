@@ -39,12 +39,6 @@ uint8_t SDL_KEYS[CPU::NUM_KEYS]{
     SDLK_v // Corresponds to mInternalKey[15] (or mInternalKey[F])
 };
 
-enum PIXEL_COLOR : uint8_t {
-  PIXEL_OFF = 0,
-  PIXEL_ON = 1,
-  PIXEL_ERROR = 255,
-};
-
 Chip8::Chip8() {
   pause = false;
   loaded = false;
@@ -59,7 +53,7 @@ Chip8::Chip8() {
   // mCPU.initialize();
   // Ideally, should not need to initialize CPU and GPU manually
 
-  mPixels.fill(PIXEL_OFF);
+  mPixels.fill(0);
   running = true;
 
   // Calculate number of instructions to run in a frame
@@ -200,7 +194,7 @@ void Chip8::runEngine() {
     }
 
     // Draw screen outside of pause loop so that ImGui still updates
-    mDisplay->drawScreen(mGPU);
+    mDisplay->drawScreen(mPixels);
 
     // Sleep method
     std::this_thread::sleep_until(nextTime); // Sleep til next frame
@@ -267,42 +261,42 @@ void Chip8::cycleCPU() {
   uint16_t opcode = mCPU.fetchOpcode(mMemory);
   mCPU.decodeOpcode(opcode);
   // std::cout << "Opcode: " << std::hex << opcode << std::endl;
-  mCPU.executeOpcode(mGPU, mMemory);
+  mCPU.executeOpcode(mPixels, mMemory);
 }
 
 void Chip8::testCycleCPU(uint16_t opcode) {
-  mCPU.decodeOpcode(opcode);
-  mCPU.executeOpcode(mGPU, mMemory);
+  // mCPU.decodeOpcode(opcode);
+  // mCPU.executeOpcode(mGPU, mMemory);
 }
 
 void Chip8::drawToTerminal() {
-  // Draw top border
-  for (int i = 0; i < GPU::COLUMNS; i++) {
-    std::cout << "_";
-  }
-  std::cout << std::endl;
-
-  for (int y = 0; y < GPU::ROWS; y++) {
-    std::cout << "| "; // Beginning of screen row
-
-    for (int x = 0; x < GPU::COLUMNS; x++) {
-      if (mGPU.getPixel(x, y)) {
-        std::cout << "*";
-      }
-
-      else {
-        std::cout << " ";
-      }
-    }
-
-    std::cout << " |" << std::endl; // End of row; start new line;
-  }
-
-  // Draw bottom border
-  for (int i = 0; i < GPU::COLUMNS; i++) {
-    std::cout << "_";
-  }
-  std::cout << std::endl;
+  // // Draw top border
+  // for (int i = 0; i < GPU::COLUMNS; i++) {
+  //   std::cout << "_";
+  // }
+  // std::cout << std::endl;
+  //
+  // for (int y = 0; y < GPU::ROWS; y++) {
+  //   std::cout << "| "; // Beginning of screen row
+  //
+  //   for (int x = 0; x < GPU::COLUMNS; x++) {
+  //     // if (mGPU.getPixel(x, y)) {
+  //     //   std::cout << "*";
+  //     // }
+  //     //
+  //     // else {
+  //     //   std::cout << " ";
+  //     // }
+  //   }
+  //
+  //   std::cout << " |" << std::endl; // End of row; start new line;
+  // }
+  //
+  // // Draw bottom border
+  // for (int i = 0; i < GPU::COLUMNS; i++) {
+  //   std::cout << "_";
+  // }
+  // std::cout << std::endl;
 }
 
 void Chip8::setQuit() {
@@ -337,7 +331,7 @@ bool Chip8::getPauseStatus() {
 
 void Chip8::resetEngine() {
   mCPU.initialize();
-  mPixels.fill(PIXEL_OFF);
+  mPixels.fill(0);
   std::cout << "State has been reset!\n";
 }
 

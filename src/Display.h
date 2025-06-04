@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GPU.h" // For constants
+#include "CPU.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 
@@ -23,7 +23,7 @@ public:
   Display(std::shared_ptr<Chip8> &inputChip8Ptr);
   ~Display();
 
-  void drawScreen(GPU &gpu);
+  void drawScreen(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
   const SDL_Event getEvent();
   void calculateResolution();
 

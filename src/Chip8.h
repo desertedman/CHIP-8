@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CPU.h"
-#include "GPU.h"
 #include "Rom.h"
 
 #include <SDL_events.h>
@@ -13,9 +12,6 @@
 namespace Constants {
   static constexpr int FREQUENCY = 60;
   static constexpr int DEFAULT_INSTRUCTIONS_PER_SECOND = 560;
-
-  static constexpr int BASE_WIDTH = 64;
-  static constexpr int BASE_HEIGHT = 32;
 }
 
 class Display;

@@ -1,5 +1,5 @@
-
 #include "CPU.h"
+#include <cstdint>
 #include <iostream>
 
 CPU::CPU() { initialize(); }
@@ -52,14 +52,16 @@ void CPU::decodeOpcode(const uint16_t &opcode) {
   // nibbles.fourth);
 }
 
-void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory) {
+void CPU::executeOpcode(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+    std::array<uint8_t, MEMORY_SIZE> &memory) {
   switch (nibbles.first) {
 
   case 0x0000:
 
     switch (nibbles.sec | nibbles.lastTwo) {
     case 0xE0:
-      op00E0(gpu);
+      op00E0(pixels);
       break;
 
     case 0xEE:
@@ -163,7 +165,7 @@ void CPU::executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory) {
     break;
 
   case 0xD000:
-    opDXYN(gpu, memory);
+    opDXYN(pixels, memory);
     break;
 
   case 0xE000:
@@ -259,10 +261,10 @@ void CPU::printOpcodeMissing() {
 // Opcode functions
 
 // Clear screen op
-void CPU::op00E0(GPU &gpu) {
+void CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels) {
   drawFlag = true;
 
-  gpu.clearScreen();
+  pixels.fill(0);
 }
 
 // Return from subroutine
@@ -445,7 +447,9 @@ void CPU::opCXNN() {
 // Refer to:
 // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
 // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory) {
+void CPU::opDXYN(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+    std::array<uint8_t, MEMORY_SIZE> &memory) {
   drawFlag = true;
 
   uint8_t x = V[nibbles.sec >> 8] % 64; // X, Y coordinates
@@ -458,27 +462,32 @@ void CPU::opDXYN(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory) {
 
   V[0xF] = 0;
   for (int yLine = 0; yLine < N; yLine++) {
-    if (y + yLine > GPU::ROWS - 1) {
+    if (y + yLine > Constants::BASE_HEIGHT - 1) {
       break;
     }
 
     uint8_t sprite = memory.at(I + yLine); // Grab sprite data
 
     for (int xLine = 0; xLine < 8; xLine++) {
-      if (x + xLine > GPU::COLUMNS - 1) {
+      if (x + xLine > Constants::BASE_WIDTH - 1) {
         break;
       }
 
-      uint8_t pixel =
-          sprite & (0x80 >> xLine); // Grab each pixel bit from left to right.
-                                    // Note that 0x80 is 0b1000 0000
-      if (pixel)                    // Compare bit against current screen pixel
-      {
-        if (gpu.getPixel(x + xLine, y + yLine)) {
+      // Grab each pixel bit from left to right.
+      // Note that 0x80 is 0b1000 0000
+      // Compare bit against current screen pixel
+      uint8_t pixel = sprite & (0x80 >> xLine);
+
+      if (pixel) {
+        if (PixelFunctions::getPixel(pixels, x + xLine, y + yLine) ==
+            1) {
           V[0xF] = 1;
         }
 
-        gpu.xorPixel(x + xLine, y + yLine, 1);
+        // pixels.xorPixel(x + xLine, y + yLine, 1);
+        // PIXEL_COLOR *pixelPtr =
+        //     &PixelsFunction::getPixel(pixels, x + xLine, y + yLine);
+        PixelFunctions::xorPixel(pixels, x + xLine, y + yLine);
       }
 
       // DO NOT INCREMENT X!!
@@ -586,4 +595,32 @@ void CPU::opFX65(std::array<uint8_t, MEMORY_SIZE> &memory) {
   }
 
   I += targetRegister + 1; // Classic behavior; disable for modern
+}
+
+int PixelFunctions::calculatePixel(int xCoord, int yCoord) {
+  // Coordinates should range from 0-63, 0-31
+  if (xCoord >= 64 || yCoord >= 32) {
+    return 255;
+  }
+
+  // Calculate appropriate number of pixels to travel
+  int height = Constants::BASE_WIDTH * yCoord;
+
+  return height + xCoord;
+}
+
+uint8_t PixelFunctions::getPixel(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+    int xCoord, int yCoord) {
+  int pixel = calculatePixel(xCoord, yCoord);
+
+  return pixels[pixel];
+}
+
+void PixelFunctions::xorPixel(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+    int xCoord, int yCoord) {
+  int pixelCoord = calculatePixel(xCoord, yCoord);
+
+  pixels[pixelCoord] ^= 1;
 }

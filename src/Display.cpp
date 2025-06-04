@@ -1,4 +1,5 @@
 #include "Display.h"
+#include "CPU.h"
 #include "Chip8.h"
 #include "ImGuiFileDialog.h"
 #include "imgui.h"
@@ -7,6 +8,7 @@
 
 #include <SDL2/SDL_video.h>
 #include <SDL_render.h>
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 
@@ -119,13 +121,13 @@ void Display::calculateResolution() {
   mDrawRect.h = renderHeight;
 }
 
-void Display::drawScreen(GPU &gpu) {
+void Display::drawScreen(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels) {
   int mPixelsItt = 0;                   // Iterator to travel mPixels array
   for (int y = 0; y < BASE_HEIGHT; y++) // Traverse each row
   {
     for (int x = 0; x < BASE_WIDTH; x++) // Traverse each column
     {
-      bool pixel = gpu.getPixel(x, y);
+      uint8_t pixel = PixelFunctions::getPixel(pixels, x, y);
 
       // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to
       // determine if pixel is colored or not
@@ -176,7 +178,7 @@ void Display::drawScreen(GPU &gpu) {
     // Configure emulation speed
     ImGui::Text("Instructions per second (Speed)");
     ImGui::SliderInt("##speedslider",
-                     &(mChip8Ptr->TARGET_INSTRUCTIONS_PER_SECOND), 300, 1100);
+                     &(mChip8Ptr->mTargetInstructionsPerSecond), 300, 1100);
     if (ImGui::Button("Set speed")) {
       mChip8Ptr->calcSpeed();
     }
@@ -220,7 +222,7 @@ void Display::showOpenFileButton() {
     IGFD::FileDialogConfig config;
     config.path = ".";
     ImGuiFileDialog::Instance()->OpenDialog("ChooseRom", "Choose a ROM...",
-                                            ".ch8,.rom", config);
+                                            ".rom,.ch8", config);
   }
   // display
   if (ImGuiFileDialog::Instance()->Display("ChooseRom")) {

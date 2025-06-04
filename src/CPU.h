@@ -1,9 +1,18 @@
 #pragma once
 
-#include "GPU.h"
-
 #include <array>
 #include <cstdint> // Include for uint8_t
+
+// enum PIXEL_COLOR {
+//   PIXEL_OFF = 0,
+//   PIXEL_ON = 1,
+//   PIXEL_ERROR = 255,
+// };
+
+namespace Constants {
+static constexpr int BASE_WIDTH = 64;
+static constexpr int BASE_HEIGHT = 32;
+} // namespace Constants
 
 struct Nibbles {
   uint16_t opcode;
@@ -32,7 +41,8 @@ public:
 
   uint16_t fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory);
   void decodeOpcode(const uint16_t &opcode);
-  void executeOpcode(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory);
+  void executeOpcode(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+                     std::array<uint8_t, MEMORY_SIZE> &memory);
 
   int getDelayTimer();
   int getSoundTimer();
@@ -64,7 +74,7 @@ private:
 
 private:
   // Opcode functions
-  void op00E0(GPU &gpu);
+  void op00E0(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
   void op00EE();
   void op1NNN();
   void op2NNN();
@@ -86,7 +96,8 @@ private:
   void opANNN();
   void opBNNN();
   void opCXNN();
-  void opDXYN(GPU &gpu, std::array<uint8_t, MEMORY_SIZE> &memory);
+  void opDXYN(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+              std::array<uint8_t, MEMORY_SIZE> &memory);
   void opEX9E();
   void opEXA1();
   void opFX07();
@@ -99,3 +110,14 @@ private:
   void opFX55(std::array<uint8_t, MEMORY_SIZE> &memory);
   void opFX65(std::array<uint8_t, MEMORY_SIZE> &memory);
 };
+
+namespace PixelFunctions {
+int calculatePixel(int xCoord, int yCoord);
+
+uint8_t getPixel(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+    int xCoord, int yCoord);
+void xorPixel(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+    int xCoord, int yCoord);
+} // namespace PixelsFunction
