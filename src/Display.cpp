@@ -1,5 +1,6 @@
 #include "Display.h"
 #include "Chip8.h"
+#include "ImGuiFileDialog.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
@@ -183,6 +184,8 @@ void Display::drawScreen(GPU &gpu) {
       mChip8Ptr->calcSpeed();
     }
 
+    openFile();
+
     if (ImGui::Button("Quit")) {
       mChip8Ptr->setQuit();
     }
@@ -207,4 +210,24 @@ void Display::drawScreen(GPU &gpu) {
   SDL_RenderCopy(mRenderer, mTexture, NULL, &mDrawRect);
   ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), mRenderer);
   SDL_RenderPresent(mRenderer);
+}
+
+void Display::openFile() {
+  // open Dialog Simple
+  if (ImGui::Button("Open ROM")) {
+    IGFD::FileDialogConfig config;
+    config.path = ".";
+    ImGuiFileDialog::Instance()->OpenDialog("ChooseRom", "Choose a ROM...",
+                                            ".ch8,.rom", config);
+  }
+  // display
+  if (ImGuiFileDialog::Instance()->Display("ChooseRom")) {
+    if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+      std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+      std::cout << "Path: " << filePathName << std::endl;
+    }
+
+    // close
+    ImGuiFileDialog::Instance()->Close();
+  }
 }

@@ -34,6 +34,8 @@ public:
   // static int mScreenHeight;
 
 private:
+  void openFile();
+
   SDL_Window *mWindow;     // Window to render to
   SDL_Renderer *mRenderer; // Render target to draw to
   SDL_Texture *mTexture;   // Texture to send to render
