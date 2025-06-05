@@ -7,12 +7,15 @@ CHIP-8 Emulator built in C++ for Linux systems.
 Requires:
 
 - SDL2
-
 - CMake
-
 - [imgui](https://github.com/ocornut/imgui) (included)
-
 - [ImGui File Dialog](https://github.com/aiekick/ImGuiFileDialog) (included as submodule)
+
+## Instructions
+
+```bash
+To be written
+```
 
 ## Controls
 
@@ -29,14 +32,12 @@ Keypad                   Keyboard
 +-+-+-+-+                +-+-+-+-+
 ```
 
-(Taken from multigesture.net)
+(Taken from [multigesture.net](https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/))
 
 ## TODO
 
 - Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
-
 - Windows cross-compatibility?
-
 - DONE: UI Integration, something like Dear ImGui
 
 ### Resources
