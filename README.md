@@ -26,6 +26,12 @@ Requires:
 
 ### Linux
 
+#### Fedora 42
+
+```bash
+sudo dnf install SDL2-devel cmake gcc-c++
+```
+
 ```bash
 git clone --recurse-submodules https://github.com/desertedman/CHIP-8.git
 cd CHIP-8
