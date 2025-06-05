@@ -64,7 +64,7 @@ Keypad                   Keyboard
 ## Known Issues
 
 - Resizing window larger than its original size crops the image
-- Space Invaders does not function correctly
+- Space Invaders does not function correctly. Space Invaders relies on SuperChip quirks which I have chosen not to implement.
 
 ## TODO
 
