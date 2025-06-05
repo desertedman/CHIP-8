@@ -1,9 +1,22 @@
+# CHIP-8 Emulator
+
 CHIP-8 Emulator built in C++ for Linux systems.
 
-Built against g++ in Fedora 41. Requires SDL2 and CMake
+## Dependencies
 
-Controls:
-```
+Requires:
+
+- SDL2
+
+- CMake
+
+- [imgui](https://github.com/ocornut/imgui) (included)
+
+- [ImGui File Dialog](https://github.com/aiekick/ImGuiFileDialog) (included as submodule)
+
+## Controls
+
+```none
 Keypad                   Keyboard
 +-+-+-+-+                +-+-+-+-+
 |1|2|3|C|                |1|2|3|4|
@@ -15,27 +28,25 @@ Keypad                   Keyboard
 |A|0|B|F|                |Z|X|C|V|
 +-+-+-+-+                +-+-+-+-+
 ```
+
 (Taken from multigesture.net)
 
-TODO: 
+## TODO
 
 - Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
 
 - Windows cross-compatibility?
 
-- UI Integration, something like Dear ImGui
+- DONE: UI Integration, something like Dear ImGui
 
-- Multi-threading to update display and CPU cycles independently?
+## Resources
 
+<https://tobiasvl.github.io/blog/write-a-chip-8-emulator/>
 
-Resources: 
+<https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/>
 
-https://tobiasvl.github.io/blog/write-a-chip-8-emulator/
+<http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Dxyn>
 
-https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
+<https://github.com/Timendus/chip8-test-suite>
 
-http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Dxyn
-
-https://github.com/Timendus/chip8-test-suite
-
-https://github.com/JamesGriffin/CHIP-8-Emulator
+<https://github.com/JamesGriffin/CHIP-8-Emulator>
