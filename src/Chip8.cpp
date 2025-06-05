@@ -63,8 +63,9 @@ void Chip8::loadRom(const std::string &path) {
   mRom.openFile(path);
 
   // Read rom data into memory
-  mRom.mFile.read(reinterpret_cast<char *>(mMemory.data() + Constants::MEMORY_START),
-                  mRom.getSize());
+  mRom.mFile.read(
+      reinterpret_cast<char *>(mMemory.data() + Constants::MEMORY_START),
+      mRom.getSize());
 
   // Save file size for debug purposes
   mFileSize = mRom.getSize();
@@ -86,22 +87,21 @@ void Chip8::printMemory(int bytes) {
 }
 
 void Chip8::runEngine() {
-  // 1. Handle input; should translate SDL events to our CPU
-  // 2. Decrement timers
-  // 3. Cycle CPU
-  // 4. Draw screen (only if drawFlag is set)
-  // 5. Sleep til next frame; repeat 60 times per sec
 
-  double periodSec =
-      1.0 / FREQUENCY; // Time in seconds to wait for one frame
+  // Calculate basic timing info
+  double periodSec = 1.0 / FREQUENCY; // Time in seconds to wait for one frame
   std::chrono::duration<double, std::milli> periodMS(periodSec *
                                                      1000); // Convert to ms
-
   auto nextTime =
       std::chrono::steady_clock::now() + periodMS; // Get current time
 
   SDL_Event event;
 
+  // 1. Handle input; should translate SDL events to our CPU
+  // 2. Decrement timers
+  // 3. Cycle CPU
+  // 4. Draw screen (only if drawFlag is set)
+  // 5. Sleep til next frame; repeat 60 times per sec
   while (running) {
     // Handle input
     handleInput(event);
@@ -125,7 +125,6 @@ void Chip8::runEngine() {
     }
 
     // Draw screen outside of pause loop so that ImGui still updates
-    // mDisplay->drawScreen(mPixels);
     DisplayFunctions::drawScreen(mPixels, mDisplay, *this);
 
     // Sleep method
@@ -261,10 +260,11 @@ void DisplayFunctions::drawScreen(
     std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
     Display *display, Chip8 &chip8) {
   int mPixelsItt = 0; // Iterator to travel mPixels array
-  for (int y = 0; y < Constants::BASE_HEIGHT; y++) // Traverse each row
-  {
-    for (int x = 0; x < Constants::BASE_WIDTH; x++) // Traverse each column
-    {
+
+  // Traverse each row
+  for (int y = 0; y < Constants::BASE_HEIGHT; y++) {
+    // Traverse each column
+    for (int x = 0; x < Constants::BASE_WIDTH; x++) {
       uint8_t pixel = PixelFunctions::getPixel(pixels, x, y);
 
       // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to
