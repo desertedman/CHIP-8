@@ -1,6 +1,6 @@
 # CHIP-8 Emulator
 
-CHIP-8 Emulator built in C++ for Linux systems.
+CHIP-8 Emulator built in C++ for Linux systems. Built and tested on Fedora 42!
 
 ## Dependencies
 
@@ -37,6 +37,13 @@ Keypad                   Keyboard
 ```
 
 (Taken from [multigesture.net](https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/))
+
+### Hotkeys
+
+- B to toggle GUI on and off
+- Space to pause/unpause
+- Enter to reset emulator
+- ESC to quit
 
 ## TODO
 
