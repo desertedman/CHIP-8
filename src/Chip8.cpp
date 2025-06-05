@@ -6,6 +6,7 @@
 #include "imgui_impl_sdlrenderer2.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_render.h>
 #include <SDL_events.h>
 #include <SDL_keycode.h>
 #include <SDL_video.h>
@@ -363,8 +364,9 @@ void DisplayFunctions::drawScreen(
                     Constants::BASE_WIDTH * sizeof(uint32_t));
 
   // Clear screen and render
-  SDL_RenderSetLogicalSize(display->mRenderer, display->mWindowWidth,
-                           display->mWindowHeight);
+  // SDL_RenderSetLogicalSize(display->mRenderer, display->mWindowWidth,
+  //                          display->mWindowHeight);
+  SDL_SetRenderDrawColor(display->mRenderer, 128, 128, 128, 255);
   SDL_RenderClear(display->mRenderer);
   SDL_RenderCopy(display->mRenderer, display->mTexture, NULL,
                  &display->mDrawRect);
