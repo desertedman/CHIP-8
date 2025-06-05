@@ -1,6 +1,15 @@
 # CHIP-8 Emulator
 
-CHIP-8 Emulator built in C++ for Linux systems. Built and tested on Fedora 42!
+My own personal CHIP-8 Emulator built in C++ for Linux systems. Built and tested
+on Fedora 42!
+
+## Features
+
+- Simple GUI via imgui integration
+- Pause/unpause state
+- Reset state
+- Dynamic ROM loading
+- Speed configuration
 
 ## Dependencies
 
@@ -45,13 +54,17 @@ Keypad                   Keyboard
 - Enter to reset emulator
 - ESC to quit
 
+## Known Issues
+
+- Resizing window larger than its original size crops the image
+
 ## TODO
 
 - Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
 - Windows cross-compatibility?
-- DONE: UI Integration, something like Dear ImGui
+- Save states?
 
-### Resources
+## Resources
 
 - The fine folks over at the [EmuDev discord](https://discord.gg/dkmJAes)
 - <https://tobiasvl.github.io/blog/write-a-chip-8-emulator/>
