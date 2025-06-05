@@ -22,6 +22,8 @@ Requires:
 
 ## Instructions
 
+### Linux
+
 ```bash
 git clone --recurse-submodules https://github.com/desertedman/CHIP-8.git
 cd CHIP-8
@@ -29,6 +31,9 @@ cmake -B build -S ./
 cd build
 cmake --build ./
 ```
+
+### Windows
+None yet
 
 ## Controls
 
