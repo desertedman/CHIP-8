@@ -39,14 +39,11 @@ Keypad                   Keyboard
 
 - DONE: UI Integration, something like Dear ImGui
 
-## Resources
+### Resources
 
-<https://tobiasvl.github.io/blog/write-a-chip-8-emulator/>
-
-<https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/>
-
-<http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Dxyn>
-
-<https://github.com/Timendus/chip8-test-suite>
-
-<https://github.com/JamesGriffin/CHIP-8-Emulator>
+- The fine folks over at the [EmuDev discord](https://discord.gg/dkmJAes)
+- <https://tobiasvl.github.io/blog/write-a-chip-8-emulator/>
+- <https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/>
+- <http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Dxyn>
+- <https://github.com/Timendus/chip8-test-suite>
+- <https://github.com/JamesGriffin/CHIP-8-Emulator>
