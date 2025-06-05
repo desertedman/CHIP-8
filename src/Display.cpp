@@ -1,14 +1,11 @@
 #include "Display.h"
-#include "CPU.h"
 #include "Chip8.h"
-#include "ImGuiFileDialog.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
 
 #include <SDL2/SDL_video.h>
 #include <SDL_render.h>
-#include <cstdint>
 #include <stdexcept>
 #include <string>
 
@@ -17,9 +14,8 @@
 // int Display::mScreenHeight = Display::BASE_HEIGHT *
 // Display::SCREEN_MULITPLIER;
 
-Display::Display(std::shared_ptr<Chip8> &inputChip8Ptr) {
+Display::Display() {
   mRenderImGui = true;
-  mChip8Ptr = inputChip8Ptr;
 
   mWindowHeight = BASE_HEIGHT * Display::SCREEN_MULITPLIER;
   mWindowWidth = BASE_WIDTH * Display::SCREEN_MULITPLIER;
@@ -120,120 +116,3 @@ void Display::calculateResolution() {
   mDrawRect.w = renderWidth;
   mDrawRect.h = renderHeight;
 }
-
-void Display::drawScreen(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels) {
-  int mPixelsItt = 0;                   // Iterator to travel mPixels array
-  for (int y = 0; y < BASE_HEIGHT; y++) // Traverse each row
-  {
-    for (int x = 0; x < BASE_WIDTH; x++) // Traverse each column
-    {
-      uint8_t pixel = PixelFunctions::getPixel(pixels, x, y);
-
-      // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to
-      // determine if pixel is colored or not
-      mPixelColor[mPixelsItt] = 0xFFFFFFFF * pixel;
-      mPixelsItt++;
-    }
-  }
-
-  // Start ImGui frame
-  ImGui_ImplSDLRenderer2_NewFrame();
-  ImGui_ImplSDL2_NewFrame();
-  ImGui::NewFrame();
-
-  // Draw to ImGui frame
-  if (mRenderImGui) {
-    // ImGui::ShowDemoWindow(&mRenderImGui);
-    ImGui::Begin("CHIP-8 Menu");
-
-    if (ImGui::Button("Toggle GUI")) {
-      mChip8Ptr->toggleGUI();
-    }
-    ImGui::SameLine();
-    ImGui::Text("(B)");
-
-    {
-      // Construct pauseString based on pauseStatus
-      std::string pauseString;
-
-      if (mChip8Ptr->getPauseStatus() == false) {
-        pauseString = "Pause";
-      } else {
-        pauseString = "Unpause";
-      }
-
-      if (ImGui::Button(pauseString.c_str())) {
-        mChip8Ptr->togglePause();
-      }
-    }
-    ImGui::SameLine();
-    ImGui::Text("(Space)");
-
-    if (ImGui::Button("Reset emulator")) {
-      mChip8Ptr->resetEngine();
-    }
-    ImGui::SameLine();
-    ImGui::Text("(Enter)");
-
-    // Configure emulation speed
-    ImGui::Text("Instructions per second (Speed)");
-    ImGui::SliderInt("##speedslider",
-                     &(mChip8Ptr->mTargetInstructionsPerSecond), 300, 1100);
-    if (ImGui::Button("Set speed")) {
-      mChip8Ptr->calcSpeed();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Reset speed")) {
-      mChip8Ptr->resetSpeed();
-      mChip8Ptr->calcSpeed();
-    }
-
-    showOpenFileButton();
-
-    if (ImGui::Button("Quit")) {
-      mChip8Ptr->setQuit();
-    }
-    ImGui::SameLine();
-    ImGui::Text("(ESC)");
-
-    ImGui::Text("Internal Resolution: %d x %d", mDrawRect.w, mDrawRect.h);
-
-    ImGui::End();
-  }
-  ImGui::Render();
-  // SDL_RenderSetScale(mRenderer, mIo->DisplayFramebufferScale.x,
-  // mIo->DisplayFramebufferScale.y);
-
-  // Update screen
-  SDL_UpdateTexture(mTexture, NULL, mPixelColor, BASE_WIDTH * sizeof(uint32_t));
-
-  // Clear screen and render
-  SDL_RenderSetLogicalSize(mRenderer, mWindowWidth, mWindowHeight);
-  SDL_SetRenderDrawColor(mRenderer, 128, 128, 128, 255);
-  SDL_RenderClear(mRenderer);
-  SDL_RenderCopy(mRenderer, mTexture, NULL, &mDrawRect);
-  ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), mRenderer);
-  SDL_RenderPresent(mRenderer);
-}
-
-void Display::showOpenFileButton() {
-  // open Dialog Simple
-  if (ImGui::Button("Open ROM")) {
-    IGFD::FileDialogConfig config;
-    config.path = ".";
-    ImGuiFileDialog::Instance()->OpenDialog("ChooseRom", "Choose a ROM...",
-                                            ".rom,.ch8", config);
-  }
-  // display
-  if (ImGuiFileDialog::Instance()->Display("ChooseRom")) {
-    if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-      std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-      std::cout << "Path: " << filePathName << std::endl;
-      mChip8Ptr->loadRom(filePathName);
-    }
-
-    // close
-    ImGuiFileDialog::Instance()->Close();
-  }
-}
-

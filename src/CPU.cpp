@@ -5,7 +5,7 @@
 CPU::CPU() { initialize(); }
 
 void CPU::initialize() {
-  mPC = 0x200;
+  mPC = Constants::MEMORY_START;
   mStackptr = 0;
 
   // Clear stack upon reset

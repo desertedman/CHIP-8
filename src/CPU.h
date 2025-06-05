@@ -12,6 +12,7 @@
 namespace Constants {
 static constexpr int BASE_WIDTH = 64;
 static constexpr int BASE_HEIGHT = 32;
+static constexpr int MEMORY_START = 0x200;
 } // namespace Constants
 
 struct Nibbles {

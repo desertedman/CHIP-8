@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CPU.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 
@@ -19,22 +18,18 @@ public:
 
   static constexpr int SCREEN_MULITPLIER = 15;
 
-  // Functions
-  Display(std::shared_ptr<Chip8> &inputChip8Ptr);
+  Display();
   ~Display();
 
-  void drawScreen(std::array<uint8_t, Constants::BASE_HEIGHT *
-                                          Constants::BASE_WIDTH> &pixels);
   const SDL_Event getEvent();
   void calculateResolution();
-
 
   SDL_Window *mWindow;     // Window to render to
   SDL_Renderer *mRenderer; // Render target to draw to
   SDL_Texture *mTexture;   // Texture to send to render
+  SDL_Rect mDrawRect;
   int mWindowWidth;
   int mWindowHeight;
-  SDL_Rect mDrawRect;
 
   std::shared_ptr<Chip8> mChip8Ptr;
   bool mRenderImGui;
@@ -42,7 +37,5 @@ public:
                        BASE_WIDTH]; // Representation of internal pixel grid
 
 private:
-  void showOpenFileButton();
-
   ImGuiIO *mIo;
 };
