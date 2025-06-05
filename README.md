@@ -3,7 +3,7 @@
 My own personal CHIP-8 Emulator built in C++ for Linux systems. Built and tested
 on Fedora 42!
 
-
+[Video demo](https://youtu.be/xRnYh-q6Ma4?si=vIn9rEbaX7bk5Soe)
 
 ## Features
 
