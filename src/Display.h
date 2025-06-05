@@ -19,33 +19,30 @@ public:
 
   static constexpr int SCREEN_MULITPLIER = 15;
 
-public:
+  // Functions
   Display(std::shared_ptr<Chip8> &inputChip8Ptr);
   ~Display();
 
-  void drawScreen(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
+  void drawScreen(std::array<uint8_t, Constants::BASE_HEIGHT *
+                                          Constants::BASE_WIDTH> &pixels);
   const SDL_Event getEvent();
   void calculateResolution();
 
-  std::shared_ptr<Chip8> mChip8Ptr;
-  bool mRenderImGui;
-
-  // static int mScreenWidth;
-  // static int mScreenHeight;
-
-private:
-  void showOpenFileButton();
 
   SDL_Window *mWindow;     // Window to render to
   SDL_Renderer *mRenderer; // Render target to draw to
   SDL_Texture *mTexture;   // Texture to send to render
-
   int mWindowWidth;
   int mWindowHeight;
   SDL_Rect mDrawRect;
 
+  std::shared_ptr<Chip8> mChip8Ptr;
+  bool mRenderImGui;
   uint32_t mPixelColor[BASE_HEIGHT *
-                   BASE_WIDTH]; // Representation of internal pixel grid
+                       BASE_WIDTH]; // Representation of internal pixel grid
+
+private:
+  void showOpenFileButton();
 
   ImGuiIO *mIo;
 };

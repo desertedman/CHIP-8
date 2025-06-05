@@ -8,7 +8,8 @@ void CPU::initialize() {
   mPC = 0x200;
   mStackptr = 0;
 
-  mStack.fill(false); // Clear stack; probably unnecessary
+  // Clear stack upon reset
+  mStack.fill(false);
 
   // Reset nibbles; unnecessary?
   nibbles.first = 0;
@@ -261,7 +262,8 @@ void CPU::printOpcodeMissing() {
 // Opcode functions
 
 // Clear screen op
-void CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels) {
+void CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT *
+                                         Constants::BASE_WIDTH> &pixels) {
   drawFlag = true;
 
   pixels.fill(0);
@@ -479,8 +481,7 @@ void CPU::opDXYN(
       uint8_t pixel = sprite & (0x80 >> xLine);
 
       if (pixel) {
-        if (PixelFunctions::getPixel(pixels, x + xLine, y + yLine) ==
-            1) {
+        if (PixelFunctions::getPixel(pixels, x + xLine, y + yLine) == 1) {
           V[0xF] = 1;
         }
 

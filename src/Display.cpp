@@ -236,3 +236,4 @@ void Display::showOpenFileButton() {
     ImGuiFileDialog::Instance()->Close();
   }
 }
+

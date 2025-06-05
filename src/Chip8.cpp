@@ -1,6 +1,9 @@
 #include "Chip8.h"
 #include "Display.h"
+#include "ImGuiFileDialog.h"
+#include "imgui.h"
 #include "imgui_impl_sdl2.h"
+#include "imgui_impl_sdlrenderer2.h"
 
 #include <SDL2/SDL.h>
 #include <SDL_events.h>
@@ -43,32 +46,15 @@ Chip8::Chip8() {
   pause = false;
   loaded = false;
   mDisplay = NULL;
+  running = true;
+  mPixels.fill(0);
 
   // Load font into memory
   int fontLength = sizeof(Font) / sizeof(uint8_t);
   std::memcpy(&mMemory.at(CPU::FONT_LOCATION), Font, fontLength);
 
-  // Initialize GPU and CPU; reset to their original states
-  // mGPU.initialize();
-  // mCPU.initialize();
-  // Ideally, should not need to initialize CPU and GPU manually
-
-  mPixels.fill(0);
-  running = true;
-
   // Calculate number of instructions to run in a frame
   calcSpeed();
-}
-
-uint8_t Chip8::getPixel(int xCoord, int yCoord) {
-  // Coordinates should range from 0-63, 0-31
-  if (xCoord >= 64 || yCoord >= 32) {
-    return 255;
-  }
-
-  int height = Constants::BASE_WIDTH * yCoord;
-  
-  return mPixels[height + xCoord];
 }
 
 void Chip8::loadRom(const std::string &path) {
@@ -78,7 +64,7 @@ void Chip8::loadRom(const std::string &path) {
 
   // Read rom data into memory
   mRom.mFile.read(reinterpret_cast<char *>(mMemory.data() + 0x200),
-                 mRom.getSize());
+                  mRom.getSize());
 
   // Save file size for debug purposes
   mFileSize = mRom.getSize();
@@ -162,7 +148,8 @@ void Chip8::runEngine() {
   // 4. Draw screen (only if drawFlag is set)
   // 5. Sleep til next frame; repeat 60 times per sec
 
-  double periodSec = 1.0 / Constants::FREQUENCY; // Time in seconds to wait for one frame
+  double periodSec =
+      1.0 / Constants::FREQUENCY; // Time in seconds to wait for one frame
   std::chrono::duration<double, std::milli> periodMS(periodSec *
                                                      1000); // Convert to ms
 
@@ -194,7 +181,8 @@ void Chip8::runEngine() {
     }
 
     // Draw screen outside of pause loop so that ImGui still updates
-    mDisplay->drawScreen(mPixels);
+    // mDisplay->drawScreen(mPixels);
+    DisplayFunctions::drawScreen(mPixels, mDisplay, *this);
 
     // Sleep method
     std::this_thread::sleep_until(nextTime); // Sleep til next frame
@@ -210,7 +198,8 @@ void Chip8::handleInput(SDL_Event &event) {
       setQuit();
     }
 
-    else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
+    else if (event.type == SDL_WINDOWEVENT &&
+             event.window.event == SDL_WINDOWEVENT_RESIZED) {
       mDisplay->calculateResolution();
     }
 
@@ -247,7 +236,8 @@ void Chip8::handleInput(SDL_Event &event) {
     else if (event.type == SDL_KEYUP) {
       // Loop through all keys and check if released
       for (int i = 0; i < CPU::NUM_KEYS; i++) {
-        if (event.key.keysym.sym == SDL_KEYS[i] && mCPU.mInternalKeys[i] == true) {
+        if (event.key.keysym.sym == SDL_KEYS[i] &&
+            mCPU.mInternalKeys[i] == true) {
           mCPU.mInternalKeys[i] = false;
           // std::cout << "Key " << SDL_GetKeyName(e.key.keysym.sym) << "
           // released.\n"; std::cout << mCPU.mInternalKeys[i] << std::endl;
@@ -264,40 +254,40 @@ void Chip8::cycleCPU() {
   mCPU.executeOpcode(mPixels, mMemory);
 }
 
-void Chip8::testCycleCPU(uint16_t opcode) {
-  // mCPU.decodeOpcode(opcode);
-  // mCPU.executeOpcode(mGPU, mMemory);
-}
+// void Chip8::testCycleCPU(uint16_t opcode) {
+//   mCPU.decodeOpcode(opcode);
+//   mCPU.executeOpcode(mGPU, mMemory);
+// }
 
-void Chip8::drawToTerminal() {
-  // // Draw top border
-  // for (int i = 0; i < GPU::COLUMNS; i++) {
-  //   std::cout << "_";
-  // }
-  // std::cout << std::endl;
-  //
-  // for (int y = 0; y < GPU::ROWS; y++) {
-  //   std::cout << "| "; // Beginning of screen row
-  //
-  //   for (int x = 0; x < GPU::COLUMNS; x++) {
-  //     // if (mGPU.getPixel(x, y)) {
-  //     //   std::cout << "*";
-  //     // }
-  //     //
-  //     // else {
-  //     //   std::cout << " ";
-  //     // }
-  //   }
-  //
-  //   std::cout << " |" << std::endl; // End of row; start new line;
-  // }
-  //
-  // // Draw bottom border
-  // for (int i = 0; i < GPU::COLUMNS; i++) {
-  //   std::cout << "_";
-  // }
-  // std::cout << std::endl;
-}
+// void Chip8::drawToTerminal() {
+// // Draw top border
+// for (int i = 0; i < GPU::COLUMNS; i++) {
+//   std::cout << "_";
+// }
+// std::cout << std::endl;
+//
+// for (int y = 0; y < GPU::ROWS; y++) {
+//   std::cout << "| "; // Beginning of screen row
+//
+//   for (int x = 0; x < GPU::COLUMNS; x++) {
+//     // if (mGPU.getPixel(x, y)) {
+//     //   std::cout << "*";
+//     // }
+//     //
+//     // else {
+//     //   std::cout << " ";
+//     // }
+//   }
+//
+//   std::cout << " |" << std::endl; // End of row; start new line;
+// }
+//
+// // Draw bottom border
+// for (int i = 0; i < GPU::COLUMNS; i++) {
+//   std::cout << "_";
+// }
+// std::cout << std::endl;
+// }
 
 void Chip8::setQuit() {
   running = false;
@@ -305,13 +295,12 @@ void Chip8::setQuit() {
 }
 
 void Chip8::calcSpeed() {
-  mInstructionsPerFrame = mTargetInstructionsPerSecond  / Constants::FREQUENCY;
+  mInstructionsPerFrame = mTargetInstructionsPerSecond / Constants::FREQUENCY;
 }
 
 void Chip8::resetSpeed() {
   mTargetInstructionsPerSecond = Constants::DEFAULT_INSTRUCTIONS_PER_SECOND;
 }
-
 
 void Chip8::togglePause() {
   if (pause) {
@@ -325,9 +314,7 @@ void Chip8::togglePause() {
   }
 }
 
-bool Chip8::getPauseStatus() {
-  return pause;
-}
+bool Chip8::getPauseStatus() { return pause; }
 
 void Chip8::resetEngine() {
   mCPU.initialize();
@@ -359,4 +346,120 @@ void Emulator::runEmulator() {
   catch (const std::exception &e) {
     std::cerr << "Exception caught: " << e.what() << std::endl;
   }
+}
+
+void showOpenFileButton() {}
+
+void DisplayFunctions::drawScreen(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+    Display *display, Chip8 &chip8) {
+  int mPixelsItt = 0; // Iterator to travel mPixels array
+  for (int y = 0; y < Constants::BASE_HEIGHT; y++) // Traverse each row
+  {
+    for (int x = 0; x < Constants::BASE_WIDTH; x++) // Traverse each column
+    {
+      uint8_t pixel = PixelFunctions::getPixel(pixels, x, y);
+
+      // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to
+      // determine if pixel is colored or not
+      display->mPixelColor[mPixelsItt] = 0xFFFFFFFF * pixel;
+      mPixelsItt++;
+    }
+  }
+
+  // Start ImGui frame
+  ImGui_ImplSDLRenderer2_NewFrame();
+  ImGui_ImplSDL2_NewFrame();
+  ImGui::NewFrame();
+
+  // Draw to ImGui frame
+  if (display->mRenderImGui) {
+    // ImGui::ShowDemoWindow(&mRenderImGui);
+    ImGui::Begin("CHIP-8 Menu");
+
+    if (ImGui::Button("Toggle GUI")) {
+      chip8.toggleGUI();
+    }
+    ImGui::SameLine();
+    ImGui::Text("(B)");
+
+    {
+      // Construct pauseString based on pauseStatus
+      std::string pauseString;
+
+      if (chip8.getPauseStatus() == false) {
+        pauseString = "Pause";
+      } else {
+        pauseString = "Unpause";
+      }
+
+      if (ImGui::Button(pauseString.c_str())) {
+        chip8.togglePause();
+      }
+    }
+    ImGui::SameLine();
+    ImGui::Text("(Space)");
+
+    if (ImGui::Button("Reset emulator")) {
+      chip8.resetEngine();
+    }
+    ImGui::SameLine();
+    ImGui::Text("(Enter)");
+
+    // Configure emulation speed
+    ImGui::Text("Instructions per second (Speed)");
+    ImGui::SliderInt("##speedslider", &(chip8.mTargetInstructionsPerSecond),
+                     300, 1100);
+    if (ImGui::Button("Set speed")) {
+      chip8.calcSpeed();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Reset speed")) {
+      chip8.resetSpeed();
+      chip8.calcSpeed();
+    }
+
+    // Open ROM button
+    if (ImGui::Button("Open ROM")) {
+      IGFD::FileDialogConfig config;
+      config.path = ".";
+      ImGuiFileDialog::Instance()->OpenDialog("ChooseRom", "Choose a ROM...",
+                                              ".rom,.ch8", config);
+    }
+    // display
+    if (ImGuiFileDialog::Instance()->Display("ChooseRom")) {
+      if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+        std::string filePathName =
+            ImGuiFileDialog::Instance()->GetFilePathName();
+        std::cout << "Path: " << filePathName << std::endl;
+        chip8.loadRom(filePathName);
+      }
+
+      // close
+      ImGuiFileDialog::Instance()->Close();
+    }
+
+    if (ImGui::Button("Quit")) {
+      chip8.setQuit();
+    }
+    ImGui::SameLine();
+    ImGui::Text("(ESC)");
+
+    // ImGui::Text("Internal Resolution: %d x %d", mDrawRect.w, mDrawRect.h);
+
+    ImGui::End();
+  }
+  ImGui::Render();
+  // SDL_RenderSetScale(mRenderer, mIo->DisplayFramebufferScale.x,
+  // mIo->DisplayFramebufferScale.y);
+
+  // Update screen
+  SDL_UpdateTexture(display->mTexture, NULL,display->mPixelColor, Constants::BASE_WIDTH * sizeof(uint32_t));
+
+  // Clear screen and render
+  SDL_RenderSetLogicalSize(display->mRenderer, display->mWindowWidth, display->mWindowHeight);
+  SDL_RenderClear(display->mRenderer);
+  SDL_RenderCopy(display->mRenderer, display->mTexture, NULL, &display->mDrawRect);
+  ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), display->mRenderer);
+  SDL_RenderPresent(display->mRenderer);
 }

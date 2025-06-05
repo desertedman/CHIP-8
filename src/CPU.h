@@ -35,7 +35,6 @@ public:
   static constexpr int REGISTERS = 16;
   static constexpr int NUM_KEYS = 16;
 
-public:
   CPU();
   void initialize();
 
@@ -49,13 +48,11 @@ public:
   void decrementDelayTimer();
   void decrementSoundTimer();
 
-public:
   bool mInternalKeys[NUM_KEYS];
 
 private:
   void printOpcodeMissing();
 
-private:
   uint16_t mPC;                            // Program counter pointer
   std::array<uint16_t, STACK_SIZE> mStack; // Call stack
   uint8_t mStackptr; // Location of top of stack; Range 0-15. 16 is very top
@@ -72,7 +69,6 @@ private:
   bool keyWasPressedLF;
   int keyLastPressed;
 
-private:
   // Opcode functions
   void op00E0(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
   void op00EE();
