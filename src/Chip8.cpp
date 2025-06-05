@@ -355,6 +355,17 @@ void DisplayFunctions::drawScreen(
     ImGui::SameLine();
     ImGui::Text("(ESC)");
 
+    ImGui::Text("Internal resolution: %d x %d", display->mDrawRect.w,
+                display->mDrawRect.h);
+
+    {
+      // TODO: Remove this section. This is super dangerous, but I just have it
+      // for debug purposes
+      int width, height;
+      SDL_GetWindowSize(display->mWindow, &width, &height);
+      ImGui::Text("Window resolution: %d x %d", width, height);
+    }
+
     ImGui::End();
   }
   ImGui::Render();
@@ -364,10 +375,10 @@ void DisplayFunctions::drawScreen(
                     Constants::BASE_WIDTH * sizeof(uint32_t));
 
   // Clear screen and render
-  // SDL_RenderSetLogicalSize(display->mRenderer, display->mWindowWidth,
-  //                          display->mWindowHeight);
   SDL_SetRenderDrawColor(display->mRenderer, 128, 128, 128, 255);
   SDL_RenderClear(display->mRenderer);
+  // Resizing window larger does not work properly without this! Why??
+  SDL_RenderSetViewport(display->mRenderer, NULL);
   SDL_RenderCopy(display->mRenderer, display->mTexture, NULL,
                  &display->mDrawRect);
   ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),
