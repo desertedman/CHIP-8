@@ -3,6 +3,8 @@
 My own personal CHIP-8 Emulator built in C++ for Linux systems. Built and tested
 on Fedora 42!
 
+
+
 ## Features
 
 - Simple GUI via imgui integration
@@ -62,6 +64,7 @@ Keypad                   Keyboard
 ## Known Issues
 
 - Resizing window larger than its original size crops the image
+- Space Invaders does not function correctly
 
 ## TODO
 
