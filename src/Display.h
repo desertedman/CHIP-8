@@ -28,8 +28,6 @@ public:
   SDL_Renderer *mRenderer; // Render target to draw to
   SDL_Texture *mTexture;   // Texture to send to render
   SDL_Rect mDrawRect;
-  int mWindowWidth;
-  int mWindowHeight;
 
   std::shared_ptr<Chip8> mChip8Ptr;
   bool mRenderImGui;
@@ -37,5 +35,7 @@ public:
                        BASE_WIDTH]; // Representation of internal pixel grid
 
 private:
+  int mWindowWidth;
+  int mWindowHeight;
   ImGuiIO *mIo;
 };

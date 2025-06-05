@@ -7,12 +7,10 @@ public:
   // Constants
   static constexpr int ROM_FILE_SIZE = 3584;
 
-public:
   ~Rom();
   void openFile(const std::string &path);
   std::streamsize getSize() const;
 
-public:
   std::ifstream mFile;
 
 private:

@@ -110,7 +110,6 @@ private:
 
 namespace PixelFunctions {
 int calculatePixel(int xCoord, int yCoord);
-
 uint8_t getPixel(
     std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
     int xCoord, int yCoord);
