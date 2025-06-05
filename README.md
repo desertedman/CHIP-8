@@ -14,7 +14,11 @@ Requires:
 ## Instructions
 
 ```bash
-To be written
+git clone --recurse-submodules https://github.com/desertedman/CHIP-8.git
+cd CHIP-8
+cmake -B build -S ./
+cd build
+cmake --build ./
 ```
 
 ## Controls
