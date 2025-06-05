@@ -105,14 +105,10 @@ void Display::calculateResolution() {
   int renderWidth = BASE_WIDTH * scale;
   int renderHeight = BASE_HEIGHT * scale;
 
-  if (renderWidth > mWindowWidth) {
-    std::cout << "Width greater than actual window\n";
-  } else if (renderHeight > mWindowHeight) {
-    std::cout << "Height greater than actual window\n";
-  }
+  // Calculate rectangle position to be centered
+  mDrawRect.x = (mWindowWidth - renderWidth) / 2;
+  mDrawRect.y = (mWindowHeight - renderHeight) / 2;
 
-  mDrawRect.x = 0;
-  mDrawRect.y = 0;
   mDrawRect.w = renderWidth;
   mDrawRect.h = renderHeight;
 }
