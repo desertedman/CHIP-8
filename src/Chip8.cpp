@@ -1,5 +1,5 @@
 #include "Chip8.h"
-#include "CPU.h"
+// #include "CPU.h"
 #include "Display.h"
 #include "ImGuiFileDialog.h"
 #include "imgui.h"
@@ -37,7 +37,7 @@ uint8_t Font[80] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-uint8_t SDL_KEYS[CPU::NUM_KEYS]{
+uint8_t SDL_KEYS[Chip8::NUM_KEYS]{
     SDLK_x, // Corresponds to mInternalKey[0]
     SDLK_1, SDLK_2, SDLK_3, SDLK_q, SDLK_w, SDLK_e, SDLK_a,
     SDLK_s, SDLK_d, SDLK_z, SDLK_c, SDLK_4, SDLK_r, SDLK_f,
@@ -53,7 +53,7 @@ Chip8::Chip8() {
 
   // Load font into memory
   int fontLength = sizeof(Font) / sizeof(uint8_t);
-  std::memcpy(&mMemory.at(CPU::FONT_LOCATION), Font, fontLength);
+  std::memcpy(&mMemory.at(FONT_LOCATION), Font, fontLength);
 
   // Calculate number of instructions to run in a frame
   calcSpeed();
@@ -170,7 +170,7 @@ void Chip8::handleInput(SDL_Event &event) {
 
       else {
         // Loop through all keys and check if pressed
-        for (int i = 0; i < CPU::NUM_KEYS; i++) {
+        for (int i = 0; i < NUM_KEYS; i++) {
           if (event.key.keysym.sym == SDL_KEYS[i] &&
               mCPU.mInternalKeys[i] == false) {
             mCPU.mInternalKeys[i] = true;
@@ -183,7 +183,7 @@ void Chip8::handleInput(SDL_Event &event) {
 
     else if (event.type == SDL_KEYUP) {
       // Loop through all keys and check if released
-      for (int i = 0; i < CPU::NUM_KEYS; i++) {
+      for (int i = 0; i < NUM_KEYS; i++) {
         if (event.key.keysym.sym == SDL_KEYS[i] &&
             mCPU.mInternalKeys[i] == true) {
           mCPU.mInternalKeys[i] = false;

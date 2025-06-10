@@ -1,10 +1,11 @@
-#include "CPU.h"
+// #include "CPU.h"
+#include "Chip8.h"
 #include <cstdint>
 #include <iostream>
 
-CPU::CPU() { initialize(); }
+Chip8::CPU::CPU() { initialize(); }
 
-void CPU::initialize() {
+void Chip8::CPU::initialize() {
   // Reset stack
   mPC = Constants::MEMORY_START;
   mStackptr = 0;
@@ -31,7 +32,7 @@ void CPU::initialize() {
   soundTimer = 0;
 }
 
-uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory) {
+uint16_t Chip8::CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory) {
   // Fetch opcode
   uint16_t opcode = (memory.at(mPC) << 8) |
                     (memory.at(mPC + 1)); // Grab 2 bytes and combine them
@@ -42,7 +43,7 @@ uint16_t CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory) {
   return opcode;
 }
 
-void CPU::decodeOpcode(const uint16_t &opcode) {
+void Chip8::CPU::decodeOpcode(const uint16_t &opcode) {
   nibbles.opcode = opcode;
 
   nibbles.first = opcode & 0xF000;
@@ -56,7 +57,7 @@ void CPU::decodeOpcode(const uint16_t &opcode) {
   // nibbles.fourth);
 }
 
-void CPU::executeOpcode(
+void Chip8::CPU::executeOpcode(
     std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
     std::array<uint8_t, MEMORY_SIZE> &memory) {
   switch (nibbles.first) {
@@ -243,21 +244,21 @@ void CPU::executeOpcode(
   }
 }
 
-int CPU::getDelayTimer() { return delayTimer; }
+int Chip8::CPU::getDelayTimer() { return delayTimer; }
 
-int CPU::getSoundTimer() { return soundTimer; }
+int Chip8::CPU::getSoundTimer() { return soundTimer; }
 
-void CPU::decrementDelayTimer() {
+void Chip8::CPU::decrementDelayTimer() {
   if (delayTimer > 0)
     delayTimer--;
 }
 
-void CPU::decrementSoundTimer() {
+void Chip8::CPU::decrementSoundTimer() {
   if (soundTimer > 0)
     soundTimer--;
 }
 
-void CPU::printOpcodeMissing() {
+void Chip8::CPU::printOpcodeMissing() {
   std::cout << "Error! Opcode " << std::hex << nibbles.opcode
             << " not implemented.\n";
 }
@@ -265,7 +266,7 @@ void CPU::printOpcodeMissing() {
 // Opcode functions
 
 // Clear screen op
-void CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT *
+void Chip8::CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT *
                                          Constants::BASE_WIDTH> &pixels) {
   drawFlag = true;
 
@@ -273,7 +274,7 @@ void CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT *
 }
 
 // Return from subroutine
-void CPU::op00EE() {
+void Chip8::CPU::op00EE() {
   // Check if mStackptr underflows
   // mStackptr - 1 < 0
   // mStackptr < 1
@@ -284,10 +285,10 @@ void CPU::op00EE() {
 }
 
 // Jump instruction; PC jumps to NNN
-void CPU::op1NNN() { mPC = (nibbles.sec | nibbles.third | nibbles.fourth); }
+void Chip8::CPU::op1NNN() { mPC = (nibbles.sec | nibbles.third | nibbles.fourth); }
 
 // Store current PC on stack, then jump to NNN
-void CPU::op2NNN() {
+void Chip8::CPU::op2NNN() {
   mStack.at(mStackptr) = mPC;
   mStackptr++; // Should never be greater than 16!
   if (mStackptr > 16) {
@@ -298,55 +299,55 @@ void CPU::op2NNN() {
 }
 
 // If VX == NN, skip one instruction
-void CPU::op3XNN() {
+void Chip8::CPU::op3XNN() {
   if (V[nibbles.sec >> 8] == (nibbles.third | nibbles.fourth)) {
     mPC += 2;
   }
 }
 
 // If VX != NN, skip one instruction
-void CPU::op4XNN() {
+void Chip8::CPU::op4XNN() {
   if (V[nibbles.sec >> 8] != (nibbles.third | nibbles.fourth)) {
     mPC += 2;
   }
 }
 
 // If VX == VY, skip one instruction
-void CPU::op5XY0() {
+void Chip8::CPU::op5XY0() {
   if (V[nibbles.sec >> 8] == V[nibbles.third >> 4]) {
     mPC += 2;
   }
 }
 
 // VX = NN
-void CPU::op6XNN() { V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth); }
+void Chip8::CPU::op6XNN() { V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth); }
 
 // VX += NN
-void CPU::op7XNN() { V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth); }
+void Chip8::CPU::op7XNN() { V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth); }
 
 // VX = VY
-void CPU::op8XY0() { V[nibbles.sec >> 8] = V[nibbles.third >> 4]; }
+void Chip8::CPU::op8XY0() { V[nibbles.sec >> 8] = V[nibbles.third >> 4]; }
 
 // VX = VX | VY
-void CPU::op8XY1() {
+void Chip8::CPU::op8XY1() {
   V[nibbles.sec >> 8] |= V[nibbles.third >> 4];
   V[0xF] = 0;
 }
 
 // VX = VX & VY
-void CPU::op8XY2() {
+void Chip8::CPU::op8XY2() {
   V[nibbles.sec >> 8] &= V[nibbles.third >> 4];
   V[0xF] = 0;
 }
 
 // VX = VX ^ VY
-void CPU::op8XY3() {
+void Chip8::CPU::op8XY3() {
   V[nibbles.sec >> 8] ^= V[nibbles.third >> 4];
   V[0xF] = 0;
 }
 
 // VX = VX + VY
-void CPU::op8XY4() {
+void Chip8::CPU::op8XY4() {
   // If VX + VY > 0xFF (max value for unsigned 8bit), then set carry flag
   // Adjust equation to: VX > 0xFF - VY
   bool carryFlag = V[nibbles.sec >> 8] > 0xFF - V[nibbles.third >> 4];
@@ -363,7 +364,7 @@ void CPU::op8XY4() {
 }
 
 // VX = VX - VY
-void CPU::op8XY5() {
+void Chip8::CPU::op8XY5() {
   // VX - VY < 0 - underflow; need to borrow from VF
   // VX < VY
   bool carryFlag = V[nibbles.sec >> 8] < V[nibbles.third >> 4];
@@ -382,7 +383,7 @@ void CPU::op8XY5() {
 }
 
 // Bit shift right
-void CPU::op8XY6() {
+void Chip8::CPU::op8XY6() {
   // Modern behavior; VX = VY
   V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
@@ -396,7 +397,7 @@ void CPU::op8XY6() {
 }
 
 // VX = VY - VX
-void CPU::op8XY7() {
+void Chip8::CPU::op8XY7() {
   // VY - VX < 0 - underflow; need to borrow from VF
   // VY < VX
   bool carryFlag = V[nibbles.third >> 4] < V[nibbles.sec >> 8];
@@ -415,7 +416,7 @@ void CPU::op8XY7() {
 }
 
 // Bit shift left
-void CPU::op8XYE() {
+void Chip8::CPU::op8XYE() {
   // Modern behavior; VX = VY
   V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
@@ -429,22 +430,22 @@ void CPU::op8XYE() {
 }
 
 // If VX != VY, skip
-void CPU::op9XY0() {
+void Chip8::CPU::op9XY0() {
   if (V[nibbles.sec >> 8] != V[nibbles.third >> 4]) {
     mPC += 2;
   }
 }
 
 // Set index register I to 0xNNN
-void CPU::opANNN() { I = (nibbles.sec | nibbles.third | nibbles.fourth); }
+void Chip8::CPU::opANNN() { I = (nibbles.sec | nibbles.third | nibbles.fourth); }
 
 // PC = NNN + V0
-void CPU::opBNNN() {
+void Chip8::CPU::opBNNN() {
   mPC = (nibbles.sec | nibbles.third | nibbles.fourth) + V[0];
 }
 
 // Set VX to a random number, AND'd with NN
-void CPU::opCXNN() {
+void Chip8::CPU::opCXNN() {
   V[nibbles.sec >> 8] =
       (rand() % (0xFF + 1)) & (nibbles.third | nibbles.fourth);
 }
@@ -452,7 +453,7 @@ void CPU::opCXNN() {
 // Refer to:
 // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
 // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-void CPU::opDXYN(
+void Chip8::CPU::opDXYN(
     std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
     std::array<uint8_t, MEMORY_SIZE> &memory) {
   drawFlag = true;
@@ -503,7 +504,7 @@ void CPU::opDXYN(
   }
 }
 
-void CPU::opEX9E() // Check if key in VX is pressed or not. If so, skip an
+void Chip8::CPU::opEX9E() // Check if key in VX is pressed or not. If so, skip an
                    // instruction
 {
   if (mInternalKeys[V[nibbles.sec >> 8]] == true) {
@@ -512,7 +513,7 @@ void CPU::opEX9E() // Check if key in VX is pressed or not. If so, skip an
   }
 }
 
-void CPU::opEXA1() // Check if key in VX is pressed or not. If not, skip an
+void Chip8::CPU::opEXA1() // Check if key in VX is pressed or not. If not, skip an
                    // instruction
 {
   if (mInternalKeys[V[nibbles.sec >> 8]] == false) {
@@ -520,13 +521,13 @@ void CPU::opEXA1() // Check if key in VX is pressed or not. If not, skip an
   }
 }
 
-void CPU::opFX07() // VX = delayTimer
+void Chip8::CPU::opFX07() // VX = delayTimer
 {
   V[nibbles.sec >> 8] = delayTimer;
 }
 
 // Wait on any key input. Loop until an input is received
-void CPU::opFX0A() {
+void Chip8::CPU::opFX0A() {
   // std::cout << "Waiting on input; 0xFX0A...\n";
   bool anyKeyPressed = false;
 
@@ -560,19 +561,19 @@ void CPU::opFX0A() {
 }
 
 // delayTimer = VX
-void CPU::opFX15() { delayTimer = V[nibbles.sec >> 8]; }
+void Chip8::CPU::opFX15() { delayTimer = V[nibbles.sec >> 8]; }
 
 // soundTimer = VX
-void CPU::opFX18() { soundTimer = V[nibbles.sec >> 8]; }
+void Chip8::CPU::opFX18() { soundTimer = V[nibbles.sec >> 8]; }
 
 // I += VX
-void CPU::opFX1E() { I += V[nibbles.sec >> 8]; }
+void Chip8::CPU::opFX1E() { I += V[nibbles.sec >> 8]; }
 
 // Load font character hexadecimal from VX into I
-void CPU::opFX29() { I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION; }
+void Chip8::CPU::opFX29() { I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION; }
 
 // TODO: Document this function
-void CPU::opFX33(std::array<uint8_t, MEMORY_SIZE> &memory) {
+void Chip8::CPU::opFX33(std::array<uint8_t, MEMORY_SIZE> &memory) {
   // VX = 0dXYZ
   memory.at(I) = V[nibbles.sec >> 8] / 100;              // Grab X
   memory.at(I + 1) = ((V[nibbles.sec >> 8]) / 10) % 10;  // Grab Y
@@ -580,7 +581,7 @@ void CPU::opFX33(std::array<uint8_t, MEMORY_SIZE> &memory) {
 }
 
 // TODO: Document this function
-void CPU::opFX55(std::array<uint8_t, MEMORY_SIZE> &memory) {
+void Chip8::CPU::opFX55(std::array<uint8_t, MEMORY_SIZE> &memory) {
   int targetRegister = nibbles.sec >> 8;
 
   for (int i = 0; i <= targetRegister; i++) {
@@ -591,7 +592,7 @@ void CPU::opFX55(std::array<uint8_t, MEMORY_SIZE> &memory) {
 }
 
 // TODO: Document this function
-void CPU::opFX65(std::array<uint8_t, MEMORY_SIZE> &memory) {
+void Chip8::CPU::opFX65(std::array<uint8_t, MEMORY_SIZE> &memory) {
   int targetRegister = nibbles.sec >> 8;
 
   for (int i = 0; i <= targetRegister; i++) {
