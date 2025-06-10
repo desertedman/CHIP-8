@@ -5,20 +5,23 @@
 CPU::CPU() { initialize(); }
 
 void CPU::initialize() {
+  // Reset stack
   mPC = Constants::MEMORY_START;
   mStackptr = 0;
+  mStack.fill(0);
 
-  // Clear stack upon reset
-  mStack.fill(false);
-
-  // Reset nibbles; unnecessary?
+  // Reset nibbles
   nibbles.first = 0;
   nibbles.sec = 0;
   nibbles.third = 0;
   nibbles.fourth = 0;
+  nibbles.opcode = 0;
 
   // Set memory pointer
   I = 0;
+
+  // Clear registers
+  V.fill(0);
 
   drawFlag = false;
   keyWasPressedLF = false;

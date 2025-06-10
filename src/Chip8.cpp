@@ -1,4 +1,5 @@
 #include "Chip8.h"
+#include "CPU.h"
 #include "Display.h"
 #include "ImGuiFileDialog.h"
 #include "imgui.h"
@@ -62,6 +63,9 @@ void Chip8::loadRom(const std::string &path) {
   std::cout << "Attempting to load file..." << std::endl;
 
   mRom.openFile(path);
+
+  // Clear original Rom data
+  std::memset(mMemory.data() + Constants::MEMORY_START, 0, Rom::ROM_FILE_SIZE);
 
   // Read rom data into memory
   mRom.mFile.read(

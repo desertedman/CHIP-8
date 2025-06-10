@@ -41,7 +41,8 @@ public:
 
   uint16_t fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory);
   void decodeOpcode(const uint16_t &opcode);
-  void executeOpcode(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+  void executeOpcode(std::array<uint8_t, Constants::BASE_HEIGHT *
+                                             Constants::BASE_WIDTH> &pixels,
                      std::array<uint8_t, MEMORY_SIZE> &memory);
 
   int getDelayTimer();
@@ -60,8 +61,8 @@ private:
                      // (after) of stack!
   Nibbles nibbles;
 
-  uint16_t I;           // Stores memory addresses
-  uint8_t V[REGISTERS]; // Registers V0 - VF
+  uint16_t I;                       // Stores memory addresses
+  std::array<uint8_t, REGISTERS> V; // Registers V0 - VF
 
   uint8_t delayTimer;
   uint8_t soundTimer;
@@ -71,7 +72,8 @@ private:
   int keyLastPressed;
 
   // Opcode functions
-  void op00E0(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
+  void op00E0(std::array<uint8_t, Constants::BASE_HEIGHT *
+                                      Constants::BASE_WIDTH> &pixels);
   void op00EE();
   void op1NNN();
   void op2NNN();
@@ -93,7 +95,8 @@ private:
   void opANNN();
   void opBNNN();
   void opCXNN();
-  void opDXYN(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+  void opDXYN(std::array<uint8_t, Constants::BASE_HEIGHT *
+                                      Constants::BASE_WIDTH> &pixels,
               std::array<uint8_t, MEMORY_SIZE> &memory);
   void opEX9E();
   void opEXA1();
@@ -116,4 +119,4 @@ uint8_t getPixel(
 void xorPixel(
     std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
     int xCoord, int yCoord);
-} // namespace PixelsFunction
+} // namespace PixelFunctions
