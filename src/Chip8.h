@@ -74,12 +74,9 @@ private:
     int getSoundTimer();
     void decrementDelayTimer();
     void decrementSoundTimer();
-
-    bool mInternalKeys[NUM_KEYS];
-
-  private:
     void printOpcodeMissing();
 
+    bool mInternalKeys[NUM_KEYS];
     uint16_t mPC;                            // Program counter pointer
     std::array<uint16_t, STACK_SIZE> mStack; // Call stack
     uint8_t mStackptr; // Location of top of stack; Range 0-15. 16 is very top
