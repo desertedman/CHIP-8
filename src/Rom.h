@@ -9,7 +9,7 @@ public:
 
   ~Rom();
   void openFile(const std::string &path);
-  std::streamsize getSize() const;
+  const std::streamsize getSize() const;
 
   std::ifstream mFile;
 

@@ -34,9 +34,6 @@ Display::Display() {
 
     // Create renderer
     mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
-    // SDL_RenderSetLogicalSize(
-    //     mRenderer, mScreenWidth,
-    //     mScreenHeight); // Render canvas with SCREEN resolution
 
     // Create texture for frame buffer
     mTexture = SDL_CreateTexture(
@@ -90,11 +87,10 @@ Display::~Display() {
   SDL_Quit();
 }
 
-void Display::drawScreen(
-    Chip8 &chip8,
-    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH>
-        &pixels) {
+void Display::drawScreen(Chip8 &chip8) {
   int mPixelsItt = 0; // Iterator to travel mPixels array
+
+  auto pixels = chip8.getInternalPixels();
 
   // Traverse each row
   for (int y = 0; y < Constants::BASE_HEIGHT; y++) {
@@ -192,8 +188,6 @@ void Display::drawScreen(
     ImGui::Text("Internal resolution: %d x %d", mDrawRect.w, mDrawRect.h);
 
     {
-      // TODO: Remove this section. This is super dangerous, but I just have it
-      // for debug purposes
       int width, height;
       SDL_GetWindowSize(mWindow, &width, &height);
       ImGui::Text("Window resolution: %d x %d", width, height);
@@ -210,7 +204,7 @@ void Display::drawScreen(
   // Clear screen and render
   SDL_SetRenderDrawColor(mRenderer, 128, 128, 128, 255);
   SDL_RenderClear(mRenderer);
-  // Resizing window larger does not work properly without this! Why??
+  // Resizing window larger does not work properly without this
   SDL_RenderSetViewport(mRenderer, NULL);
   SDL_RenderCopy(mRenderer, mTexture, NULL, &mDrawRect);
   ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), mRenderer);

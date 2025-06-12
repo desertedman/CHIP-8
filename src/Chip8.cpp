@@ -1,6 +1,6 @@
 #include "Chip8.h"
-#include "Rom.h"
 #include "Display.h"
+#include "Rom.h"
 #include "imgui_impl_sdl2.h"
 
 #include <SDL.h>
@@ -50,7 +50,7 @@ Chip8::Chip8() {
 
   // Load font into memory
   int fontLength = sizeof(Font) / sizeof(uint8_t);
-  std::memcpy(&mMemory.at(FONT_LOCATION), Font, fontLength);
+  std::memcpy(&mCPU.mMemory.at(FONT_LOCATION), Font, fontLength);
 
   // Calculate number of instructions to run in a frame
   calcSpeed();
@@ -63,11 +63,12 @@ void Chip8::loadRom(const std::string &path) {
   newRom.openFile(path);
 
   // Clear original Rom data
-  std::memset(mMemory.data() + Constants::MEMORY_START, 0, Rom::ROM_FILE_SIZE);
+  std::memset(mCPU.mMemory.data() + Constants::MEMORY_START, 0,
+              Rom::ROM_FILE_SIZE);
 
   // Read rom data into memory
   newRom.mFile.read(
-      reinterpret_cast<char *>(mMemory.data() + Constants::MEMORY_START),
+      reinterpret_cast<char *>(mCPU.mMemory.data() + Constants::MEMORY_START),
       newRom.getSize());
 
   // Save file size for debug purposes
@@ -83,7 +84,7 @@ void Chip8::printMemory(int bytes) {
   }
 
   for (int i = 0; i < bytes; i++) {
-    printf("%02X ", mMemory.at(Constants::MEMORY_START + i));
+    printf("%02X ", mCPU.mMemory.at(Constants::MEMORY_START + i));
   }
 
   std::cout << "\n";
@@ -92,7 +93,7 @@ void Chip8::printMemory(int bytes) {
 void Chip8::runEngine() {
 
   // Calculate basic timing info
-  double periodSec = 1.0 / FREQUENCY; // Time in seconds to wait for one frame
+  double periodSec = 1.0 / BASE_FREQUENCY; // Time in seconds to wait for one frame
   std::chrono::duration<double, std::milli> periodMS(periodSec *
                                                      1000); // Convert to ms
   auto nextTime =
@@ -111,11 +112,11 @@ void Chip8::runEngine() {
 
     if (pause == false && loaded == true) {
       // Decrement timers
-      if (mCPU.getDelayTimer() > 0) {
-        mCPU.decrementDelayTimer();
+      if (mCPU.delayTimer > 0) {
+        mCPU.delayTimer--;
       }
-      if (mCPU.getSoundTimer() > 0) {
-        mCPU.decrementSoundTimer();
+      if (mCPU.soundTimer > 0) {
+        mCPU.soundTimer--;
       }
 
       //  TODO: Currently running at 9.33 instructions for frame; we are losing
@@ -128,12 +129,17 @@ void Chip8::runEngine() {
     }
 
     // Draw screen outside of pause loop so that ImGui still updates
-    mDisplay->drawScreen(*this, mPixels);
+    mDisplay->drawScreen(*this);
 
     // Sleep method
     std::this_thread::sleep_until(nextTime); // Sleep til next frame
     nextTime += periodMS;
   }
+}
+
+const std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH>
+Chip8::getInternalPixels() const {
+  return mPixels;
 }
 
 void Chip8::handleInput(SDL_Event &event) {
@@ -194,10 +200,10 @@ void Chip8::handleInput(SDL_Event &event) {
 }
 
 void Chip8::cycleCPU() {
-  uint16_t opcode = mCPU.fetchOpcode(mMemory);
+  uint16_t opcode = mCPU.fetchOpcode();
   mCPU.decodeOpcode(opcode);
   // std::cout << "Opcode: " << std::hex << opcode << std::endl;
-  mCPU.executeOpcode(mPixels, mMemory);
+  mCPU.executeOpcode(mPixels);
 }
 
 void Chip8::setQuit() {
@@ -206,7 +212,7 @@ void Chip8::setQuit() {
 }
 
 void Chip8::calcSpeed() {
-  mInstructionsPerFrame = mTargetInstructionsPerSecond / FREQUENCY;
+  mInstructionsPerFrame = mTargetInstructionsPerSecond / BASE_FREQUENCY;
 }
 
 void Chip8::resetSpeed() {

@@ -32,11 +32,10 @@ void Chip8::CPU::initialize() {
   soundTimer = 0;
 }
 
-uint16_t
-Chip8::CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory) {
+uint16_t Chip8::CPU::fetchOpcode() {
   // Fetch opcode
-  uint16_t opcode = (memory.at(mPC) << 8) |
-                    (memory.at(mPC + 1)); // Grab 2 bytes and combine them
+  uint16_t opcode = (mMemory.at(mPC) << 8) |
+                    (mMemory.at(mPC + 1)); // Grab 2 bytes and combine them
 
   // Increment PC
   mPC += 2;
@@ -59,8 +58,8 @@ void Chip8::CPU::decodeOpcode(const uint16_t &opcode) {
 }
 
 void Chip8::CPU::executeOpcode(
-    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
-    std::array<uint8_t, MEMORY_SIZE> &memory) {
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH>
+        &pixels) {
   switch (nibbles.first) {
 
   case 0x0000:
@@ -171,7 +170,7 @@ void Chip8::CPU::executeOpcode(
     break;
 
   case 0xD000:
-    opDXYN(pixels, memory);
+    opDXYN(pixels);
     break;
 
   case 0xE000:
@@ -221,15 +220,15 @@ void Chip8::CPU::executeOpcode(
       break;
 
     case 0x33:
-      opFX33(memory);
+      opFX33();
       break;
 
     case 0x55:
-      opFX55(memory);
+      opFX55();
       break;
 
     case 0x65:
-      opFX65(memory);
+      opFX65();
       break;
 
     default:
@@ -243,20 +242,6 @@ void Chip8::CPU::executeOpcode(
     printOpcodeMissing();
     break;
   }
-}
-
-int Chip8::CPU::getDelayTimer() { return delayTimer; }
-
-int Chip8::CPU::getSoundTimer() { return soundTimer; }
-
-void Chip8::CPU::decrementDelayTimer() {
-  if (delayTimer > 0)
-    delayTimer--;
-}
-
-void Chip8::CPU::decrementSoundTimer() {
-  if (soundTimer > 0)
-    soundTimer--;
 }
 
 void Chip8::CPU::printOpcodeMissing() {
@@ -464,8 +449,8 @@ void Chip8::CPU::opCXNN() {
 // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
 // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
 void Chip8::CPU::opDXYN(
-    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
-    std::array<uint8_t, MEMORY_SIZE> &memory) {
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH>
+        &pixels) {
   drawFlag = true;
 
   uint8_t x = V[nibbles.sec >> 8] % 64; // X, Y coordinates
@@ -482,7 +467,7 @@ void Chip8::CPU::opDXYN(
       break;
     }
 
-    uint8_t sprite = memory.at(I + yLine); // Grab sprite data
+    uint8_t sprite = mMemory.at(I + yLine); // Grab sprite data
 
     for (int xLine = 0; xLine < 8; xLine++) {
       if (x + xLine > Constants::BASE_WIDTH - 1) {
@@ -583,30 +568,30 @@ void Chip8::CPU::opFX1E() { I += V[nibbles.sec >> 8]; }
 void Chip8::CPU::opFX29() { I = (V[nibbles.sec >> 8] * 0x5) + FONT_LOCATION; }
 
 // TODO: Document this function
-void Chip8::CPU::opFX33(std::array<uint8_t, MEMORY_SIZE> &memory) {
+void Chip8::CPU::opFX33() {
   // VX = 0dXYZ
-  memory.at(I) = V[nibbles.sec >> 8] / 100;              // Grab X
-  memory.at(I + 1) = ((V[nibbles.sec >> 8]) / 10) % 10;  // Grab Y
-  memory.at(I + 2) = ((V[nibbles.sec >> 8]) % 100) % 10; // Grab Z
+  mMemory.at(I) = V[nibbles.sec >> 8] / 100;              // Grab X
+  mMemory.at(I + 1) = ((V[nibbles.sec >> 8]) / 10) % 10;  // Grab Y
+  mMemory.at(I + 2) = ((V[nibbles.sec >> 8]) % 100) % 10; // Grab Z
 }
 
 // TODO: Document this function
-void Chip8::CPU::opFX55(std::array<uint8_t, MEMORY_SIZE> &memory) {
+void Chip8::CPU::opFX55() {
   int targetRegister = nibbles.sec >> 8;
 
   for (int i = 0; i <= targetRegister; i++) {
-    memory.at(I + i) = V[i];
+    mMemory.at(I + i) = V[i];
   }
 
   I += targetRegister + 1; // Classic behavior; disable for modern
 }
 
 // TODO: Document this function
-void Chip8::CPU::opFX65(std::array<uint8_t, MEMORY_SIZE> &memory) {
+void Chip8::CPU::opFX65() {
   int targetRegister = nibbles.sec >> 8;
 
   for (int i = 0; i <= targetRegister; i++) {
-    V[i] = memory.at(I + i);
+    V[i] = mMemory.at(I + i);
   }
 
   I += targetRegister + 1; // Classic behavior; disable for modern

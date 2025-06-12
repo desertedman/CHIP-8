@@ -41,7 +41,7 @@ void Rom::openFile(const std::string &path) {
   }
 }
 
-std::streamsize Rom::getSize() const { return mFileSize; }
+const std::streamsize Rom::getSize() const { return mFileSize; }
 
 std::streamsize RomFunctions::getFileSize(std::ifstream &inFS) {
   // Get current position (at end)

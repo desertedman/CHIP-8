@@ -30,7 +30,7 @@ class Display;
 
 class Chip8 {
 public:
-  static constexpr int FREQUENCY = 60;
+  static constexpr int BASE_FREQUENCY = 60;
   static constexpr int DEFAULT_INSTRUCTIONS_PER_SECOND = 560;
   static constexpr int FONT_LOCATION = 0x050;
   static constexpr int MEMORY_SIZE = 4096;
@@ -39,10 +39,11 @@ public:
   static constexpr int NUM_KEYS = 16;
 
   Chip8();
-
   void loadRom(const std::string &path);
   void runEngine();
-
+  const std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH>
+  getInternalPixels() const;
+  // State functions
   void setQuit();
   void calcSpeed();
   void resetSpeed();
@@ -63,27 +64,23 @@ private:
     CPU();
     void initialize();
 
-    uint16_t fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory);
+    uint16_t fetchOpcode();
     void decodeOpcode(const uint16_t &opcode);
     void executeOpcode(std::array<uint8_t, Constants::BASE_HEIGHT *
-                                               Constants::BASE_WIDTH> &pixels,
-                       std::array<uint8_t, MEMORY_SIZE> &memory);
-
-    int getDelayTimer();
-    int getSoundTimer();
-    void decrementDelayTimer();
-    void decrementSoundTimer();
+                                               Constants::BASE_WIDTH> &pixels);
     void printOpcodeMissing();
 
-    bool mInternalKeys[NUM_KEYS];
-    uint16_t mPC;                            // Program counter pointer
+    std::array<uint8_t, MEMORY_SIZE> mMemory; // 4Kb of memory
+    Nibbles nibbles;
+
+    uint16_t I;                              // Stores memory addresses
+    std::array<uint8_t, REGISTERS> V;        // Registers V0 - VF
     std::array<uint16_t, STACK_SIZE> mStack; // Call stack
     uint8_t mStackptr; // Location of top of stack; Range 0-15. 16 is very top
                        // (after) of stack!
-    Nibbles nibbles;
+    uint16_t mPC;      // Program counter pointer
 
-    uint16_t I;                       // Stores memory addresses
-    std::array<uint8_t, REGISTERS> V; // Registers V0 - VF
+    bool mInternalKeys[NUM_KEYS];
 
     uint8_t delayTimer;
     uint8_t soundTimer;
@@ -117,8 +114,7 @@ private:
     void opBNNN();
     void opCXNN();
     void opDXYN(std::array<uint8_t, Constants::BASE_HEIGHT *
-                                        Constants::BASE_WIDTH> &pixels,
-                std::array<uint8_t, MEMORY_SIZE> &memory);
+                                        Constants::BASE_WIDTH> &pixels);
     void opEX9E();
     void opEXA1();
     void opFX07();
@@ -127,19 +123,17 @@ private:
     void opFX18();
     void opFX1E();
     void opFX29();
-    void opFX33(std::array<uint8_t, MEMORY_SIZE> &memory);
-    void opFX55(std::array<uint8_t, MEMORY_SIZE> &memory);
-    void opFX65(std::array<uint8_t, MEMORY_SIZE> &memory);
+    void opFX33();
+    void opFX55();
+    void opFX65();
   };
 
   void cycleCPU();
   void handleInput(SDL_Event &e); // Handle input and send to CPU
 
-  std::array<uint8_t, MEMORY_SIZE> mMemory; // 4Kb of memory
+  CPU mCPU;
   std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> mPixels;
   std::streamsize mFileSize;
-  CPU mCPU;
-
   int mInstructionsPerFrame;
   bool running;
   bool pause;
