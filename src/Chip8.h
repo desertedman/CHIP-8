@@ -85,7 +85,8 @@ private:
     uint8_t delayTimer;
     uint8_t soundTimer;
 
-    bool quirks = true;
+    bool quirkShift = true;     // true for original; false for modern
+    bool quirkLoadStore = true; // true for original; false for modern
     bool drawFlag;
     bool keyWasPressedLF;
     int keyLastPressed;

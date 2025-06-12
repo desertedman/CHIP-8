@@ -377,12 +377,18 @@ void Chip8::CPU::op8XY5() {
 
 // Bit shift right
 void Chip8::CPU::op8XY6() {
-  if (quirks) {
+  if (quirkShift) {
     // Modern behavior; VX = VY
     V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
-    V[0xF] = V[nibbles.sec >> 8] & 0b1; // Set register to last bit
-    V[nibbles.sec >> 8] >>= 1;          // Bitshift right in place
+    // Requires a temp variable in the edge case of 8FF6
+    // If we set VF to corresponding bit first, then we have just overwritten
+    // VF!
+    uint8_t carryBit =
+        V[nibbles.sec >> 8] & 0b1; // Store last bit into temp variable
+    V[nibbles.sec >> 8] >>= 1;     // Bitshift right in place
+
+    V[0xF] = carryBit; // Set register to last bit
   }
 }
 
@@ -407,12 +413,18 @@ void Chip8::CPU::op8XY7() {
 
 // Bit shift left
 void Chip8::CPU::op8XYE() {
-  if (quirks) {
+  if (quirkShift) {
     // Modern behavior; VX = VY
     V[nibbles.sec >> 8] = V[nibbles.third >> 4];
 
-    V[0xF] = V[nibbles.sec >> 8] >> 7; // Set register to first bit
-    V[nibbles.sec >> 8] <<= 1;         // Bitshift left in place
+    // Requires a temp variable in the edge case of 8FFE
+    // If we set VF to corresponding bit first, then we have just overwritten
+    // VF!
+    uint8_t carryBit =
+        V[nibbles.sec >> 8] >> 7; // Store first bit into temp variable
+    V[nibbles.sec >> 8] <<= 1;    // Bitshift left in place
+
+    V[0xF] = carryBit; // Set register to first bit
   }
 }
 
@@ -577,7 +589,9 @@ void Chip8::CPU::opFX55() {
     mMemory.at(I + i) = V[i];
   }
 
-  I += targetRegister + 1; // Classic behavior; disable for modern
+  if (quirkLoadStore) {
+    I += targetRegister + 1; // Classic behavior; disable for modern
+  }
 }
 
 // TODO: Document this function
@@ -588,7 +602,9 @@ void Chip8::CPU::opFX65() {
     V[i] = mMemory.at(I + i);
   }
 
-  I += targetRegister + 1; // Classic behavior; disable for modern
+  if (quirkLoadStore) {
+    I += targetRegister + 1; // Classic behavior; disable for modern
+  }
 }
 
 int PixelFunctions::calculatePixel(int xCoord, int yCoord) {
