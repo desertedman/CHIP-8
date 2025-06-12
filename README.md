@@ -49,15 +49,16 @@ cd build
 cmake --build ./
 ```
 
-At this point, a Linux executable should be already compiled and spit out.
-Windows users with Visual Studio should further open the generated .sln file and
-manually compile.
+At this point, a Linux executable should be already compiled and spit out as
+"CHIP8" within the build folder. Windows users with Visual Studio should
+further open the generated .sln file and manually compile.
 
 ### (Windows) 3. Compile
 
-Navigate to the generated build folder, open the .sln file, and right
-click on CHIP8 in the Solution Explorer. Hit "Build", and your compiled
-executable should be in build/Debug/CHIP8.exe.
+Navigate to the generated build folder, open the .sln file, and configure your
+project to use "CHIP8" as the startup project. You can do this by right
+clicking the solution in the Solution Explorer -> Properties -> Set "Single
+startup project" to "CHIP8"
 
 ## Controls
 
