@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.10.0)
 cmake_policy(SET CMP0072 NEW)
 project(CHIP8 VERSION 0.1.0 LANGUAGES C CXX)
 
+if(WIN32)
+  set(SDL2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/SDL2/cmake)
+endif()
 find_package(SDL2 REQUIRED)
 
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/imgui)
