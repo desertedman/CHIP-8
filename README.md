@@ -55,20 +55,44 @@ cd CHIP-8
 
 #### Linux / MinGW
 
+If you are on Linux, run:
+
 ```bash
 # Linux
 cmake -B build -S ./
-# Alternatively on Windows,
-# cmake -G "MinGW Makefiles" -B build -S ./
+```
 
+Alternatively, on Windows with MinGW:
+
+```bash
+# Windows
+cmake -G "MinGW Makefiles" -B build -S ./
+```
+
+Finally, to generate and compile project files:
+
+```bash
 cd build
 cmake --build ./
 ```
 
-For MinGW and Linux users, a compiled executable should already be spit out in
-the build directory.
+At this point, Linux and MinGW users should be done; a compiled executable will
+be spit out in the build directory.
 
-### (Windows - Visual Studio) 3. Compile
+#### Visual Studio (MSVC)
+
+Visual Studio users must generate project files, then
+manually compile in Visual Studio.
+
+```bash
+cmake -B build -S ./
+cd build
+cmake --build ./
+```
+
+Visual Studio users should proceed to the next step.
+
+### (Windows - Visual Studio ONLY) 3. Compile
 
 Navigate to the generated build folder, open the .sln file, and configure your
 project to use "CHIP8" as the startup project. You can do this by right
