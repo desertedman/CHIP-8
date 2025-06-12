@@ -26,18 +26,25 @@ Requires:
 
 ### 1. Install Dependencies
 
-#### Linux
+#### Linux (Fedora 42)
 
-##### Fedora 42
+- CMake
+- G++
+- SDL2 Development Libraries
+
+These may be easily installed by running the following in the terminal:
 
 ```bash
 sudo dnf install SDL2-devel cmake gcc-c++
 ```
 
+Other distros should be able to install the corresponding packages with
+relative ease.
+
 #### Windows
 
-- CMake
-- MSVC (or preferred compiler of choice)
+- [CMake](https://cmake.org/download/)
+- Visual Studio
 
 ### 2. Clone Repository and Generate Files
 
