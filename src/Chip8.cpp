@@ -1,15 +1,11 @@
 #include "Chip8.h"
-// #include "CPU.h"
 #include "Display.h"
-#include "ImGuiFileDialog.h"
-#include "imgui.h"
 #include "imgui_impl_sdl2.h"
-#include "imgui_impl_sdlrenderer2.h"
 
 #include <SDL.h>
-#include <SDL_render.h>
 #include <SDL_events.h>
 #include <SDL_keycode.h>
+#include <SDL_render.h>
 #include <SDL_video.h>
 #include <chrono>
 #include <cstdint>
@@ -130,7 +126,7 @@ void Chip8::runEngine() {
     }
 
     // Draw screen outside of pause loop so that ImGui still updates
-    DisplayFunctions::drawScreen(mPixels, mDisplay, *this);
+    mDisplay->drawScreen(*this, mPixels);
 
     // Sleep method
     std::this_thread::sleep_until(nextTime); // Sleep til next frame
@@ -259,133 +255,4 @@ void Emulator::runEmulator() {
   catch (const std::exception &e) {
     std::cerr << "Exception caught: " << e.what() << std::endl;
   }
-}
-
-void DisplayFunctions::drawScreen(
-    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
-    Display *display, Chip8 &chip8) {
-  int mPixelsItt = 0; // Iterator to travel mPixels array
-
-  // Traverse each row
-  for (int y = 0; y < Constants::BASE_HEIGHT; y++) {
-    // Traverse each column
-    for (int x = 0; x < Constants::BASE_WIDTH; x++) {
-      uint8_t pixel = PixelFunctions::getPixel(pixels, x, y);
-
-      // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to
-      // determine if pixel is colored or not
-      display->mPixelColor[mPixelsItt] = 0xFFFFFFFF * pixel;
-      mPixelsItt++;
-    }
-  }
-
-  // Start ImGui frame
-  ImGui_ImplSDLRenderer2_NewFrame();
-  ImGui_ImplSDL2_NewFrame();
-  ImGui::NewFrame();
-
-  // Draw to ImGui frame
-  if (display->mRenderImGui) {
-    // ImGui::ShowDemoWindow(&mRenderImGui);
-    ImGui::Begin("CHIP-8 Menu");
-
-    if (ImGui::Button("Toggle GUI")) {
-      chip8.toggleGUI();
-    }
-    ImGui::SameLine();
-    ImGui::Text("(B)");
-
-    {
-      // Construct pauseString based on pauseStatus
-      std::string pauseString;
-
-      if (chip8.getPauseStatus() == false) {
-        pauseString = "Pause";
-      } else {
-        pauseString = "Unpause";
-      }
-
-      if (ImGui::Button(pauseString.c_str())) {
-        chip8.togglePause();
-      }
-    }
-    ImGui::SameLine();
-    ImGui::Text("(Space)");
-
-    if (ImGui::Button("Reset emulator")) {
-      chip8.resetEngine();
-    }
-    ImGui::SameLine();
-    ImGui::Text("(Enter)");
-
-    // Configure emulation speed
-    ImGui::Text("Instructions per second (Speed)");
-    ImGui::SliderInt("##Speedslider", &(chip8.mTargetInstructionsPerSecond),
-                     300, 1100);
-    if (ImGui::Button("Set speed")) {
-      chip8.calcSpeed();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Reset speed")) {
-      chip8.resetSpeed();
-      chip8.calcSpeed();
-    }
-
-    {
-      // Open ROM button
-      if (ImGui::Button("Open ROM")) {
-        IGFD::FileDialogConfig config;
-        config.path = ".";
-        ImGuiFileDialog::Instance()->OpenDialog("ChooseRom", "Choose a ROM...",
-                                                ".rom,.ch8", config);
-      }
-      // display
-      if (ImGuiFileDialog::Instance()->Display("ChooseRom")) {
-        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-          std::string filePathName =
-              ImGuiFileDialog::Instance()->GetFilePathName();
-          std::cout << "Path: " << filePathName << std::endl;
-          chip8.loadRom(filePathName);
-        }
-
-        // close
-        ImGuiFileDialog::Instance()->Close();
-      }
-    }
-
-    if (ImGui::Button("Quit")) {
-      chip8.setQuit();
-    }
-    ImGui::SameLine();
-    ImGui::Text("(ESC)");
-
-    ImGui::Text("Internal resolution: %d x %d", display->mDrawRect.w,
-                display->mDrawRect.h);
-
-    {
-      // TODO: Remove this section. This is super dangerous, but I just have it
-      // for debug purposes
-      int width, height;
-      SDL_GetWindowSize(display->mWindow, &width, &height);
-      ImGui::Text("Window resolution: %d x %d", width, height);
-    }
-
-    ImGui::End();
-  }
-  ImGui::Render();
-
-  // Update screen
-  SDL_UpdateTexture(display->mTexture, NULL, display->mPixelColor,
-                    Constants::BASE_WIDTH * sizeof(uint32_t));
-
-  // Clear screen and render
-  SDL_SetRenderDrawColor(display->mRenderer, 128, 128, 128, 255);
-  SDL_RenderClear(display->mRenderer);
-  // Resizing window larger does not work properly without this! Why??
-  SDL_RenderSetViewport(display->mRenderer, NULL);
-  SDL_RenderCopy(display->mRenderer, display->mTexture, NULL,
-                 &display->mDrawRect);
-  ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),
-                                        display->mRenderer);
-  SDL_RenderPresent(display->mRenderer);
 }

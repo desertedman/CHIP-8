@@ -151,12 +151,6 @@ namespace Emulator {
 void runEmulator();
 }
 
-namespace DisplayFunctions {
-void drawScreen(
-    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
-    Display *display, Chip8 &chip8);
-} // namespace DisplayFunctions
-
 namespace PixelFunctions {
 int calculatePixel(int xCoord, int yCoord);
 uint8_t getPixel(
