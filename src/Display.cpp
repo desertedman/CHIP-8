@@ -40,7 +40,7 @@ Display::Display() {
       BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
 
   // Ensure that everything was initialized properly
-  if (mWindow == NULL || mRenderer == NULL) {
+  if (mWindow == NULL || mRenderer == NULL || mTexture == NULL) {
     throw std::runtime_error(
         std::string("Window could not be created! SDL_Error: ") +
         SDL_GetError() + "\n");
