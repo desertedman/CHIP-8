@@ -1,7 +1,6 @@
 #pragma once
 
 // #include "CPU.h"
-#include "Rom.h"
 
 #include <SDL_events.h>
 #include <array>
@@ -132,6 +131,7 @@ private:
     void opFX55(std::array<uint8_t, MEMORY_SIZE> &memory);
     void opFX65(std::array<uint8_t, MEMORY_SIZE> &memory);
   };
+
   void cycleCPU();
   void handleInput(SDL_Event &e); // Handle input and send to CPU
 
@@ -139,7 +139,6 @@ private:
   std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> mPixels;
   std::streamsize mFileSize;
   CPU mCPU;
-  Rom mRom;
 
   int mInstructionsPerFrame;
   bool running;

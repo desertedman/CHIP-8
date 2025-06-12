@@ -32,7 +32,8 @@ void Chip8::CPU::initialize() {
   soundTimer = 0;
 }
 
-uint16_t Chip8::CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory) {
+uint16_t
+Chip8::CPU::fetchOpcode(const std::array<uint8_t, MEMORY_SIZE> &memory) {
   // Fetch opcode
   uint16_t opcode = (memory.at(mPC) << 8) |
                     (memory.at(mPC + 1)); // Grab 2 bytes and combine them
@@ -266,8 +267,9 @@ void Chip8::CPU::printOpcodeMissing() {
 // Opcode functions
 
 // Clear screen op
-void Chip8::CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT *
-                                         Constants::BASE_WIDTH> &pixels) {
+void Chip8::CPU::op00E0(
+    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH>
+        &pixels) {
   drawFlag = true;
 
   pixels.fill(0);
@@ -285,7 +287,9 @@ void Chip8::CPU::op00EE() {
 }
 
 // Jump instruction; PC jumps to NNN
-void Chip8::CPU::op1NNN() { mPC = (nibbles.sec | nibbles.third | nibbles.fourth); }
+void Chip8::CPU::op1NNN() {
+  mPC = (nibbles.sec | nibbles.third | nibbles.fourth);
+}
 
 // Store current PC on stack, then jump to NNN
 void Chip8::CPU::op2NNN() {
@@ -320,10 +324,14 @@ void Chip8::CPU::op5XY0() {
 }
 
 // VX = NN
-void Chip8::CPU::op6XNN() { V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth); }
+void Chip8::CPU::op6XNN() {
+  V[nibbles.sec >> 8] = (nibbles.third | nibbles.fourth);
+}
 
 // VX += NN
-void Chip8::CPU::op7XNN() { V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth); }
+void Chip8::CPU::op7XNN() {
+  V[nibbles.sec >> 8] += (nibbles.third | nibbles.fourth);
+}
 
 // VX = VY
 void Chip8::CPU::op8XY0() { V[nibbles.sec >> 8] = V[nibbles.third >> 4]; }
@@ -437,7 +445,9 @@ void Chip8::CPU::op9XY0() {
 }
 
 // Set index register I to 0xNNN
-void Chip8::CPU::opANNN() { I = (nibbles.sec | nibbles.third | nibbles.fourth); }
+void Chip8::CPU::opANNN() {
+  I = (nibbles.sec | nibbles.third | nibbles.fourth);
+}
 
 // PC = NNN + V0
 void Chip8::CPU::opBNNN() {
@@ -504,8 +514,8 @@ void Chip8::CPU::opDXYN(
   }
 }
 
-void Chip8::CPU::opEX9E() // Check if key in VX is pressed or not. If so, skip an
-                   // instruction
+void Chip8::CPU::opEX9E() // Check if key in VX is pressed or not. If so, skip
+                          // an instruction
 {
   if (mInternalKeys[V[nibbles.sec >> 8]] == true) {
     // std::cout << "Key detected\n";
@@ -513,8 +523,8 @@ void Chip8::CPU::opEX9E() // Check if key in VX is pressed or not. If so, skip a
   }
 }
 
-void Chip8::CPU::opEXA1() // Check if key in VX is pressed or not. If not, skip an
-                   // instruction
+void Chip8::CPU::opEXA1() // Check if key in VX is pressed or not. If not, skip
+                          // an instruction
 {
   if (mInternalKeys[V[nibbles.sec >> 8]] == false) {
     mPC += 2;
