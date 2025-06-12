@@ -44,23 +44,30 @@ relative ease.
 #### Windows
 
 - [CMake](https://cmake.org/download/)
-- Visual Studio
+- Visual Studio (MSVC) or MinGW
 
 ### 2. Clone Repository and Generate Files
 
 ```bash
 git clone --recurse-submodules https://github.com/desertedman/CHIP-8.git
 cd CHIP-8
+```
+
+#### Linux / MinGW
+
+```bash
+# Linux
 cmake -B build -S ./
+# Alternatively on windows,
+# cmake -G "MinGW Makefiles" -B build -S ./
 cd build
 cmake --build ./
 ```
 
-At this point, a Linux executable should be already compiled and spit out as
-"CHIP8" within the build folder. Windows users with Visual Studio should
-further open the generated .sln file and manually compile.
+For MinGW and Linux users, a compiled executable should already be spit out in
+the build directory.
 
-### (Windows) 3. Compile
+### (Windows - Visual Studio) 3. Compile
 
 Navigate to the generated build folder, open the .sln file, and configure your
 project to use "CHIP8" as the startup project. You can do this by right
