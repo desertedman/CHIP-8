@@ -44,7 +44,7 @@ relative ease.
 #### Windows
 
 - [CMake](https://cmake.org/download/)
-- Visual Studio (MSVC) or MinGW
+- Visual Studio (MSVC) or [MinGW](https://code.visualstudio.com/docs/cpp/config-mingw)
 
 ### 2. Clone Repository and Generate Files
 
@@ -58,8 +58,9 @@ cd CHIP-8
 ```bash
 # Linux
 cmake -B build -S ./
-# Alternatively on windows,
+# Alternatively on Windows,
 # cmake -G "MinGW Makefiles" -B build -S ./
+
 cd build
 cmake --build ./
 ```
@@ -100,14 +101,13 @@ Keypad                   Keyboard
 
 ## Known Issues
 
-- Resizing window larger than its original size crops the image
 - Space Invaders does not function correctly. Space Invaders relies on SuperChip
 quirks which I have chosen not to implement.
 
 ## TODO
 
 - Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
-- Windows cross-compatibility?
+- Windows cross-compatibility? (In progress)
 - Save states?
 
 ## Resources
