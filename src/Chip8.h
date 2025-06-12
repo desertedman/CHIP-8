@@ -85,6 +85,7 @@ private:
     uint8_t delayTimer;
     uint8_t soundTimer;
 
+    bool quirks = true;
     bool drawFlag;
     bool keyWasPressedLF;
     int keyLastPressed;
