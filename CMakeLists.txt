@@ -30,6 +30,10 @@ include_directories(
 add_executable(CHIP8 ${SOURCES} ${IMGUI_SOURCES} ${IMGUIDIALOG_SOURCES})
 if(WIN32)
   target_compile_definitions(CHIP8 PRIVATE PLATFORM_WINDOWS)
+  add_custom_command(TARGET CHIP8 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      "${CMAKE_SOURCE_DIR}/include/SDL2/lib/x64/SDL2.dll"
+      $<TARGET_FILE_DIR:CHIP8>)
 elseif(UNIX)
   target_compile_definitions(CHIP8 PRIVATE PLATFORM_LINUX)
 endif()

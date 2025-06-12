@@ -7,7 +7,7 @@
 #ifdef PLATFORM_LINUX
 #include <SDL2/SDL_video.h>
 #elif PLATFORM_WINDOWS
-#include "SDL_video.h"
+#include <SDL_video.h>
 #endif
 
 #include <SDL_render.h>

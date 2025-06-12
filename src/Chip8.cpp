@@ -10,8 +10,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_render.h>
 #elif PLATFORM_WINDOWS
-#include "SDL.h"
-#include "SDL_render.h"
+#include <SDL.h>
+#include <SDL_render.h>
 #endif
 
 #include <SDL_events.h>

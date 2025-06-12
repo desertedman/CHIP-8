@@ -7,8 +7,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 #elif PLATFORM_WINDOWS
-#include "SDL.h"
-#include "SDL_video.h"
+#include <SDL.h>
+#include <SDL_video.h>
 #endif
 
 #include <SDL_rect.h>
