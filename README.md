@@ -127,11 +127,12 @@ Keypad                   Keyboard
 
 - Space Invaders does not function correctly. Space Invaders relies on SuperChip
 quirks which I have chosen not to implement.
+- Hotloading Pong (i.e. not starting from a fresh boot) will cause the ball to
+spawn in random places. This also occurs upon resetting the emulator.
 
 ## TODO
 
 - Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
-- Windows cross-compatibility? (In progress)
 - Save states?
 
 ## Resources
