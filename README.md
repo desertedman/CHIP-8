@@ -24,13 +24,22 @@ Requires:
 
 ## Instructions
 
-### Linux
+### 1. Install Dependencies
 
-#### Fedora 42
+#### Linux
+
+##### Fedora 42
 
 ```bash
 sudo dnf install SDL2-devel cmake gcc-c++
 ```
+
+#### Windows
+
+- CMake
+- MSVC (or preferred compiler of choice)
+
+### 2. Clone Repository and Generate Files
 
 ```bash
 git clone --recurse-submodules https://github.com/desertedman/CHIP-8.git
@@ -40,8 +49,15 @@ cd build
 cmake --build ./
 ```
 
-### Windows
-None yet
+At this point, a Linux executable should be already compiled and spit out.
+Windows users with Visual Studio should further open the generated .sln file and
+manually compile.
+
+### (Windows) 3. Compile
+
+Navigate to the generated build folder, open the .sln file, and right
+click on CHIP8 in the Solution Explorer. Hit "Build", and your compiled
+executable should be in build/Debug/CHIP8.exe.
 
 ## Controls
 
@@ -70,7 +86,8 @@ Keypad                   Keyboard
 ## Known Issues
 
 - Resizing window larger than its original size crops the image
-- Space Invaders does not function correctly. Space Invaders relies on SuperChip quirks which I have chosen not to implement.
+- Space Invaders does not function correctly. Space Invaders relies on SuperChip
+quirks which I have chosen not to implement.
 
 ## TODO
 
