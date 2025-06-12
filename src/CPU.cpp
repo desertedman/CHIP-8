@@ -324,19 +324,28 @@ void Chip8::CPU::op8XY0() { V[nibbles.sec >> 8] = V[nibbles.third >> 4]; }
 // VX = VX | VY
 void Chip8::CPU::op8XY1() {
   V[nibbles.sec >> 8] |= V[nibbles.third >> 4];
-  V[0xF] = 0;
+
+  if (quirkResetVF) {
+    V[0xF] = 0;
+  }
 }
 
 // VX = VX & VY
 void Chip8::CPU::op8XY2() {
   V[nibbles.sec >> 8] &= V[nibbles.third >> 4];
-  V[0xF] = 0;
+
+  if (quirkResetVF) {
+    V[0xF] = 0;
+  }
 }
 
 // VX = VX ^ VY
 void Chip8::CPU::op8XY3() {
   V[nibbles.sec >> 8] ^= V[nibbles.third >> 4];
-  V[0xF] = 0;
+
+  if (quirkResetVF) {
+    V[0xF] = 0;
+  }
 }
 
 // VX = VX + VY
@@ -378,18 +387,17 @@ void Chip8::CPU::op8XY5() {
 // Bit shift right
 void Chip8::CPU::op8XY6() {
   if (quirkShift) {
-    // Modern behavior; VX = VY
+    // Classic behavior; VX = VY
     V[nibbles.sec >> 8] = V[nibbles.third >> 4];
-
-    // Requires a temp variable in the edge case of 8FF6
-    // If we set VF to corresponding bit first, then we have just overwritten
-    // VF!
-    uint8_t carryBit =
-        V[nibbles.sec >> 8] & 0b1; // Store last bit into temp variable
-    V[nibbles.sec >> 8] >>= 1;     // Bitshift right in place
-
-    V[0xF] = carryBit; // Set register to last bit
   }
+
+  // Requires a temp variable in the edge case of 8FF6
+  // If we set VF to corresponding bit first, then we have just overwritten VF!
+  uint8_t carryBit =
+      V[nibbles.sec >> 8] & 0b1; // Store last bit into temp variable
+  V[nibbles.sec >> 8] >>= 1;     // Bitshift right in place
+
+  V[0xF] = carryBit; // Set register to last bit
 }
 
 // VX = VY - VX
@@ -414,18 +422,17 @@ void Chip8::CPU::op8XY7() {
 // Bit shift left
 void Chip8::CPU::op8XYE() {
   if (quirkShift) {
-    // Modern behavior; VX = VY
+    // Classic behavior; VX = VY
     V[nibbles.sec >> 8] = V[nibbles.third >> 4];
-
-    // Requires a temp variable in the edge case of 8FFE
-    // If we set VF to corresponding bit first, then we have just overwritten
-    // VF!
-    uint8_t carryBit =
-        V[nibbles.sec >> 8] >> 7; // Store first bit into temp variable
-    V[nibbles.sec >> 8] <<= 1;    // Bitshift left in place
-
-    V[0xF] = carryBit; // Set register to first bit
   }
+
+  // Requires a temp variable in the edge case of 8FFE
+  // If we set VF to corresponding bit first, then we have just overwritten VF!
+  uint8_t carryBit =
+      V[nibbles.sec >> 8] >> 7; // Store first bit into temp variable
+  V[nibbles.sec >> 8] <<= 1;    // Bitshift left in place
+
+  V[0xF] = carryBit; // Set register to first bit
 }
 
 // If VX != VY, skip
