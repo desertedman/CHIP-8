@@ -65,7 +65,7 @@ further open the generated .sln file and manually compile.
 Navigate to the generated build folder, open the .sln file, and configure your
 project to use "CHIP8" as the startup project. You can do this by right
 clicking the solution in the Solution Explorer -> Properties -> Set "Single
-startup project" to "CHIP8"
+startup project" to "CHIP8". Compile the project, and you're good to go!
 
 ## Controls
 
