@@ -125,19 +125,20 @@ Keypad                   Keyboard
 
 ## Known Issues
 
-- Space Invaders does not function correctly. Space Invaders relies on SuperChip
-quirks which I have chosen not to implement.
 - Hotloading Pong (i.e. not starting from a fresh boot) will cause the ball to
 spawn in random places. This also occurs upon resetting the emulator.
 
 ## TODO
 
 - Write some information on 0xDXYN opcode. I found that all sources were fairly confusing!
+- UI toggles for certain emulator quirks. Certain games like Space Invaders rely
+on these quirks; [read more here.](https://chip8.gulrak.net/)
 - Save states?
 
 ## Resources
 
 - The fine folks over at the [EmuDev discord](https://discord.gg/dkmJAes)
+- <https://chip8.gulrak.net/>
 - <https://tobiasvl.github.io/blog/write-a-chip-8-emulator/>
 - <https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/>
 - <http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Dxyn>
