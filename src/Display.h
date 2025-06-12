@@ -5,7 +5,6 @@
 
 #include <SDL.h>
 #include <SDL_video.h>
-
 #include <SDL_rect.h>
 #include <memory>
 

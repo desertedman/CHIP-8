@@ -8,7 +8,6 @@
 
 #include <SDL.h>
 #include <SDL_render.h>
-
 #include <SDL_events.h>
 #include <SDL_keycode.h>
 #include <SDL_video.h>
