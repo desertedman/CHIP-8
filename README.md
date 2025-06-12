@@ -1,7 +1,7 @@
 # CHIP-8 Emulator
 
-My own personal CHIP-8 Emulator built in C++ for Linux systems. Built and tested
-on Fedora 42!
+My own personal CHIP-8 Emulator built in C++, cross-platform across Linux and
+Windows systems. Built and tested on Fedora 42!
 
 [Video demo](https://youtu.be/xRnYh-q6Ma4?si=vIn9rEbaX7bk5Soe)
 
@@ -55,7 +55,7 @@ cd CHIP-8
 
 #### Linux / MinGW
 
-If you are on Linux, run:
+Linux users should run:
 
 ```bash
 # Linux
@@ -82,7 +82,7 @@ be spit out in the build directory.
 #### Visual Studio (MSVC)
 
 Visual Studio users must generate project files, then
-manually compile in Visual Studio.
+compile manually in Visual Studio.
 
 ```bash
 cmake -B build -S ./
@@ -90,12 +90,12 @@ cd build
 cmake --build ./
 ```
 
-Visual Studio users should proceed to the next step.
+Visual Studio users should then proceed to the next step.
 
 ### (Windows - Visual Studio ONLY) 3. Compile
 
-Navigate to the generated build folder, open the .sln file, and configure your
-project to use "CHIP8" as the startup project. You can do this by right
+Navigate to the generated build folder, open the .sln file, and configure the
+project to use "CHIP8" as the startup project. This is done by right
 clicking the solution in the Solution Explorer -> Properties -> Set "Single
 startup project" to "CHIP8". Compile the project, and you're good to go!
 
