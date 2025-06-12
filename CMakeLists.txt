@@ -24,4 +24,9 @@ include_directories(
 )
 
 add_executable(CHIP8 ${SOURCES} ${IMGUI_SOURCES} ${IMGUIDIALOG_SOURCES})
+if(WIN32)
+  target_compile_definitions(CHIP8 PRIVATE PLATFORM_WINDOWS)
+elseif(UNIX)
+  target_compile_definitions(CHIP8 PRIVATE PLATFORM_LINUX)
+endif()
 target_link_libraries(CHIP8 PRIVATE SDL2::SDL2)

@@ -4,7 +4,12 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
 
+#ifdef PLATFORM_LINUX
 #include <SDL2/SDL_video.h>
+#elif PLATFORM_WINDOWS
+#include "SDL_video.h"
+#endif
+
 #include <SDL_render.h>
 #include <stdexcept>
 #include <string>

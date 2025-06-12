@@ -3,8 +3,14 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 
+#ifdef PLATFORM_LINUX
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
+#elif PLATFORM_WINDOWS
+#include "SDL.h"
+#include "SDL_video.h"
+#endif
+
 #include <SDL_rect.h>
 #include <memory>
 
