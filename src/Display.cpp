@@ -18,38 +18,32 @@ Display::Display() {
 
   calculateResolution();
 
-  try {
-    // Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-      throw std::runtime_error(
-          std::string("SDL could not initialize! SDL_Error: ") +
-          SDL_GetError() + "\n");
-    }
-
-    // Create window
-    mWindow = SDL_CreateWindow(
-        "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWindowWidth,
-        mWindowHeight,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-
-    // Create renderer
-    mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
-
-    // Create texture for frame buffer
-    mTexture = SDL_CreateTexture(
-        mRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
-        BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
-
-    // Ensure that everything was initialized properly
-    if (mWindow == NULL || mRenderer == NULL) {
-      throw std::runtime_error(
-          std::string("Window could not be created! SDL_Error: ") +
-          SDL_GetError() + "\n");
-    }
+  // Initialize SDL
+  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    throw std::runtime_error(
+        std::string("SDL could not initialize! SDL_Error: ") + SDL_GetError() +
+        "\n");
   }
 
-  catch (const std::runtime_error &e) {
-    throw;
+  // Create window
+  mWindow = SDL_CreateWindow(
+      "CHIP-8", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWindowWidth,
+      mWindowHeight,
+      SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+
+  // Create renderer
+  mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
+
+  // Create texture for frame buffer
+  mTexture = SDL_CreateTexture(
+      mRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+      BASE_WIDTH, BASE_HEIGHT); // Internal texture with BASE resolution
+
+  // Ensure that everything was initialized properly
+  if (mWindow == NULL || mRenderer == NULL) {
+    throw std::runtime_error(
+        std::string("Window could not be created! SDL_Error: ") +
+        SDL_GetError() + "\n");
   }
 
   // Initialize Imgui

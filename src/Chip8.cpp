@@ -80,7 +80,7 @@ void Chip8::loadRom(const std::string &path) {
 
 void Chip8::printMemory(int bytes) {
   if (bytes == 0) {
-    bytes = mFileSize;
+    bytes = (int)mFileSize;
   }
 
   for (int i = 0; i < bytes; i++) {
