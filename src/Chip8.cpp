@@ -6,13 +6,8 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
 
-#ifdef PLATFORM_LINUX
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_render.h>
-#elif PLATFORM_WINDOWS
 #include <SDL.h>
 #include <SDL_render.h>
-#endif
 
 #include <SDL_events.h>
 #include <SDL_keycode.h>
