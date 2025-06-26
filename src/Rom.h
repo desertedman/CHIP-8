@@ -8,7 +8,6 @@ class Rom
     // Constants
     static constexpr int ROM_FILE_SIZE = 3584;
 
-    ~Rom();
     void openFile(const std::string &path);
     const std::streamsize getSize() const;
 

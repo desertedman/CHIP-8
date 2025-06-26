@@ -7,12 +7,6 @@
 #include <string>
 
 // Load and open a Rom
-Rom::~Rom()
-{
-    // Automatically close file on destruction
-    mFile.close();
-}
-
 void Rom::openFile(const std::string &path)
 {
     // Check if a file is already open
