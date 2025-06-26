@@ -1,7 +1,8 @@
 #include "Chip8.h"
 
-int main() {
-  Emulator::runEmulator();
+int main()
+{
+    Emulator::runEmulator();
 
-  return 0;
+    return 0;
 }
