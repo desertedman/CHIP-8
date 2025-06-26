@@ -518,16 +518,16 @@ void Chip8::CPU::opDXYN(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Consta
     // new coordinate
 
     V[0xF] = 0;
-    for (int yLine = 0; yLine < N; yLine++)
+    for (auto yLine = 0; yLine < N; yLine++)
     {
         if (y + yLine > Constants::BASE_HEIGHT - 1)
         {
             break;
         }
 
-        uint8_t sprite = mMemory.at(I + yLine); // Grab sprite data
+        uint8_t sprite = mMemory[I + yLine]; // Grab sprite data
 
-        for (int xLine = 0; xLine < 8; xLine++)
+        for (auto xLine = 0; xLine < 8; xLine++)
         {
             if (x + xLine > Constants::BASE_WIDTH - 1)
             {
@@ -546,9 +546,6 @@ void Chip8::CPU::opDXYN(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Consta
                     V[0xF] = 1;
                 }
 
-                // pixels.xorPixel(x + xLine, y + yLine, 1);
-                // PIXEL_COLOR *pixelPtr =
-                //     &PixelsFunction::getPixel(pixels, x + xLine, y + yLine);
                 PixelFunctions::xorPixel(pixels, x + xLine, y + yLine);
             }
 
@@ -591,7 +588,8 @@ void Chip8::CPU::opFX0A()
     // std::cout << "Waiting on input; 0xFX0A...\n";
     bool anyKeyPressed = false;
 
-    for (int i = 0; i < NUM_KEYS; i++)
+  // for (auto key : NUM_KEYS)
+    for (auto i = 0; i < NUM_KEYS; i++)
     {
         if (mInternalKeys[i] == true)
         {
@@ -662,7 +660,7 @@ void Chip8::CPU::opFX55()
 {
     int targetRegister = nibbles.sec >> 8;
 
-    for (int i = 0; i <= targetRegister; i++)
+    for (auto i = 0; i <= targetRegister; i++)
     {
         mMemory.at(I + i) = V[i];
     }
@@ -722,8 +720,9 @@ void PixelFunctions::xorPixel(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * 
 {
     int pixelCoord = calculatePixel(xCoord, yCoord);
 
-    // TODO: This is nasty! Fix this!
-    int value = static_cast<uint8_t>(pixels[pixelCoord]) ^ static_cast<uint8_t>(PIXEL_VALUES::PIXEL_ON);
     // pixels[pixelCoord] ^= PIXEL_VALUES::PIXEL_ON;
+
+    // TODO: This is nasty! Fix this!
+    auto value = static_cast<uint8_t>(pixels[pixelCoord]) ^ static_cast<uint8_t>(PIXEL_VALUES::PIXEL_ON);
     pixels[pixelCoord] = static_cast<PIXEL_VALUES>(value);
 }

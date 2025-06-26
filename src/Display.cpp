@@ -85,12 +85,12 @@ void Display::drawScreen(Chip8 &chip8)
     auto pixels = chip8.getInternalPixels();
 
     // Traverse each row
-    for (int y = 0; y < Constants::BASE_HEIGHT; y++)
+    for (auto y = 0; y < Constants::BASE_HEIGHT; y++)
     {
         // Traverse each column
-        for (int x = 0; x < Constants::BASE_WIDTH; x++)
+        for (auto x = 0; x < Constants::BASE_WIDTH; x++)
         {
-            auto pixel = PixelFunctions::getPixel(pixels, x, y);
+            PIXEL_VALUES pixel = PixelFunctions::getPixel(pixels, x, y);
             if (pixel == PIXEL_VALUES::PIXEL_ERROR)
             {
                 std::cerr << "Pixel error" << std::endl;
