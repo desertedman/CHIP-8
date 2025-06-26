@@ -90,12 +90,19 @@ void Display::drawScreen(Chip8 &chip8)
         // Traverse each column
         for (int x = 0; x < Constants::BASE_WIDTH; x++)
         {
-            uint8_t pixel = PixelFunctions::getPixel(pixels, x, y);
+            auto pixel = PixelFunctions::getPixel(pixels, x, y);
+            if (pixel == PIXEL_VALUES::PIXEL_ERROR)
+            {
+                std::cerr << "Pixel error" << std::endl;
+            }
 
-            // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to
-            // determine if pixel is colored or not
-            mPixelColor[mPixelsItt] = 0xFFFFFFFF * pixel;
-            mPixelsItt++;
+            else
+            {
+                // Internally, bool is stored as 0x1 or 0x0; Multiply by 0xFFFFFFFF to determine if pixel is colored or
+                // not
+                mPixelColor[mPixelsItt] = 0xFFFFFFFF * static_cast<uint8_t>(pixel);
+                mPixelsItt++;
+            }
         }
     }
 

@@ -21,6 +21,13 @@ struct Nibbles
     uint8_t lastTwo;
 };
 
+enum class PIXEL_VALUES : uint8_t
+{
+    PIXEL_OFF,
+    PIXEL_ON,
+    PIXEL_ERROR,
+};
+
 namespace Constants
 {
 static constexpr int BASE_WIDTH = 64;
@@ -44,7 +51,7 @@ class Chip8
     Chip8();
     void loadRom(const std::string &path);
     void runEngine();
-    const std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> getInternalPixels() const;
+    const std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> getInternalPixels() const;
     // State functions
     void setQuit();
     void calcSpeed();
@@ -69,7 +76,7 @@ class Chip8
 
         uint16_t fetchOpcode();
         void decodeOpcode(const uint16_t &opcode);
-        void executeOpcode(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
+        void executeOpcode(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
         void printOpcodeMissing();
 
         std::array<uint8_t, MEMORY_SIZE> mMemory; // 4Kb of memory
@@ -97,7 +104,7 @@ class Chip8
         int keyLastPressed;
 
         // Opcode functions
-        void op00E0(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
+        void op00E0(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
         void op00EE();
         void op1NNN();
         void op2NNN();
@@ -119,7 +126,7 @@ class Chip8
         void opANNN();
         void opBNNN();
         void opCXNN();
-        void opDXYN(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
+        void opDXYN(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels);
         void opEX9E();
         void opEXA1();
         void opFX07();
@@ -137,7 +144,7 @@ class Chip8
     void handleInput(SDL_Event &e); // Handle input and send to CPU
 
     CPU mCPU;
-    std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> mPixels;
+    std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> mPixels;
     std::streamsize mFileSize;
     int mInstructionsPerFrame;
     bool running;
@@ -153,6 +160,6 @@ void runEmulator();
 namespace PixelFunctions
 {
 int calculatePixel(int xCoord, int yCoord);
-uint8_t getPixel(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels, int xCoord, int yCoord);
-void xorPixel(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels, int xCoord, int yCoord);
+PIXEL_VALUES getPixel(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels, int xCoord, int yCoord);
+void xorPixel(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels, int xCoord, int yCoord);
 } // namespace PixelFunctions

@@ -62,7 +62,7 @@ void Chip8::CPU::decodeOpcode(const uint16_t &opcode)
     // nibbles.fourth);
 }
 
-void Chip8::CPU::executeOpcode(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels)
+void Chip8::CPU::executeOpcode(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels)
 {
     switch (nibbles.first)
     {
@@ -261,11 +261,11 @@ void Chip8::CPU::printOpcodeMissing()
 // Opcode functions
 
 // Clear screen op
-void Chip8::CPU::op00E0(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels)
+void Chip8::CPU::op00E0(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels)
 {
     drawFlag = true;
 
-    pixels.fill(0);
+    pixels.fill(PIXEL_VALUES::PIXEL_OFF);
 }
 
 // Return from subroutine
@@ -505,7 +505,7 @@ void Chip8::CPU::opCXNN()
 // Refer to:
 // https://tobiasvl.github.io/blog/write-a-chip-8-emulator/#font
 // https://multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-void Chip8::CPU::opDXYN(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels)
+void Chip8::CPU::opDXYN(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels)
 {
     drawFlag = true;
 
@@ -541,7 +541,7 @@ void Chip8::CPU::opDXYN(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::
 
             if (pixel)
             {
-                if (PixelFunctions::getPixel(pixels, x + xLine, y + yLine) == 1)
+                if (PixelFunctions::getPixel(pixels, x + xLine, y + yLine) == PIXEL_VALUES::PIXEL_ON)
                 {
                     V[0xF] = 1;
                 }
@@ -694,7 +694,8 @@ int PixelFunctions::calculatePixel(int xCoord, int yCoord)
     // Coordinates should range from 0-63, 0-31
     if (xCoord >= 64 || yCoord >= 32)
     {
-        return 255;
+        std::cerr << "Pixel out of bounds!" << std::endl;
+        return -1;
     }
 
     // Calculate appropriate number of pixels to travel
@@ -703,18 +704,26 @@ int PixelFunctions::calculatePixel(int xCoord, int yCoord)
     return height + xCoord;
 }
 
-uint8_t PixelFunctions::getPixel(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
-                                 int xCoord, int yCoord)
+PIXEL_VALUES PixelFunctions::getPixel(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+                                      int xCoord, int yCoord)
 {
     int pixel = calculatePixel(xCoord, yCoord);
+    if (pixel == -1)
+    {
+        // Invalid pixel position; return invalid value
+        return PIXEL_VALUES::PIXEL_ERROR;
+    }
 
     return pixels[pixel];
 }
 
-void PixelFunctions::xorPixel(std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels, int xCoord,
-                              int yCoord)
+void PixelFunctions::xorPixel(std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> &pixels,
+                              int xCoord, int yCoord)
 {
     int pixelCoord = calculatePixel(xCoord, yCoord);
 
-    pixels[pixelCoord] ^= 1;
+    // TODO: This is nasty! Fix this!
+    int value = static_cast<uint8_t>(pixels[pixelCoord]) ^ static_cast<uint8_t>(PIXEL_VALUES::PIXEL_ON);
+    // pixels[pixelCoord] ^= PIXEL_VALUES::PIXEL_ON;
+    pixels[pixelCoord] = static_cast<PIXEL_VALUES>(value);
 }

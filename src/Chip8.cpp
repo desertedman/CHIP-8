@@ -46,7 +46,7 @@ Chip8::Chip8()
     loaded = false;
     mDisplay = NULL;
     running = true;
-    mPixels.fill(0);
+    mPixels.fill(PIXEL_VALUES::PIXEL_OFF);
 
     // Load font into memory
     int fontLength = sizeof(Font) / sizeof(uint8_t);
@@ -142,7 +142,7 @@ void Chip8::runEngine()
     }
 }
 
-const std::array<uint8_t, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> Chip8::getInternalPixels() const
+const std::array<PIXEL_VALUES, Constants::BASE_HEIGHT * Constants::BASE_WIDTH> Chip8::getInternalPixels() const
 {
     return mPixels;
 }
@@ -263,7 +263,7 @@ bool Chip8::getPauseStatus()
 void Chip8::resetEngine()
 {
     mCPU.initialize();
-    mPixels.fill(0);
+    mPixels.fill(PIXEL_VALUES::PIXEL_OFF);
     std::cout << "State has been reset!\n";
 }
 
